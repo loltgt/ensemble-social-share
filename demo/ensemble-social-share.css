@@ -1,0 +1,209 @@
+
+.social-share, .share-actions, .share-action, .share-intent, .share-icon, .share-copied-link-message, .share-fx-copied-link--ground {
+  margin: 0;
+  padding: 0;
+}
+.social-share, .social-share * {
+  box-sizing: border-box;
+}
+.social-share {
+  display: block;
+  min-height: 35px;
+}
+.social-share:after {
+  content: "";
+  display: block;
+}
+.share-actions {
+  display: inline-block;
+  float: left;
+  margin: 0 -.2rem;
+  font-size: 0;
+  list-style: none;
+}
+.share-action {
+  display: inline-block;
+  margin: .2rem;
+  line-height: 100%;
+  text-align: center;
+}
+.share-intent {
+  display: block;
+  padding: .25rem .3rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #fff;
+  background: #aaaaaa;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  transform: scale3d(1, 1, 1);
+  transform: scale(1);
+  backface-visibility: hidden;
+  transition: transform 50ms linear;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.share-intent:hover, .share-intent:focus {
+  transform: scale3d(1.1, 1.1, 1.1);
+  transform: scale(1.1);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.share-icon {
+  display: block;
+  vertical-align: middle;
+}
+
+.share-intent-facebook { background: #365899; }
+.share-intent-twitter { background: #1da1f2; }
+.share-intent-pinterest { background: #cc2127; }
+.share-intent-linkedin { background: #0976b4; }
+.share-intent-whatsapp { background: #25d366; }
+.share-intent-messenger { background: #0084ff; }
+.share-intent-telegram { background: #179cde; }
+.share-intent-send-email { background: #886666; }
+.share-intent-copy-link { background: #33ddff; }
+
+.share-copied-link-message {
+  position: fixed;
+  line-height: 1;
+  top: 50%;
+  left: 50%;
+  display: inline-block;
+  padding: 1.3rem 3rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  line-height: 1.5;
+  background: rgba(0, 0, 0, .77);
+  color: rgba(255, 255, 255, .89);
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+.share-fx-copied-link {
+  position: relative;
+}
+.share-fx-copied-link--ground {
+  content: '';
+  display: block !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, .5);
+  transition: opacity .8s ease-out;
+  opacity: .5;
+  z-index: 9998;
+}
+.share-fx-copied-link--ground[hidden] {
+  display: block !important;
+  opacity: 1;
+}
+
+
+
+.share-action-callout {
+  display: inline-block;
+  margin: .2rem .5rem;
+}
+.share-intent-callout {
+  border-radius: 0;
+  color: $gray-000;
+  outline: 0;
+  transform: none !important;
+}
+
+
+
+
+
+
+@media (min-width: 768px) {
+  .social-share {
+    min-height: 47px;
+  }
+  .share-actions {
+    margin: 0 -.3rem;
+  }
+  .share-action {
+    margin: .2rem .3rem;
+  }
+  .share-intent {
+    font-size: 2rem;
+  }
+}
+
+
+
+@font-face {
+  font-family: 'iconset';
+  src: url('iconset.woff?p7zmsr') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+[class^="icon-"], [class*=" icon-"] {
+  font-family: 'iconset' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-mail:before,
+.icon-send-email:before {
+  content: "\e906";
+}
+.icon-share:before,
+.icon-web-share:before {
+  content: "\e909";
+}
+.icon-link:before,
+.icon-copy-link:before {
+  content: "\e90a";
+}
+.icon-facebook:before {
+  content: "\e956";
+}
+.icon-github:before {
+  content: "\e957";
+}
+.icon-google-hangout:before {
+  content: "\e958";
+}
+.icon-google-plus:before {
+  content: "\e959";
+}
+.icon-instagram:before {
+  content: "\e95a";
+}
+.icon-linkedin:before {
+  content: "\e95b";
+}
+.icon-messenger:before {
+  content: "\e95c";
+}
+.icon-skype:before {
+  content: "\e95d";
+}
+.icon-telegram:before {
+  content: "\e95e";
+}
+.icon-twitter:before {
+  content: "\e95f";
+}
+.icon-whatsapp:before {
+  content: "\e960";
+}
+.icon-wordpress:before {
+  content: "\e961";
+}
+.icon-youtube:before {
+  content: "\e962";
+}
