@@ -60,7 +60,7 @@
     }
 
     _bindings() {
-      this.intent = this.intent.bind(this);
+      this.intent = this.binds(this.intent);
     }
 
     constructor(element, options = {}) {
@@ -139,13 +139,14 @@
         className: opts.ns + '-action-' + intent
       });
 
-      // dataset
+      const self = this;
       const button = this.compo('button', 'intent', {
         className: opts.ns + '-intent-' + intent,
         title,
         ariaLabel: title,
         onclick: this.intent
       });
+      // dataset
       action.setAttr('data-share-intent', intent);
       action.append(button);
 
@@ -157,23 +158,18 @@
       this.actions.append(action);
     }
 
-    intent(e) {
-      e.preventDefault();
-      e.target.blur();
+    intent(e, target) {
+      e && ! e.preventDefault() && e.target.blur();
+      console.log(arguments);
 
       if (! e.isTrusted) return;
 
       const opts = this.options;
-      //TODO
-      // compo.__compo node.__compo conflict
-      // parentElement
-      const target = this.hasAttr(e.target.parentElement.__compo, 'data-share-intent') ? e.target.parentElement : e.target.parentElement.parentElement;
+      const action_node = target.parentElement;
 
-      // compo.__compo node.__compo conflict
-      if (! this.hasAttr(target.__compo, 'data-share-intent')) return;
+      if (! this.hasAttr(action_node, 'data-share-intent')) return;
 
-      // compo.__compo node.__compo conflict
-      const intent = this.getAttr(target.__compo, 'data-share-intent');
+      const intent = this.getAttr(action_node, 'data-share-intent');
 
       let url, title, summary, text;
 
@@ -206,7 +202,8 @@
             this.webShare(e, data);
             break;
           default:
-            this.social(e, data, intent, target);
+            // action_node
+            this.social(e, data, intent, action_node);
         }
       }
     }
@@ -220,7 +217,7 @@
       );
     }
 
-    social(e, data, intent, target) {
+    social(e, data, intent, action_node) {
       const opts = this.options;
 
       if (intent in opts.uriform === false) return;
@@ -230,7 +227,8 @@
         .replace('%title%', encodeURIComponent(data.title))
         .replace('%summary%', encodeURIComponent(data.summary));
 
-      const title = target.ariaLabel;
+      // action_node
+      const title = this.getAttr(action_node, 'ariaLabel');
       const options = 'toolbar=0,status=0,width=640,height=480';
 
       if (/%text%/.test(opts.uriform[intent])) {
