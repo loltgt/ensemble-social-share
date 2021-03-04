@@ -8,9 +8,12 @@
 
 'use strict';
 
-(function(ensemble) {
+(function(window, module, require, ensemble) {
 
-  class SocialShare extends ensemble.base {
+  const base = ensemble ? ensemble.base : require('../ensemble-stack-d1/base');
+
+
+  class SocialShare extends base {
 
     _defaults() {
       return {
@@ -314,6 +317,7 @@
   }
 
 
-  globalThis.ensemble = { ...ensemble, ...{ SocialShare } };
+  window.ensemble = { ...ensemble, ...{ SocialShare } };
+  module.exports = SocialShare;
 
-}(globalThis.ensemble));
+}((typeof window != 'undefined' ? window : {}), (typeof module != 'undefined' ? module : {}), (typeof require != 'undefined' ? require : function() {}), globalThis.ensemble));
