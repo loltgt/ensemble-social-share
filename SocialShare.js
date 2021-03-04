@@ -160,7 +160,6 @@
 
     intent(e, target) {
       e && ! e.preventDefault() && e.target.blur();
-      console.log(arguments);
 
       if (! e.isTrusted) return;
 

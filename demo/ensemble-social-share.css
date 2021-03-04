@@ -42,12 +42,15 @@
   backface-visibility: hidden;
   transition: transform 50ms linear;
   appearance: none;
+  -webkit-highlight: none;
   -webkit-appearance: none;
 }
 .share-intent:hover, .share-intent:focus {
   transform: scale3d(1.1, 1.1, 1.1);
   transform: scale(1.1);
-  outline: none;
+}
+.share-intent:active, .share-intent:focus {
+  outline: 0;
   -webkit-tap-highlight-color: transparent;
 }
 .share-icon {
