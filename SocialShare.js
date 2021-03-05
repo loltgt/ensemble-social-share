@@ -69,6 +69,8 @@
       this._bindings();
 
       this.options = this.defaults(this._defaults(), options);
+      Object.freeze(this.options);
+
       this.element = element;
 
       this.init();
