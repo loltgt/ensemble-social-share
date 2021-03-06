@@ -161,7 +161,7 @@
     }
 
     intent(e, target) {
-      e && ! e.preventDefault() && e.target.blur();
+      this.event(e);
 
       if (! e.isTrusted) return;
 
@@ -290,14 +290,13 @@
         const msg = this.compo('span', 'copied-link-message', { innerText: opts.locale.copied });
         this.appendNode(root, msg);
 
-        setTimeout(function() {
-          gnd.delAttr('hidden');
-        });
-        setTimeout(function() {
+        gnd.delAttr('hidden');
+
+        this.delay(function() {
           self.removeNode(root, msg);
           self.removeNode(root, gnd);
           root.classList.remove('share-fx-copied-link');
-        }, this.timing(gnd, 8e2));
+        }, gnd, 8e2);
       }
     }
 
