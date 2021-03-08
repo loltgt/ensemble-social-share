@@ -145,8 +145,6 @@
       const action = this.compo('li', 'action', {
         className: opts.ns + '-action-' + intent
       });
-
-      const self = this;
       const button = this.compo('button', 'intent', {
         className: opts.ns + '-intent-' + intent,
         title,
@@ -272,8 +270,8 @@
 
       if (/iPad|iPhone|iPod/.test(window.navigator.userAgent)) {
         const sr = document.createRange();
-        sr.selectNodeContents(cb);
         const gs = getSelection();
+        sr.selectNodeContents(cb);
         gs.removeAllRanges();
         gs.addRange(sr);
         cb.setSelectionRange(0, 999999);
@@ -290,12 +288,12 @@
         const self = this;
         const root = this.root;
 
+        const gnd = this.compo('div', 'fx-copied-link--ground', { hidden: true });
+        const msg = this.compo('span', 'copied-link-message', { innerText: opts.locale.copied });
+
         root.classList.add('share-fx-copied-link');
 
-        const gnd = this.compo('div', 'fx-copied-link--ground', { hidden: true });
         gnd.install(root);
-
-        const msg = this.compo('span', 'copied-link-message', { innerText: opts.locale.copied });
         msg.install(root);
 
         gnd.show();
