@@ -80,17 +80,22 @@
     //  tag, name
     //  with no ns prefix
     generator() {
-      const element = this.element;
       const opts = this.options;
+
+      const share = this.share = this.compo('div', 'social-share');
+      //TODO
+      // dataset
+      share.setAttr('data-social-share', '');
+      share.up(this.element);
 
       if (opts.label) {
         const label = this.compo('span', 'label', opts.label);
         label.classList.add('label');
-        this.appendNode(element, label);
+        share.append(label);
       }
 
       const actions = this.actions = this.compo('ul', 'actions');
-      this.appendNode(element, actions);
+      share.append(actions);
 
       this.built = true;
     }
@@ -148,6 +153,7 @@
         ariaLabel: title,
         onclick: this.intent
       });
+      //TODO
       // dataset
       action.setAttr('data-share-intent', intent);
       action.append(button);
@@ -260,6 +266,8 @@
       const cb = document.createElement('textarea');
       cb.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
       cb.value = data.url.toString();
+      //TODO
+      // access to node
       this.appendNode(this.element, cb);
 
       if (/iPad|iPhone|iPod/.test(window.navigator.userAgent)) {
@@ -285,16 +293,16 @@
         root.classList.add('share-fx-copied-link');
 
         const gnd = this.compo('div', 'fx-copied-link--ground', { hidden: true });
-        this.appendNode(root, gnd);
+        gnd.install(root);
 
         const msg = this.compo('span', 'copied-link-message', { innerText: opts.locale.copied });
-        this.appendNode(root, msg);
+        msg.install(root);
 
-        gnd.delAttr('hidden');
+        gnd.show();
 
         this.delay(function() {
-          self.removeNode(root, msg);
-          self.removeNode(root, gnd);
+          msg.uninstall(root);
+          gnd.uninstall(root);
           root.classList.remove('share-fx-copied-link');
         }, gnd, 8e2);
       }
