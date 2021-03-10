@@ -126,7 +126,7 @@
           case 2: title = opts.locale.email; break;
           case 3: title = opts.locale.copy; break;
           case 4:
-            if (! ('share' in window.navigator && typeof window.navigator.share === 'function')) {
+            if (! ('share' in window.navigator && typeof window.navigator.share == 'function')) {
               continue;
             }
 
