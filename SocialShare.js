@@ -170,7 +170,10 @@
       if (! e.isTrusted) return;
 
       const opts = this.options;
-      const action_node = target.parentElement;
+
+      //TODO
+      // direct access to node
+      const action_node = target._share.parentElement;
 
       if (! this.hasAttr(action_node, 'data-share-intent')) return;
 
