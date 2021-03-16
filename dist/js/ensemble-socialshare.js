@@ -5,16 +5,12 @@
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
  */
-
 'use strict';
 
-(function(window, module, require, ensemble) {
-
+(function (window, module, require, ensemble) {
   const base = ensemble ? ensemble.base : require('../ensemble-stack-d1/base');
 
-
   class SocialShare extends base {
-
     _defaults() {
       return {
         ns: 'share',
@@ -54,8 +50,8 @@
           'linkedin': 'LinkedIn',
           'web-share': 'Share'
         },
-        onInit: function() {},
-        onIntent: function() {}
+        onInit: function () {},
+        onIntent: function () {}
       };
     }
 
@@ -70,21 +66,18 @@
 
       this.options = this.defaults(this._defaults(), options);
       Object.freeze(this.options);
-
       this.element = element;
-
       this.init();
-    }
-
-    // className
+    } // className
     //  tag, name
     //  with no ns prefix
+
+
     generator() {
       const opts = this.options;
-
-      const share = this.share = this.compo('div', 'social-share');
-      //TODO
+      const share = this.share = this.compo('div', 'social-share'); //TODO
       // dataset
+
       share.setAttr('data-social-share', '');
       share.up(this.element);
 
@@ -96,20 +89,15 @@
 
       const actions = this.actions = this.compo('ul', 'actions');
       share.append(actions);
-
       this.built = true;
     }
 
     init() {
       const opts = this.options;
-
       if (this.built) return;
-
       this.root = this.selector(opts.root);
-
       this.generator();
       this.populate();
-
       opts.onInit.call(this, this);
     }
 
@@ -121,17 +109,28 @@
         let title;
 
         switch (opts.intents[intent]) {
-          case 0: title = opts.locale.share.replace('%s', name); break;
-          case 1: title = opts.locale.send.replace('%s', name); break;
-          case 2: title = opts.locale.email; break;
-          case 3: title = opts.locale.copy; break;
+          case 0:
+            title = opts.locale.share.replace('%s', name);
+            break;
+
+          case 1:
+            title = opts.locale.send.replace('%s', name);
+            break;
+
+          case 2:
+            title = opts.locale.email;
+            break;
+
+          case 3:
+            title = opts.locale.copy;
+            break;
+
           case 4:
-            if (! ('share' in window.navigator && typeof window.navigator.share == 'function')) {
+            if (!('share' in window.navigator && typeof window.navigator.share == 'function')) {
               continue;
             }
 
             title = opts.locale['web-share'];
-
             break;
         }
 
@@ -141,7 +140,6 @@
 
     action(intent, title) {
       const opts = this.options;
-
       const action = this.compo('li', 'action', {
         className: opts.ns + '-action-' + intent
       });
@@ -150,35 +148,27 @@
         title,
         ariaLabel: title,
         onclick: this.intent
-      });
-      //TODO
+      }); //TODO
       // dataset
+
       action.setAttr('data-share-intent', intent);
       action.append(button);
-
       const icon = this.compo('span', 'icon', {
         className: 'icon-' + intent
       });
       button.append(icon);
-
       this.actions.append(action);
     }
 
     intent(e, target) {
       this.event(e);
-
-      if (! e.isTrusted) return;
-
-      const opts = this.options;
-
-      //TODO
+      if (!e.isTrusted) return;
+      const opts = this.options; //TODO
       // direct access to node
+
       const action_node = target._share.parentElement;
-
-      if (! this.hasAttr(action_node, 'data-share-intent')) return;
-
+      if (!this.hasAttr(action_node, 'data-share-intent')) return;
       const intent = this.getAttr(action_node, 'data-share-intent');
-
       let url, title, summary, text;
 
       if (this.selector('link[rel="canonical"]')) {
@@ -186,16 +176,21 @@
       } else {
         url = window.location.href;
       }
+
       title = summary = document.title;
+
       if (this.selector('meta[name="description"]')) {
-        summary = this.selector('meta[name="description"]').content
+        summary = this.selector('meta[name="description"]').content;
       }
+
       text = '\r\n\r\n%title%\r\n%url%\r\n\r\n';
-
-      const data = { url, title, text, summary };
-
+      const data = {
+        url,
+        title,
+        text,
+        summary
+      };
       opts.onIntent.call(this, this, e, intent, data);
-
       data.text = opts.locale.text.replace('%s', data.text);
 
       if (intent in opts.intents) {
@@ -203,12 +198,15 @@
           case 'send-email':
             this.sendEmail(e, data);
             break;
+
           case 'copy-link':
             this.copyLink(e, data);
             break;
+
           case 'web-share':
             this.webShare(e, data);
             break;
+
           default:
             // action_node
             this.social(e, data, intent, action_node);
@@ -217,31 +215,21 @@
     }
 
     text(data) {
-      return encodeURIComponent(
-        data.text
-          .replace('%url%', data.url)
-          .replace('%title%', data.title)
-          .replace('%summary%', data.summary)
-      );
+      return encodeURIComponent(data.text.replace('%url%', data.url).replace('%title%', data.title).replace('%summary%', data.summary));
     }
 
     social(e, data, intent, action_node) {
       const opts = this.options;
-
       if (intent in opts.uriform === false) return;
+      let url = opts.uriform[intent].replace('%url%', encodeURIComponent(data.url)).replace('%title%', encodeURIComponent(data.title)).replace('%summary%', encodeURIComponent(data.summary)); // action_node
 
-      let url = opts.uriform[intent]
-        .replace('%url%', encodeURIComponent(data.url))
-        .replace('%title%', encodeURIComponent(data.title))
-        .replace('%summary%', encodeURIComponent(data.summary));
-
-      // action_node
       const title = this.getAttr(action_node, 'ariaLabel');
       const options = 'toolbar=0,status=0,width=640,height=480';
 
       if (/%text%/.test(opts.uriform[intent])) {
         url = url.replace('%text%', this.text(data));
       }
+
       if (intent === 'messenger') {
         const app_id = 'messenger_app_id' in opts ? opts.messenger_app_id : '';
         url = url.replace('%app_id%', encodeURIComponent(app_id));
@@ -253,22 +241,18 @@
 
     sendEmail(e, data) {
       const opts = this.options;
-      const url = opts.uriform['send-email']
-        .replace('%subject%', encodeURIComponent(opts.locale.subject))
-        .replace('%text%', this.text(data));
-
+      const url = opts.uriform['send-email'].replace('%subject%', encodeURIComponent(opts.locale.subject)).replace('%text%', this.text(data));
       console.log(url, '_self');
       window.open(url, '_self');
     }
 
     copyLink(e, data) {
       const opts = this.options;
-
       const cb = document.createElement('textarea');
       cb.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
-      cb.value = data.url.toString();
-      //TODO
+      cb.value = data.url.toString(); //TODO
       // access to node
+
       this.appendNode(this.element, cb);
 
       if (/iPad|iPhone|iPod/.test(window.navigator.userAgent)) {
@@ -284,24 +268,22 @@
       }
 
       document.execCommand('copy');
-
       cb.remove();
 
       if (opts.fx) {
         const self = this;
         const root = this.root;
-
-        const gnd = this.compo('div', 'fx-copied-link--ground', { hidden: true });
-        const msg = this.compo('span', 'copied-link-message', { innerText: opts.locale.copied });
-
+        const gnd = this.compo('div', 'fx-copied-link--ground', {
+          hidden: true
+        });
+        const msg = this.compo('span', 'copied-link-message', {
+          innerText: opts.locale.copied
+        });
         root.classList.add('share-fx-copied-link');
-
         gnd.install(root);
         msg.install(root);
-
         gnd.show();
-
-        this.delay(function() {
+        this.delay(function () {
           msg.uninstall(root);
           gnd.uninstall(root);
           root.classList.remove('share-fx-copied-link');
@@ -311,7 +293,10 @@
 
     async webShare(e, data) {
       try {
-        await window.navigator.share({ title: data.title, url: data.url });
+        await window.navigator.share({
+          title: data.title,
+          url: data.url
+        });
       } catch (err) {
         if (err instanceof TypeError) {
           console.info('ensemble.SocialShare.webShare', 'TODO fallback');
@@ -323,8 +308,11 @@
 
   }
 
-
-  window.ensemble = { ...ensemble, ...{ SocialShare } };
+  window.ensemble = { ...ensemble,
+    ...{
+      SocialShare
+    }
+  };
   module.exports = SocialShare;
-
-}((typeof window != 'undefined' ? window : {}), (typeof module != 'undefined' ? module : {}), (typeof require != 'undefined' ? require : function() {}), globalThis.ensemble));
+})(typeof window != 'undefined' ? window : {}, typeof module != 'undefined' ? module : {}, typeof require != 'undefined' ? require : function () {}, globalThis.ensemble);
+//# sourceMappingURL=ensemble-socialshare.js.map

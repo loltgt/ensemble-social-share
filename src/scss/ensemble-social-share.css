@@ -1,3 +1,10 @@
+/*!
+ * loltgt ensemble.SocialShare
+ *
+ * @version 0.0.1
+ * @copyright Copyright (C) Leonardo Laureti
+ * @license MIT License
+ */
 
 .social-share, .share-actions, .share-action, .share-intent, .share-icon, .share-copied-link-message, .share-fx-copied-link--ground {
   margin: 0;
@@ -143,7 +150,7 @@
 
 @font-face {
   font-family: 'iconset';
-  src: url('demo/iconset.woff?p7zmsr') format('woff');
+  src: url('../../demo/iconset.woff?p7zmsr') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: block;
