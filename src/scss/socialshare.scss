@@ -1,0 +1,137 @@
+/*!
+ * loltgt ensemble.SocialShare
+ *
+ * @version 0.0.1
+ * @copyright Copyright (C) Leonardo Laureti
+ * @license MIT License
+ */
+
+%ensemble-socialshare_css_reset {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@import "theme";
+
+
+.social-share, .share-actions, .share-action, .share-intent, .share-icon, .share-copied-link-message, .share-fx-copied-link--ground {
+  @extend %ensemble-socialshare_css_reset;
+}
+.social-share {
+  display: block;
+}
+.share-actions {
+  margin: 0 -($ensemble-socialshare_action_margin-x);
+  list-style: none;
+}
+.share-action {
+  float: left;
+  margin: $ensemble-socialshare_action_margin-y $ensemble-socialshare_action_margin-x;
+  line-height: 1;
+  text-align: center;
+}
+.share-intent {
+  display: block;
+  padding: $ensemble-socialshare_intent_padding;
+  font-size: $ensemble-socialshare_intent_font-size;
+  line-height: 1;
+  color: $ensemble-socialshare_intent_foregrund;
+  background: $ensemble-socialshare_intent_background;
+  border: $ensemble-socialshare_intent_border;
+  border-radius: $ensemble-socialshare_intent_border-radius;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-highlight: none;
+  @extend %ensemble-socialshare_fx_intent;
+}
+.share-intent:active, .share-intent:focus {
+  outline: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.share-icon {
+  vertical-align: middle;
+
+  &:before, &:after {
+    display: block;
+  }
+}
+
+.share-intent-facebook { background: $ensemble-socialshare_intent_facebook_color; }
+.share-intent-twitter { background: $ensemble-socialshare_intent_twitter_color; }
+.share-intent-pinterest { background: $ensemble-socialshare_intent_pinterest_color; }
+.share-intent-linkedin { background: $ensemble-socialshare_intent_linkedin_color; }
+.share-intent-whatsapp { background: $ensemble-socialshare_intent_whatsapp_color; }
+.share-intent-messenger { background: $ensemble-socialshare_intent_messenger_color; }
+.share-intent-telegram { background: $ensemble-socialshare_intent_telegram_color; }
+.share-intent-send-email { background: $ensemble-socialshare_intent_send-email_color; }
+.share-intent-copy-link { background: $ensemble-socialshare_intent_copy-link_color; }
+
+.share-copied-link-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  display: inline-block;
+  padding: $ensemble-socialshare_fx_intent_copy-link_message_padding;
+  font-family: $ensemble-socialshare_fx_intent_copy-link_message_font-family;
+  font-size: $ensemble-socialshare_fx_intent_copy-link_message_font-size;
+  font-weight: $ensemble-socialshare_fx_intent_copy-link_message_font-weight;
+  line-height: $ensemble-socialshare_fx_intent_copy-link_message_line-height;
+  color: $ensemble-socialshare_fx_intent_copy-link_message_foreground;
+  background: $ensemble-socialshare_fx_intent_copy-link_message_background;
+  transform: translate(-50%, -50%);
+  z-index: $ensemble-socialshare_fx_intent_copy-link_message_zindex;
+}
+.share-fx-copied-link {
+  position: relative;
+}
+.share-fx-copied-link--ground {
+  content: '';
+  display: block !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: $ensemble-socialshare_fx_ground__background;
+  transition: $ensemble-socialshare_fx_ground__transition;
+  opacity: $ensemble-socialshare_fx_ground__opacity;
+  z-index: $ensemble-socialshare_fx_ground__zindex;
+}
+.share-fx-copied-link--ground[hidden] {
+  display: block !important;
+  opacity: 1;
+}
+
+
+
+.share-action-callout {
+  display: inline-block;
+  margin: .2rem .5rem;
+}
+.share-intent-callout {
+  border-radius: 0;
+  color: #ccc;
+  outline: 0;
+  transform: none !important;
+}
+
+
+
+
+
+
+@media (min-width: 992px) {
+  .share-actions {
+    margin: 0 -($ensemble-socialshare_md__action_margin-x);
+  }
+  .share-action {
+    margin: $ensemble-socialshare_md__action_margin-y $ensemble-socialshare_md__action_margin-x;
+  }
+  .share-intent {
+    font-size: $ensemble-socialshare_md__intent_font-size;
+  }
+}

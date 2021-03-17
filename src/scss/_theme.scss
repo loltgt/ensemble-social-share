@@ -1,0 +1,71 @@
+
+
+// Action
+
+$ensemble-socialshare_action_margin-y: .2rem !default;
+$ensemble-socialshare_action_margin-x: .2rem !default;
+
+
+
+// Intents
+
+$ensemble-socialshare_intent_padding: .25rem .3rem !default;
+$ensemble-socialshare_intent_font-size: 1.5rem !default;
+$ensemble-socialshare_intent_border: 0 !default;
+$ensemble-socialshare_intent_border-radius: 0 !default;
+
+$ensemble-socialshare_intent_foregrund: #fff !default;
+$ensemble-socialshare_intent_background: #aaaaaa !default;
+
+$ensemble-socialshare_intent_facebook_color: #365899 !default;
+$ensemble-socialshare_intent_twitter_color: #1da1f2 !default;
+$ensemble-socialshare_intent_pinterest_color: #cc2127 !default;
+$ensemble-socialshare_intent_linkedin_color: #0976b4 !default;
+$ensemble-socialshare_intent_whatsapp_color: #25d366 !default;
+$ensemble-socialshare_intent_messenger_color: #0084ff !default;
+$ensemble-socialshare_intent_telegram_color: #179cde !default;
+$ensemble-socialshare_intent_send-email_color: #886666 !default;
+$ensemble-socialshare_intent_copy-link_color: #33ddff !default;
+
+
+
+// Fx
+
+%ensemble-socialshare_fx_intent {
+  transform: scale3d(1, 1, 1);
+  transform: scale(1);
+  backface-visibility: hidden;
+  transition: transform 50ms linear;
+
+  &:hover, &:focus {
+    transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale(1.1);
+  }
+}
+
+$ensemble-socialshare_fx_intent_copy-link_message_padding: 1.3rem 3rem !default;
+$ensemble-socialshare_fx_intent_copy-link_message_font-family: inherit !default;
+$ensemble-socialshare_fx_intent_copy-link_message_font-size: 1.1rem !default;
+$ensemble-socialshare_fx_intent_copy-link_message_font-weight: bold !default;
+$ensemble-socialshare_fx_intent_copy-link_message_line-height: 1.5 !default;
+$ensemble-socialshare_fx_intent_copy-link_message_foreground: rgba(255, 255, 255, .89) !default;
+$ensemble-socialshare_fx_intent_copy-link_message_background: rgba(0, 0, 0, .77) !default;
+$ensemble-socialshare_fx_intent_copy-link_message_zindex: 1000 !default;
+
+$ensemble-socialshare_fx_ground__background: rgba(255, 255, 255, .5) !default;
+$ensemble-socialshare_fx_ground__transition: opacity .8s ease-out !default;
+$ensemble-socialshare_fx_ground__opacity: .5 !default;
+$ensemble-socialshare_fx_ground__zindex: 999 !default;
+
+
+
+// Responsive
+
+
+// 992 – md
+
+$ensemble-socialshare_md__action_margin-y: .2rem !default;
+$ensemble-socialshare_md__action_margin-x: .3rem !default;
+
+$ensemble-socialshare_md__intent_font-size: 2rem !default;
+
