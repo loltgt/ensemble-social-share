@@ -784,4 +784,4 @@
 
   _exports.SocialShare = SocialShare;
 });
-//# sourceMappingURL=ensemble-socialshare.js.map
+//# sourceMappingURL=ensemble-social-share.js.map

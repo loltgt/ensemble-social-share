@@ -1033,4 +1033,4 @@
 
   _exports.SocialShare = SocialShare;
 });
-//# sourceMappingURL=ensemble-socialshare-compat.js.map
+//# sourceMappingURL=ensemble-social-share-compat.js.map
