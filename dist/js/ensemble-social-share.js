@@ -27,7 +27,10 @@
   _exports.SocialShare = void 0;
   const REJECTED_TAG_NAMES = /html|head|body|meta|link|style|script/i;
   const REJECTED_TAGS = /(<(html|head|body|meta|link|style|script)*>)/i;
-  const DENIED_PROPS = /attributes|classList|innerHTML|outerHTML|nodeName|nodeType/;
+  const DENIED_PROPS = /attributes|classList|innerHTML|outerHTML|nodeName|nodeType/; //TODO
+  // backward compatibility
+
+  const _Symbol$2 = typeof Symbol == 'undefined' ? 0 : Symbol;
 
   class Compo {
     //private proposal
@@ -46,7 +49,9 @@
         throw new Error(`ensemble.Compo error: The tag name provided (\'${ctag}\') is not a valid name.`);
       }
 
-      const node = this[_ns] = document.createElement(ctag);
+      const node = this[_ns] = document.createElement(ctag); //TODO
+
+      this.__Compo = true;
       this[_ns].__compo = this;
 
       if (props && typeof props == 'object') {
@@ -91,19 +96,21 @@
 
 
     install(root, cb) {
-      typeof cb === 'function' && cb.call(this, this[this._ns]);
+      typeof cb == 'function' && cb.call(this, this[this._ns]);
       return !!root.appendChild(this[this._ns]);
     } // return bool
 
 
     uninstall(root, cb) {
-      typeof cb === 'function' && cb.call(this, this[this._ns]);
+      typeof cb == 'function' && cb.call(this, this[this._ns]);
       return !!root.removeChild(this[this._ns]);
     } // return bool
 
 
     up(pholder, cb) {
-      typeof cb === 'function' && cb.call(this, this[this._ns]);
+      typeof cb == 'function' && cb.call(this, this[this._ns]); //TODO
+      // backward compatibility
+
       return !!pholder.replaceWith(this[this._ns]);
     } // return bool
 
@@ -132,7 +139,7 @@
     clone(deep = false) {}
 
     inject(node) {
-      if (node instanceof Element === false || REJECTED_TAG_NAMES.test(node.tagName) || REJECTED_TAGS.test(node.innerHTML)) {
+      if (node instanceof Element == false || REJECTED_TAG_NAMES.test(node.tagName) || REJECTED_TAGS.test(node.innerHTML)) {
         throw new Error('ensemble.Compo error: The remote object could not be resolved into a valid node.');
       }
 
@@ -143,6 +150,8 @@
 
     empty() {
       while (this.first) {
+        //TODO
+        // backward compatibility
         this.remove(this.first);
       }
     }
@@ -223,14 +232,17 @@
 
     get classList() {
       return this[this._ns].classList;
-    }
+    } //TODO
+    // backward compatibility
+
 
     static isCompo(obj) {
-      return Symbol.for(obj) === Symbol.for(Compo.prototype);
+      if (_Symbol$2) return _Symbol$2.for(obj) === _Symbol$2.for(Compo.prototype);else return obj && typeof obj == 'object' && '__Compo' in obj;
     } //TODO undef
+    // backward compatibility
 
 
-    get [Symbol.toStringTag]() {
+    get [_Symbol$2.toStringTag]() {
       return 'ensemble.Compo';
     }
 
@@ -242,7 +254,11 @@
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
    */
+  //TODO
+  // backward compatibility
 
+
+  const _Symbol$1 = typeof Symbol == 'undefined' ? 0 : Symbol;
 
   class Data {
     constructor(ns, obj) {
@@ -250,12 +266,13 @@
         throw 'ensemble error: Wrong invocation, must be called with new.';
       }
 
-      if (obj && typeof obj === 'object') {
+      if (obj && typeof obj == 'object') {
         Object.assign(this, {}, obj);
       }
 
       const _ns = this._ns = '_' + ns;
 
+      this.__Data = true;
       this[_ns] = {
         ns
       };
@@ -278,11 +295,11 @@
         compo = new Compo(ns, tag, name, props);
       }
 
-      if (fresh && typeof fresh === 'function') {
+      if (fresh && typeof fresh == 'function') {
         compo.fresh = props.onfresh = fresh;
       }
 
-      if (stale && typeof stale === 'function') {
+      if (stale && typeof stale == 'function') {
         compo.stale = props.onstale = stale;
       }
 
@@ -323,13 +340,17 @@
       } else if (this[_ns][slot] && this[_ns][slot].rendered) {
         this[_ns][slot].fresh();
       }
-    }
+    } //TODO
+    // backward compatibility
+
 
     static isData(obj) {
-      return Symbol.for(obj) === Symbol.for(Data.prototype);
-    }
+      if (_Symbol$1) return _Symbol$1.for(obj) === _Symbol$1.for(Data.prototype);else return obj && typeof obj == 'object' && '__Data' in obj;
+    } //TODO undef
+    // backward compatibility
 
-    get [Symbol.toStringTag]() {
+
+    get [_Symbol$1.toStringTag]() {
       return 'ensemble.Data';
     }
 
@@ -341,7 +362,11 @@
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
    */
+  //TODO
+  // backward compatibility
 
+
+  const _Symbol = typeof Symbol == 'undefined' ? 0 : Symbol;
 
   class Event {
     constructor(ns, name, node) {
@@ -351,7 +376,9 @@
 
       const _ns = this._ns = '_' + ns;
 
-      node = (Compo.isCompo(node) ? node.node : node) || document;
+      node = (Compo.isCompo(node) ? node.node : node) || document; //TODO
+
+      this.__Event = true;
       this[_ns] = {
         name,
         node
@@ -364,13 +391,17 @@
 
     remove(handle) {
       this[this._ns].node.removeEventListener(this[this._ns].name, handle);
-    }
+    } //TODO
+    // backward compatibility
+
 
     static isEvent(obj) {
-      return Symbol.for(obj) === Symbol.for(Event.prototype);
-    }
+      if (_Symbol) return _Symbol.for(obj) === _Symbol.for(Event.prototype);else return obj && typeof obj == 'object' && '__Event' in obj;
+    } //TODO undef
+    // backward compatibility
 
-    get [Symbol.toStringTag]() {
+
+    get [_Symbol.toStringTag]() {
       return 'ensemble.Event';
     }
 
@@ -795,4 +826,3 @@
 
   _exports.SocialShare = SocialShare;
 });
-//# sourceMappingURL=ensemble-social-share.js.map
