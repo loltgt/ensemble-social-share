@@ -1,4 +1,7 @@
 
+$ensemble_compat: false !default;
+
+
 
 // Action
 
@@ -33,13 +36,43 @@ $ensemble-socialshare_intent_copy-link_color: #33ddff !default;
 
 %ensemble-socialshare_fx_intent {
   transform: scale3d(1, 1, 1);
+@if $ensemble_compat {
+  -webkit-transform: scale3d(1, 1, 1);
+  -moz-transform: scale3d(1, 1, 1);
+  -ms-transform: scale3d(1, 1, 1);
+}
   transform: scale(1);
+@if $ensemble_compat {
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+}
   backface-visibility: hidden;
+@if $ensemble_compat {
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+}
   transition: transform 50ms linear;
+@if $ensemble_compat {
+  -webkit-transition: -webkit-transform 50ms linear;
+  -webkit-transition: -moz-transform 50ms linear;
+  -ms-transition: -ms-transform 50ms linear;
+}
 
   &:hover, &:focus {
     transform: scale3d(1.1, 1.1, 1.1);
+@if $ensemble_compat {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+    -moz-transform: scale3d(1.1, 1.1, 1.1);
+    -ms-transform: scale3d(1.1, 1.1, 1.1);
+}
     transform: scale(1.1);
+@if $ensemble_compat {
+    -webkit-transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+}
   }
 }
 

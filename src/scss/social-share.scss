@@ -20,25 +20,41 @@
 }
 .social-share {
   display: block;
+@if $ensemble_compat {
+  font-size: 16px;
+}
+  font-size: 1rem;
+  line-height: 1;
 }
 .share-actions {
-  margin: 0 -($ensemble-socialshare_action_margin-x);
+@if $ensemble_compat {
+  margin: 0 (-(floor($ensemble-socialshare_action_margin-x / 1rem * 16px)));
+}
+  margin: 0 (-$ensemble-socialshare_action_margin-x);
   list-style: none;
 }
 .share-action {
   float: left;
+@if $ensemble_compat {
+  margin: floor($ensemble-socialshare_action_margin-y / 1rem * 16px) floor($ensemble-socialshare_action_margin-x / 1rem * 16px);
+}
   margin: $ensemble-socialshare_action_margin-y $ensemble-socialshare_action_margin-x;
-  line-height: 1;
   text-align: center;
 }
 .share-intent {
   display: block;
+@if $ensemble_compat {
+  font-size: floor($ensemble-socialshare_intent_font-size / 1rem * 16px);
+}
   padding: $ensemble-socialshare_intent_padding;
   font-size: $ensemble-socialshare_intent_font-size;
   line-height: 1;
   color: $ensemble-socialshare_intent_foregrund;
   background: $ensemble-socialshare_intent_background;
   border: $ensemble-socialshare_intent_border;
+@if $ensemble_compat {
+  border-radius: if($ensemble-socialshare_intent_border-radius != 0, $ensemble-socialshare_intent_border-radius / 1rem * 16px, 0);
+}
   border-radius: $ensemble-socialshare_intent_border-radius;
   cursor: pointer;
   appearance: none;
@@ -73,6 +89,9 @@
   top: 50%;
   left: 50%;
   display: inline-block;
+@if $ensemble_compat {
+  font-size: floor($ensemble-socialshare_fx_intent_copy-link_message_font-size / 1rem * 16px);
+}
   padding: $ensemble-socialshare_fx_intent_copy-link_message_padding;
   font-family: $ensemble-socialshare_fx_intent_copy-link_message_font-family;
   font-size: $ensemble-socialshare_fx_intent_copy-link_message_font-size;
@@ -81,6 +100,11 @@
   color: $ensemble-socialshare_fx_intent_copy-link_message_foreground;
   background: $ensemble-socialshare_fx_intent_copy-link_message_background;
   transform: translate(-50%, -50%);
+@if $ensemble_compat {
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
   z-index: $ensemble-socialshare_fx_intent_copy-link_message_zindex;
 }
 .share-fx-copied-link {
@@ -98,6 +122,11 @@
   height: 100%;
   background: $ensemble-socialshare_fx_ground__background;
   transition: $ensemble-socialshare_fx_ground__transition;
+@if $ensemble_compat {
+  -webkit-transition: $ensemble-socialshare_fx_ground__transition;
+  -moz-transition: $ensemble-socialshare_fx_ground__transition;
+  -ms-transition: $ensemble-socialshare_fx_ground__transition;
+}
   opacity: $ensemble-socialshare_fx_ground__opacity;
   z-index: $ensemble-socialshare_fx_ground__zindex;
 }
@@ -126,12 +155,21 @@
 
 @media (min-width: 992px) {
   .share-actions {
-    margin: 0 -($ensemble-socialshare_md__action_margin-x);
+@if $ensemble_compat {
+    margin: 0 (-(floor($ensemble-socialshare_md__action_margin-x / 1rem * 16px)));
+}
+    margin: 0 (-$ensemble-socialshare_md__action_margin-x);
   }
   .share-action {
+@if $ensemble_compat {
+    margin: floor($ensemble-socialshare_md__action_margin-y / 1rem * 16px) floor($ensemble-socialshare_md__action_margin-x / 1rem * 16px);
+}
     margin: $ensemble-socialshare_md__action_margin-y $ensemble-socialshare_md__action_margin-x;
   }
   .share-intent {
+@if $ensemble_compat {
+    font-size: floor($ensemble-socialshare_md__intent_font-size / 1rem * 16px);
+}
     font-size: $ensemble-socialshare_md__intent_font-size;
   }
 }

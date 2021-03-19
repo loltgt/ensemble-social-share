@@ -12,35 +12,58 @@
 
 .share-intent {
   transform: scale3d(1, 1, 1);
+  -webkit-transform: scale3d(1, 1, 1);
+  -moz-transform: scale3d(1, 1, 1);
+  -ms-transform: scale3d(1, 1, 1);
   transform: scale(1);
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
   backface-visibility: hidden;
-  transition: transform 50ms linear; }
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  transition: transform 50ms linear;
+  -webkit-transition: -webkit-transform 50ms linear;
+  -webkit-transition: -moz-transform 50ms linear;
+  -ms-transition: -ms-transform 50ms linear; }
   .share-intent:hover, .share-intent:focus {
     transform: scale3d(1.1, 1.1, 1.1);
-    transform: scale(1.1); }
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+    -moz-transform: scale3d(1.1, 1.1, 1.1);
+    -ms-transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -ms-transform: scale(1.1); }
 
 .social-share {
   display: block;
+  font-size: 16px;
   font-size: 1rem;
   line-height: 1; }
 
 .share-actions {
+  margin: 0 -3px;
   margin: 0 -0.2rem;
   list-style: none; }
 
 .share-action {
   float: left;
+  margin: 3px 3px;
   margin: 0.2rem 0.2rem;
   text-align: center; }
 
 .share-intent {
   display: block;
+  font-size: 24px;
   padding: 0.25rem 0.3rem;
   font-size: 1.5rem;
   line-height: 1;
   color: #fff;
   background: #aaaaaa;
   border: 0;
+  border-radius: 0;
   border-radius: 0;
   cursor: pointer;
   appearance: none;
@@ -88,6 +111,7 @@
   top: 50%;
   left: 50%;
   display: inline-block;
+  font-size: 17px;
   padding: 1.3rem 3rem;
   font-family: inherit;
   font-size: 1.1rem;
@@ -96,6 +120,9 @@
   color: rgba(255, 255, 255, 0.89);
   background: rgba(0, 0, 0, 0.77);
   transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
   z-index: 1000; }
 
 .share-fx-copied-link {
@@ -113,6 +140,9 @@
   height: 100%;
   background: rgba(255, 255, 255, 0.5);
   transition: opacity 0.8s ease-out;
+  -webkit-transition: opacity 0.8s ease-out;
+  -moz-transition: opacity 0.8s ease-out;
+  -ms-transition: opacity 0.8s ease-out;
   opacity: 0.5;
   z-index: 999; }
 
@@ -132,10 +162,13 @@
 
 @media (min-width: 992px) {
   .share-actions {
+    margin: 0 -4px;
     margin: 0 -0.3rem; }
   .share-action {
+    margin: 3px 4px;
     margin: 0.2rem 0.3rem; }
   .share-intent {
+    font-size: 32px;
     font-size: 2rem; } }
 
-/*# sourceMappingURL=ensemble-social-share.css.map */
+/*# sourceMappingURL=ensemble-social-share-compat.css.map */
