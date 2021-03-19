@@ -30,9 +30,7 @@
   const DENIED_PROPS = /attributes|classList|innerHTML|outerHTML|nodeName|nodeType/;
 
   class Compo {
-    // #rejectedTagNames = /html|head|body|meta|link|style|script/i;
-    // #rejectedTags = /(<(html|head|body|meta|link|style|script)*>)/i;
-    // #deniedProps = /attributes|classList|innerHTML|outerHTML|nodeName|nodeType/;
+    //private proposal
     //TODO
     // tag, name
     constructor(ns, tag, name, props) {
@@ -42,7 +40,7 @@
 
       const _ns = this._ns = '_' + ns;
 
-      const ctag = name ? tag.toString() : 'div'; // if (this.#rejectedTagNames.test(ctag)) {
+      const ctag = name ? tag.toString() : 'div';
 
       if (REJECTED_TAG_NAMES.test(ctag)) {
         throw new Error(`ensemble.Compo error: The tag name provided (\'${ctag}\') is not a valid name.`);
@@ -53,7 +51,7 @@
 
       if (props && typeof props == 'object') {
         for (const prop in props) {
-          const cprop = prop.toString(); // if (this.#deniedProps.test(cprop)) {
+          const cprop = prop.toString();
 
           if (DENIED_PROPS.test(cprop)) {
             throw new Error(`ensemble.Compo error: The property name provided (\'${cprop}\')' is not a valid name.`);
@@ -89,21 +87,24 @@
           node.className += ' ' + _name;
         }
       }
-    }
+    } // return bool
 
-    install(root) {
-      root.appendChild(this[this._ns]);
-    }
 
-    uninstall(root) {
-      root.removeChild(this[this._ns]);
-    }
+    install(root, cb) {
+      typeof cb === 'function' && cb.call(this, this[this._ns]);
+      return !!root.appendChild(this[this._ns]);
+    } // return bool
 
-    up(node) {
-      this.node = Object.seal({
-        ref: node
-      });
-      return !!node.replaceWith(this[this._ns]);
+
+    uninstall(root, cb) {
+      typeof cb === 'function' && cb.call(this, this[this._ns]);
+      return !!root.removeChild(this[this._ns]);
+    } // return bool
+
+
+    up(pholder, cb) {
+      typeof cb === 'function' && cb.call(this, this[this._ns]);
+      return !!pholder.replaceWith(this[this._ns]);
     } // return bool
 
 
@@ -131,13 +132,13 @@
     clone(deep = false) {}
 
     inject(node) {
-      // if (node instanceof Element === false || this.#rejectedTagNames.test(node.tagName) || this.#rejectedTags.test(node.innerHTML)) {
       if (node instanceof Element === false || REJECTED_TAG_NAMES.test(node.tagName) || REJECTED_TAGS.test(node.innerHTML)) {
         throw new Error('ensemble.Compo error: The remote object could not be resolved into a valid node.');
       }
 
       this.empty();
-      this._node = this[this._ns].appendChild(node);
+
+      this[this._ns].appendChild(node);
     }
 
     empty() {
@@ -184,6 +185,16 @@
       this[this._ns].disabled = true;
     }
 
+    get node() {
+      console.warn('ensemble.Compo', 'Direct access to the Element node is strongly discouraged.');
+      return this[this._ns];
+    }
+
+    get parent() {
+      const _ns = this._ns;
+      return this[_ns].parentElement && '__compo' in this[_ns].parentElement ? this[_ns].parentElement.__compo : null;
+    }
+
     get children() {
       return Array.prototype.map.call(this[this._ns].children, node => {
         return node.__compo;
@@ -214,8 +225,8 @@
       return this[this._ns].classList;
     }
 
-    static isCompo(node) {
-      return Symbol.for(node) === Symbol.for(Compo.prototype);
+    static isCompo(obj) {
+      return Symbol.for(obj) === Symbol.for(Compo.prototype);
     } //TODO undef
 
 
@@ -314,8 +325,8 @@
       }
     }
 
-    static isData(node) {
-      return Symbol.for(node) === Symbol.for(Data.prototype);
+    static isData(obj) {
+      return Symbol.for(obj) === Symbol.for(Data.prototype);
     }
 
     get [Symbol.toStringTag]() {
@@ -355,8 +366,8 @@
       this[this._ns].node.removeEventListener(this[this._ns].name, handle);
     }
 
-    static isEvent(node) {
-      return Symbol.for(node) === Symbol.for(Event.prototype);
+    static isEvent(obj) {
+      return Symbol.for(obj) === Symbol.for(Event.prototype);
     }
 
     get [Symbol.toStringTag]() {
@@ -395,11 +406,11 @@
     }
 
     compo(tag, name, props) {
-      return new Compo(this.options.ns, tag, name, props);
+      return tag ? new Compo(this.options.ns, tag, name, props) : Compo;
     }
 
     data(obj) {
-      return new Data(this.options.ns, obj);
+      return obj ? new Data(this.options.ns, obj) : Data;
     }
 
     event(event, node, concurrency = true) {
@@ -408,6 +419,8 @@
       } else if (event) {
         event.preventDefault();
         event.target.blur();
+      } else {
+        return Event;
       }
     }
 
@@ -554,7 +567,9 @@
       // dataset
 
       share.setAttr('data-social-share', '');
-      share.up(this.element);
+      share.up(this.element, function (node) {
+        this.element = node;
+      }.bind(this));
 
       if (opts.label) {
         const label = this.compo('span', 'label', opts.label);
@@ -638,12 +653,11 @@
     intent(e, target) {
       this.event(e);
       if (!e.isTrusted) return;
-      const opts = this.options; //TODO
-      // direct access to node
-
-      const action_node = target._share.parentElement;
-      if (!this.hasAttr(action_node, 'data-share-intent')) return;
-      const intent = this.getAttr(action_node, 'data-share-intent');
+      const opts = this.options;
+      if (!this.compo().isCompo(target)) return;
+      const action = target.parent;
+      if (!(action && action.hasAttr('data-share-intent'))) return;
+      const intent = action.getAttr('data-share-intent');
       let url, title, summary, text;
 
       if (this.selector('link[rel="canonical"]')) {
@@ -683,8 +697,7 @@
             break;
 
           default:
-            // action_node
-            this.social(e, data, intent, action_node);
+            this.social(e, data, intent, action);
         }
       }
     }
@@ -693,12 +706,12 @@
       return encodeURIComponent(data.text.replace('%url%', data.url).replace('%title%', data.title).replace('%summary%', data.summary));
     }
 
-    social(e, data, intent, action_node) {
+    social(e, data, intent, action) {
       const opts = this.options;
       if (intent in opts.uriform === false) return;
-      let url = opts.uriform[intent].replace('%url%', encodeURIComponent(data.url)).replace('%title%', encodeURIComponent(data.title)).replace('%summary%', encodeURIComponent(data.summary)); // action_node
+      let url = opts.uriform[intent].replace('%url%', encodeURIComponent(data.url)).replace('%title%', encodeURIComponent(data.title)).replace('%summary%', encodeURIComponent(data.summary)); //TODO
 
-      const title = this.getAttr(action_node, 'ariaLabel');
+      const title = action.getAttr('ariaLabel');
       const options = 'toolbar=0,status=0,width=640,height=480';
 
       if (/%text%/.test(opts.uriform[intent])) {
@@ -725,9 +738,7 @@
       const opts = this.options;
       const cb = document.createElement('textarea');
       cb.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
-      cb.value = data.url.toString(); //TODO
-      // access to node
-
+      cb.value = data.url.toString();
       this.appendNode(this.element, cb);
 
       if (/iPad|iPhone|iPod/.test(window.navigator.userAgent)) {

@@ -88,7 +88,9 @@
       //TODO
       // dataset
       share.setAttr('data-social-share', '');
-      share.up(this.element);
+      share.up(this.element, (function(node) {
+        this.element = node;
+      }).bind(this));
 
       if (opts.label) {
         const label = this.compo('span', 'label', opts.label);
@@ -173,13 +175,13 @@
 
       const opts = this.options;
 
-      //TODO
-      // direct access to node
-      const action_node = target._share.parentElement;
+      if (! this.compo().isCompo(target)) return;
 
-      if (! this.hasAttr(action_node, 'data-share-intent')) return;
+      const action = target.parent;
 
-      const intent = this.getAttr(action_node, 'data-share-intent');
+      if (! (action && action.hasAttr('data-share-intent'))) return;
+
+      const intent = action.getAttr('data-share-intent');
 
       let url, title, summary, text;
 
@@ -212,8 +214,7 @@
             this.webShare(e, data);
             break;
           default:
-            // action_node
-            this.social(e, data, intent, action_node);
+            this.social(e, data, intent, action);
         }
       }
     }
@@ -227,7 +228,7 @@
       );
     }
 
-    social(e, data, intent, action_node) {
+    social(e, data, intent, action) {
       const opts = this.options;
 
       if (intent in opts.uriform === false) return;
@@ -237,8 +238,8 @@
         .replace('%title%', encodeURIComponent(data.title))
         .replace('%summary%', encodeURIComponent(data.summary));
 
-      // action_node
-      const title = this.getAttr(action_node, 'ariaLabel');
+      //TODO
+      const title = action.getAttr('ariaLabel');
       const options = 'toolbar=0,status=0,width=640,height=480';
 
       if (/%text%/.test(opts.uriform[intent])) {
@@ -269,8 +270,7 @@
       const cb = document.createElement('textarea');
       cb.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
       cb.value = data.url.toString();
-      //TODO
-      // access to node
+
       this.appendNode(this.element, cb);
 
       if (/iPad|iPhone|iPod/.test(window.navigator.userAgent)) {
