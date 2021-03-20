@@ -444,7 +444,7 @@
       return obj ? new Data(this.options.ns, obj) : Data;
     }
 
-    event(event, node, concurrency = true) {
+    event(event, node) {
       if (typeof event === 'string') {
         return new Event(this.options.ns, event, node);
       } else if (event) {

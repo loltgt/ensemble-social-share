@@ -89,6 +89,8 @@
   top: 50%;
   left: 50%;
   display: inline-block;
+  max-width: 80vw;
+  width: 100%;
 @if $ensemble_compat {
   font-size: floor($ensemble-socialshare_fx_intent_copy-link_message_font-size / 1rem * 16px);
 }
@@ -99,6 +101,7 @@
   line-height: $ensemble-socialshare_fx_intent_copy-link_message_line-height;
   color: $ensemble-socialshare_fx_intent_copy-link_message_foreground;
   background: $ensemble-socialshare_fx_intent_copy-link_message_background;
+  text-align: $ensemble-socialshare_fx_intent_copy-link_message_text-align;
   transform: translate(-50%, -50%);
 @if $ensemble_compat {
   -webkit-transform: translate(-50%, -50%);
@@ -171,5 +174,9 @@
     font-size: floor($ensemble-socialshare_md__intent_font-size / 1rem * 16px);
 }
     font-size: $ensemble-socialshare_md__intent_font-size;
+  }
+
+  .share-copied-link-message {
+    width: auto;
   }
 }

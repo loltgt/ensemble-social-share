@@ -1373,8 +1373,6 @@ try {
     }, {
       key: "event",
       value: function event(_event, node) {
-        var concurrency = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-
         if (typeof _event === 'string') {
           return new Event(this.options.ns, _event, node);
         } else if (_event) {

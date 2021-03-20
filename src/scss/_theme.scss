@@ -60,7 +60,7 @@ $ensemble-socialshare_intent_copy-link_color: #33ddff !default;
   -ms-transition: -ms-transform 50ms linear;
 }
 
-  &:hover, &:focus {
+  &:active, &:focus {
     transform: scale3d(1.1, 1.1, 1.1);
 @if $ensemble_compat {
     -webkit-transform: scale3d(1.1, 1.1, 1.1);
@@ -74,21 +74,39 @@ $ensemble-socialshare_intent_copy-link_color: #33ddff !default;
     -ms-transform: scale(1.1);
 }
   }
+
+  @media (hover:hover) {
+    &:hover {
+      transform: scale3d(1.1, 1.1, 1.1);
+@if $ensemble_compat {
+      -webkit-transform: scale3d(1.1, 1.1, 1.1);
+      -moz-transform: scale3d(1.1, 1.1, 1.1);
+      -ms-transform: scale3d(1.1, 1.1, 1.1);
+}
+      transform: scale(1.1);
+@if $ensemble_compat {
+      -webkit-transform: scale(1.1);
+      -moz-transform: scale(1.1);
+      -ms-transform: scale(1.1);
+}
+    }
+  }
 }
 
 $ensemble-socialshare_fx_intent_copy-link_message_padding: 1.3rem 3rem !default;
 $ensemble-socialshare_fx_intent_copy-link_message_font-family: inherit !default;
-$ensemble-socialshare_fx_intent_copy-link_message_font-size: 1.1rem !default;
+$ensemble-socialshare_fx_intent_copy-link_message_font-size: 1rem !default;
 $ensemble-socialshare_fx_intent_copy-link_message_font-weight: bold !default;
 $ensemble-socialshare_fx_intent_copy-link_message_line-height: 1.5 !default;
-$ensemble-socialshare_fx_intent_copy-link_message_foreground: rgba(255, 255, 255, .89) !default;
-$ensemble-socialshare_fx_intent_copy-link_message_background: rgba(0, 0, 0, .77) !default;
-$ensemble-socialshare_fx_intent_copy-link_message_zindex: 1000 !default;
+$ensemble-socialshare_fx_intent_copy-link_message_text-align: center !default;
+$ensemble-socialshare_fx_intent_copy-link_message_foreground: rgba(255, 255, 255, .9) !default;
+$ensemble-socialshare_fx_intent_copy-link_message_background: rgba(5, 5, 5, .89) !default;
+$ensemble-socialshare_fx_intent_copy-link_message_zindex: 1002 !default;
 
-$ensemble-socialshare_fx_ground__background: rgba(255, 255, 255, .5) !default;
+$ensemble-socialshare_fx_ground__background: rgba(250, 250, 250, .3) !default;
 $ensemble-socialshare_fx_ground__transition: opacity .8s ease-out !default;
-$ensemble-socialshare_fx_ground__opacity: .5 !default;
-$ensemble-socialshare_fx_ground__zindex: 999 !default;
+$ensemble-socialshare_fx_ground__opacity: .78 !default;
+$ensemble-socialshare_fx_ground__zindex: 1001 !default;
 
 
 
