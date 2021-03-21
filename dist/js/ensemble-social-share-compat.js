@@ -19,7 +19,16 @@
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
    */
-  // (function(window, module, require, ensemble) {
+
+  /**
+   * @namespace ensemble
+   * @module Compo
+   */
+
+  /**
+   * @borrows Symbol as _Symbol
+   * @todo backward compatibility
+   */
 
   Object.defineProperty(_exports, "__esModule", {
     value: true
@@ -812,22 +821,46 @@ try {
 
   function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-  var REJECTED_TAG_NAMES = /html|head|body|meta|link|style|script/i;
-  var REJECTED_TAGS = /(<(html|head|body|meta|link|style|script)*>)/i;
-  var DENIED_PROPS = /attributes|classList|innerHTML|outerHTML|nodeName|nodeType/; //TODO
-  // backward compatibility
-
   var _Symbol$2 = typeof Symbol == 'undefined' ? 0 : Symbol;
 
+  var REJECTED_TAG_NAMES = /html|head|body|meta|link|style|script/i;
+  var REJECTED_TAGS = /(<(html|head|body|meta|link|style|script)*>)/i;
+  var DENIED_PROPS = /attributes|classList|innerHTML|outerHTML|nodeName|nodeType/;
+  /**
+   * Compo is a composition element with shorthands method and utils.
+   * 
+   * It is a wrapper around an Element node [DOM].
+   * It could be used as a base for abstraction of a custom component element.
+   *
+   * @example
+   * new ensemble.Compo('namespace-of-my-foo-component', 'div', 'foo', { id: 'fooDiv', tabIndex: 1 });
+   * @lends ensemble.Compo
+   * @class
+   */
+
   var Compo = /*#__PURE__*/function () {
-    //private proposal
-    //TODO
-    // tag, name
+    /**
+     * Constructor method.
+     *
+     * @see document.createElement()
+     * @see document.createElementNS()
+     *
+     * @constructs
+     * @constant {RegExp} REJECTED_TAG_NAMES - A regular expression for rejected tag names
+     * @constant {RegExp} REJECTED_TAGS - A regular expression for rejected tag
+     * @constant {RegExp} DENIED_PROPS - A regular expression for denied properties
+     * @global {function} document.createElement
+     * @param {string} ns - Composition namespace
+     * @param {string} tag - The [DOM] Element node tag -or- component name
+     * @param {string} name
+     * @param {object} props - Properties for Element node -or- component
+     * @todo tag, name
+     */
     function Compo(ns, tag, name, props) {
       _classCallCheck(this, Compo);
 
       if (!(this instanceof Compo ? this.constructor : void 0)) {
-        throw 'ensemble error: Wrong invocation, must be called with new.';
+        throw 'ensemble error: Bad invocation, must be called with new.';
       }
 
       var _ns = this._ns = '_' + ns;
@@ -891,7 +924,16 @@ try {
           node.className += ' ' + _name;
         }
       }
-    } // return bool
+    }
+    /**
+     * Install the composition.
+     *
+     * @see HTMLElement.appendChild()
+     *
+     * @param {Element} root - A valid Element node
+     * @param {function} cb - A function callback
+     * @returns {boolean}
+     */
 
 
     _createClass(Compo, [{
@@ -899,54 +941,117 @@ try {
       value: function install(root, cb) {
         typeof cb == 'function' && cb.call(this, this[this._ns]);
         return !!root.appendChild(this[this._ns]);
-      } // return bool
+      }
+      /**
+       * Uninstall the composition.
+       *
+       * @see Element.removeChild()
+       *
+       * @param {Element} root - A valid Element node
+       * @param {function} cb - A function callback
+       * @returns {boolean}
+       */
 
     }, {
       key: "uninstall",
       value: function uninstall(root, cb) {
         typeof cb == 'function' && cb.call(this, this[this._ns]);
         return !!root.removeChild(this[this._ns]);
-      } // return bool
+      }
+      /**
+       * Loads the composition replacing a placeholder element.
+       *
+       * @see Element.replaceWith()
+       *
+       * @param {Element} pholder - A valid Element node
+       * @param {function} cb - A function callback
+       * @returns {boolean}
+       * @todo backward compatibility
+       */
 
     }, {
       key: "up",
       value: function up(pholder, cb) {
-        typeof cb == 'function' && cb.call(this, this[this._ns]); //TODO
-        // backward compatibility
-
+        typeof cb == 'function' && cb.call(this, this[this._ns]);
         return !!pholder.replaceWith(this[this._ns]);
-      } // return bool
+      }
+      /**
+       * Appends a compo inside this composition.
+       *
+       * @see Element.appendChild()
+       *
+       * @param {ensemble.Compo} compo - An ensemble.Compo composition
+       * @returns {boolean}
+       */
 
     }, {
       key: "append",
       value: function append(compo) {
         var _ns = this._ns;
         return !!this[_ns].appendChild(compo[_ns]);
-      } // return bool
+      }
+      /**
+       * Prepends a compo inside this composition.
+       *
+       * @see Element.prependChild()
+       *
+       * @param {ensemble.Compo} compo - An ensemble.Compo composition
+       * @returns {boolean}
+       */
 
     }, {
       key: "prepend",
       value: function prepend(compo) {
         var _ns = this._ns;
         return !!this[_ns].prependChild(compo[_ns]);
-      } // return bool
+      }
+      /**
+       * Removes a compo from this composition.
+       *
+       * @see Element.removeChild()
+       *
+       * @param {ensemble.Compo} compo - An ensemble.Compo composition
+       * @returns {boolean}
+       */
 
     }, {
       key: "remove",
       value: function remove(compo) {
         var _ns = this._ns;
         return !!this[_ns].removeChild(compo[_ns]);
-      } //TODO
+      }
+      /**
+       * Replace this composition with another compo.
+       *
+       * @todo
+       * @param {ensemble.Compo} compo - An ensemble.Compo composition
+       */
 
     }, {
       key: "replace",
-      value: function replace(compo) {} //TODO
+      value: function replace(compo) {}
+      /**
+       * Clones this composition.
+       * 
+       * @todo
+       * @param {boolean} deep - Clone also all compo inside this composition
+       */
 
     }, {
       key: "clone",
       value: function clone() {
         var deep = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       }
+      /**
+       * Inject an element node inside this composition.
+       * Note that any inner element contained will be removed.
+       *
+       * @see Element.appendChild()
+       *
+       * @param {Element} node - A valid Element node
+       * @returns {boolean}
+       */
+
     }, {
       key: "inject",
       value: function inject(node) {
@@ -955,9 +1060,15 @@ try {
         }
 
         this.empty();
-
-        this[this._ns].appendChild(node);
+        return !!this[this._ns].appendChild(node);
       }
+      /**
+       * Empty this composition.
+       * Any inner element contained will be removed.
+       *
+       * @see Element.remove()
+       */
+
     }, {
       key: "empty",
       value: function empty() {
@@ -967,65 +1078,146 @@ try {
           this.remove(this.first);
         }
       }
+      /**
+       * Check for an attribute of this composition.
+       *
+       * @see Element.hasAttribute()
+       *
+       * @param {string} attr - An attribute
+       * @returns {boolean}
+       */
+
     }, {
       key: "hasAttr",
       value: function hasAttr(attr) {
         return this[this._ns].hasAttribute(attr);
       }
+      /**
+       * Gets an attribute from this composition.
+       *
+       * @see Element.getAttribute()
+       *
+       * @param {string} attr - An attribute
+       * @returns {string}
+       */
+
     }, {
       key: "getAttr",
       value: function getAttr(attr) {
         return this[this._ns].getAttribute(attr);
-      } // return undef
+      }
+      /**
+       * Sets an attribute in this composition.
+       *
+       * @see Element.setAttribute()
+       *
+       * @param {string} attr - An attribute
+       * @param {string} value - The value
+       */
 
     }, {
       key: "setAttr",
       value: function setAttr(attr, value) {
         this[this._ns].setAttribute(attr, value);
-      } // return undef
+      }
+      /**
+       * Removes an attribute from this composition. 
+       *
+       * @see Element.removeAttribute()
+       *
+       * @param {string} attr - An attribute
+       */
 
     }, {
       key: "delAttr",
       value: function delAttr(attr) {
         this[this._ns].removeAttribute(attr);
       }
+      /**
+       * Gets a current style property.
+       *
+       * @see window.getComputedStyle()
+       *
+       * @global {function} window.getComputedStyle
+       * @param {string} prop - A style property
+       * @returns {mixed}
+       */
+
     }, {
       key: "getStyle",
       value: function getStyle(prop) {
         return window.getComputedStyle(this[this._ns])[prop];
       }
+      /**
+       * Time to show this composition.
+       */
+
     }, {
       key: "show",
       value: function show() {
         this[this._ns].hidden = false;
       }
+      /**
+       * Time to hide this composition.
+       */
+
     }, {
       key: "hide",
       value: function hide() {
         this[this._ns].hidden = true;
       }
+      /**
+       * Util to set attribute disabled to true
+       */
+
     }, {
       key: "enable",
       value: function enable() {
         this[this._ns].disabled = false;
       }
+      /**
+       * Util to set attribute disabled to false
+       */
+
     }, {
       key: "disable",
       value: function disable() {
         this[this._ns].disabled = true;
       }
+      /**
+       * Getter for node property, intended as the Element node inside this composition.
+       * Note that a direct access to the Element node is discouraged.
+       *
+       * @method getter
+       * @returns {Element}
+       */
+
     }, {
       key: "node",
       get: function get() {
         console.warn('ensemble.Compo', 'Direct access to the Element node is strongly discouraged.');
         return this[this._ns];
       }
+      /**
+       * Getter for parent property, intended as the parent compo of this composition.
+       *
+       * @method getter
+       * @returns {ensemble.Compo}
+       */
+
     }, {
       key: "parent",
       get: function get() {
         var _ns = this._ns;
         return this[_ns].parentElement && '__compo' in this[_ns].parentElement ? this[_ns].parentElement.__compo : null;
       }
+      /**
+       * Getter for children property, intended as children compo of this composition.
+       *
+       * @method getter
+       * @returns {array}
+       */
+
     }, {
       key: "children",
       get: function get() {
@@ -1033,41 +1225,92 @@ try {
           return node.__compo;
         });
       }
+      /**
+       * Getter for first property, intended as the first compo contained inside of this composition.
+       *
+       * @method getter
+       * @returns {ensemble.Compo}
+       */
+
     }, {
       key: "first",
       get: function get() {
         var _ns = this._ns;
         return this[_ns].firstElementChild ? this[_ns].firstElementChild.__compo : null;
       }
+      /**
+       * Getter for last property, intended as the last compo contained inside of this composition.
+       *
+       * @method getter
+       * @returns {ensemble.Compo}
+       */
+
     }, {
       key: "last",
       get: function get() {
         var _ns = this._ns;
         return this[_ns].lastElementChild ? this[_ns].lastElementChild.__compo : null;
       }
+      /**
+       * Getter for previous property, intended as the previous sibling of this composition.
+       *
+       * @method getter
+       * @returns {ensemble.Compo}
+       */
+
     }, {
       key: "previous",
       get: function get() {
         var _ns = this._ns;
         return this[_ns].previousElementSibling ? this[_ns].previousElementSibling.__compo : null;
       }
+      /**
+       * Getter for next property, intended as the next sibling of this composition.
+       *
+       * @method getter
+       * @returns {ensemble.Compo}
+       */
+
     }, {
       key: "next",
       get: function get() {
         var _ns = this._ns;
         return this[_ns].nextElementSibling ? this[_ns].nextElementSibling.__compo : null;
       }
+      /**
+       * Getter for classList property, intended as the classList of the Element node inside this composition.
+       *
+       * @method getter
+       * @returns {DOMTokenList}
+       */
+
     }, {
       key: "classList",
       get: function get() {
         return this[this._ns].classList;
-      } //TODO
-      // backward compatibility
+      }
+      /**
+       * Check if passed object is an ensemble.Compo instance.
+       *
+       * @function Compo.isCompo
+       * @static
+       * @returns {boolean}
+       * @todo backward compatibility
+       */
 
     }, {
       key: _Symbol$2.toStringTag,
-      get: //TODO undef
-      // backward compatibility
+      get:
+      /**
+       * Getter for Symbol property, returns the symbolic name for ensemble.Compo class.
+       *
+       * @see Symbol.toStringTag
+       *
+       * @override
+       * @returns {string}
+       * @todo return undef
+       * @todo backward compatibility
+       */
       function get() {
         return 'ensemble.Compo';
       }
@@ -1087,18 +1330,40 @@ try {
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
    */
-  //TODO
-  // backward compatibility
+
+  /**
+   * @borrows Symbol as _Symbol
+   * @todo backward compatibility
+   */
 
 
   var _Symbol$1 = typeof Symbol == 'undefined' ? 0 : Symbol;
+  /**
+   * Data is a multi-purpose utility object.
+   * 
+   * It could be used as a wrapper around a Compo composition, 
+   * this object can store any kind of properties. 
+   *
+   * @example
+   * new ensemble.Data('namespace-of-my-foo-component', { compo: ensemble.Compo, foo: 'a text string', foobj: 'an object' });
+   * @lends ensemble.Data
+   * @class
+   */
+
 
   var Data = /*#__PURE__*/function () {
+    /**
+     * Constructor method.
+     *
+     * @constructs
+     * @param {string} ns - Data namespace
+     * @param {object} obj - A starter Object
+     */
     function Data(ns, obj) {
       _classCallCheck(this, Data);
 
       if (!(this instanceof Data ? this.constructor : void 0)) {
-        throw 'ensemble error: Wrong invocation, must be called with new.';
+        throw 'ensemble error: Bad invocation, must be called with new.';
       }
 
       if (obj && _typeof(obj) == 'object') {
@@ -1112,6 +1377,23 @@ try {
         ns: ns
       };
     }
+    /**
+     * The compo method is a utility render.
+     * 
+     * When you create a composition with this method, it will create a Compo composition or simply an Object placeholder.
+     * With the defer render you can have it rendered in place, refresh, or freeze.
+     *
+     * @constructs
+     * @global {function} ensemble.Compo
+     * @param {string} tag - Element node tag -or- component name
+     * @param {string} name
+     * @param {object} props - Properties for Element node -or- component
+     * @param {boolean} defer - Defer render for composition
+     * @param {mixed} fresh - A function callback, called when is loaded the compo
+     * @param {mixed} stale - A function callback, called when is unloaded the compo
+     * @returns {mixed} compo - An ensemble.Compo element -or- an Object placeholder 
+     */
+
 
     _createClass(Data, [{
       key: "compo",
@@ -1145,6 +1427,14 @@ try {
 
         return compo;
       }
+      /**
+       * Renderizes a composition, passed by reference.
+       *
+       * @async
+       * @global {function} ensemble.Compo
+       * @param {mixed} slot - Reference of the element that will be rendered
+       */
+
     }, {
       key: "render",
       value: function () {
@@ -1185,6 +1475,13 @@ try {
 
         return render;
       }()
+      /**
+       * Freezes a composition, passed by reference.
+       *
+       * @async
+       * @param {mixed} slot - Reference of the element that will be rendered
+       */
+
     }, {
       key: "stale",
       value: function () {
@@ -1215,6 +1512,14 @@ try {
 
         return stale;
       }()
+      /**
+       * Refresh a composition, passed by reference.
+       *
+       * @async
+       * @param {mixed} slot - Reference of the element that will be rendered.
+       * @param {boolean} force - It forces the reflow.
+       */
+
     }, {
       key: "reflow",
       value: function () {
@@ -1246,13 +1551,29 @@ try {
         }
 
         return reflow;
-      }() //TODO
-      // backward compatibility
+      }()
+      /**
+       * Check if passed object is an ensemble.Data instance.
+       *
+       * @function Data.isData
+       * @static
+       * @returns {boolean}
+       * @todo backward compatibility
+       */
 
     }, {
       key: _Symbol$1.toStringTag,
-      get: //TODO undef
-      // backward compatibility
+      get:
+      /**
+       * Getter for Symbol property, returns the symbolic name for ensemble.Data class.
+       *
+       * @see Symbol.toStringTag
+       *
+       * @override
+       * @returns {string}
+       * @todo return undef
+       * @todo backward compatibility
+       */
       function get() {
         return 'ensemble.Data';
       }
@@ -1272,18 +1593,44 @@ try {
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
    */
-  //TODO
-  // backward compatibility
+
+  /**
+   * @borrows Symbol as _Symbol
+   * @todo backward compatibility
+   */
 
 
   var _Symbol = typeof Symbol == 'undefined' ? 0 : Symbol;
+  /**
+   * Event is an event manager.
+   * 
+   * It is a wrapper around the native Event [DOM].
+   *
+   * @example
+   * new ensemble.Event('namespace-of-my-foo-component', 'mousewheel', node).add(func, { capture: true });
+   * @lends ensemble.Event
+   * @class
+   */
+
 
   var Event = /*#__PURE__*/function () {
+    /**
+     * Constructor method.
+     *
+     * @see Element.addEventListener()
+     * @see Element.removeElementListener()
+     *
+     * @constructs
+     * @global {function} ensemble.Compo
+     * @param {string} ns - Event namespace
+     * @param {string} name - The [DOM] Event type name
+     * @param {Element} node - A valid Element node -or- component
+     */
     function Event(ns, name, node) {
       _classCallCheck(this, Event);
 
       if (!(this instanceof Event ? this.constructor : void 0)) {
-        throw 'ensemble error: Wrong invocation, must be called with new.';
+        throw 'ensemble error: Bad invocation, must be called with new.';
       }
 
       var _ns = this._ns = '_' + ns;
@@ -1296,6 +1643,15 @@ try {
         node: node
       };
     }
+    /**
+     * Adds an event for this composition.
+     *
+     * @see Element.addEventListener()
+     *
+     * @param {function} handle - The function handler
+     * @param {mixed} options - An options Object -or- useCapture boolean
+     */
+
 
     _createClass(Event, [{
       key: "add",
@@ -1304,17 +1660,42 @@ try {
 
         this[this._ns].node.addEventListener(this[this._ns].name, handle, options);
       }
+      /**
+       * Removes an event from this composition.
+       *
+       * @see Element.removeElementListener()
+       *
+       * @param {function} handle - The function handler
+       * @todo ? removes handle ref.
+       */
+
     }, {
       key: "remove",
       value: function remove(handle) {
         this[this._ns].node.removeEventListener(this[this._ns].name, handle);
-      } //TODO
-      // backward compatibility
+      }
+      /**
+       * Check if passed object is an ensemble.Event instance.
+       *
+       * @function Event.isEvent
+       * @static
+       * @returns {boolean}
+       * @todo backward compatibility
+       */
 
     }, {
       key: _Symbol.toStringTag,
-      get: //TODO undef
-      // backward compatibility
+      get:
+      /**
+       * Getter for Symbol property, returns the symbolic name for ensemble.Event class.
+       *
+       * @see Symbol.toStringTag
+       *
+       * @override
+       * @returns {string}
+       * @todo return undef
+       * @todo backward compatibility
+       */
       function get() {
         return 'ensemble.Event';
       }
@@ -1335,15 +1716,37 @@ try {
    * @license MIT License
    */
 
+  /**
+   * A base class for ensemble components.
+   *
+   * @abstract
+   * @class
+   */
+
 
   var base = /*#__PURE__*/function () {
+    /**
+     * Constructor method.
+     *
+     * @constructs
+     */
     function base() {
       _classCallCheck(this, base);
 
       if (!(this instanceof base ? this.constructor : void 0)) {
-        throw 'ensemble error: Wrong invocation, must be called with new.';
+        throw 'ensemble error: Bad invocation, must be called with new.';
       }
     }
+    /**
+     * Creates an options Object from a defaults object of pre-defined properties.
+     * 
+     * Note it supports only the first level of depth.
+     *
+     * @param {object} defaults - The default options Object
+     * @param {object} options - An options Object that would extends
+     * @returns {object}
+     */
+
 
     _createClass(base, [{
       key: "defaults",
@@ -1360,16 +1763,52 @@ try {
 
         return j;
       }
+      /**
+       * Shorthand method for ensemble.Compo class.
+       *
+       * When passed the first argument it makes a new Compo instance, 
+       * otherwise it returns a reference to the Compo class.
+       *
+       * @global {function} ensemble.Compo
+       * @param {string} ns - Composition namespace
+       * @param {string} tag - The [DOM] Element node tag -or- component name
+       * @param {string} name
+       * @returns {mixed}
+       */
+
     }, {
       key: "compo",
       value: function compo(tag, name, props) {
         return tag ? new Compo(this.options.ns, tag, name, props) : Compo;
       }
+      /**
+       * Shorthand method for ensemble.Data class.
+       *
+       * When passed the first argument it makes a new Data instance, 
+       * otherwise it returns a reference to the Data class.
+       *
+       * @global {function} ensemble.Data
+       * @param {object} obj - A starter Object
+       * @returns {mixed}
+       */
+
     }, {
       key: "data",
       value: function data(obj) {
         return obj ? new Data(this.options.ns, obj) : Data;
       }
+      /**
+       * Shorthand method for ensemble.Event class.
+       *
+       * When the passed first argument is a string it makes a new Event instance, 
+       * if you pass an Event as the first argument, a preventDefault and blur will be performed, 
+       * otherwise it returns a reference to the Event class.
+       *
+       * @global {function} ensemble.Event
+       * @param {object} obj - A starter Object
+       * @returns {mixed}
+       */
+
     }, {
       key: "event",
       value: function event(_event, node) {
@@ -1383,59 +1822,154 @@ try {
           return Event;
         }
       }
+      /**
+       * Shortcut to querySelectorAll() and querySelector() [DOM].
+       *
+       * @see Element.querySelectorAll()
+       * @see Element.querySelector()
+       *
+       * @global {object} document
+       * @param {string} query - A text query
+       * @param {Element} node - An Element node where find
+       * @param {boolean} all - Find single or multiple elements
+       * @return {mixed} - Element -or- ElementCollection
+       */
+
     }, {
       key: "selector",
       value: function selector(query, node) {
         var all = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
         node = node || document;
         return all ? node.querySelectorAll(query) : node.querySelector(query);
-      } // return bool
+      }
+      /**
+       * Shortcut to appendChild() [DOM].
+       *
+       * @see Element.appendChild()
+       *
+       * @param {Element} parent - An Element parent
+       * @param {Element} node - An Element node to append
+       * @returns {boolean}
+       */
 
     }, {
       key: "appendNode",
-      value: function appendNode(root, node) {
-        return !!root.appendChild(node);
-      } // return bool
+      value: function appendNode(parent, node) {
+        return !!parent.appendChild(node);
+      }
+      /**
+       * Shortcut to prependChild() [DOM].
+       *
+       * @see Element.prependChild()
+       *
+       * @param {Element} parent - An Element parent
+       * @param {Element} node - An Element node to prepend
+       * @returns {boolean}
+       */
 
     }, {
       key: "prependNode",
-      value: function prependNode(root, node) {
-        return !!root.prependChild(node);
-      } // return bool
+      value: function prependNode(parent, node) {
+        return !!parent.prependChild(node);
+      }
+      /**
+       * Shortcut to cloneNode() [DOM].
+       *
+       * @see Element.removeNode()
+       *
+       * @param {Element} parent - An Element parent
+       * @param {Element} node - An Element node to remove
+       * @returns {boolean}
+       */
 
     }, {
       key: "removeNode",
       value: function removeNode(root, node) {
         return !!root.removeChild(node);
       }
+      /**
+       * Shortcut to Element.cloneNode() [DOM].
+       *
+       * @see Element.cloneNode()
+       *
+       * @param {Element} node - An Element node to clone
+       * @param {boolean} deep - Clone also all children inside the Element node
+       * @returns {boolean}
+       */
+
     }, {
       key: "cloneNode",
       value: function cloneNode(node) {
         var deep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
         return node.cloneNode(deep);
       }
+      /**
+       * Shortcut to Element.hasAttribute() [DOM].
+       *
+       * @see Element.hasAttribute()
+       *
+       * @param {Element} node - An Element node
+       * @param {string} attr - An attribute
+       * @returns {boolean}
+       */
+
     }, {
       key: "hasAttr",
       value: function hasAttr(node, attr) {
         return node.hasAttribute(attr);
       }
+      /**
+       * Shortcut to Element.getAttribute() [DOM].
+       *
+       * @see Element.getAttribute()
+       *
+       * @param {Element} node - An Element node
+       * @param {string} attr - An attribute
+       * @returns {string}
+       */
+
     }, {
       key: "getAttr",
       value: function getAttr(node, attr) {
         return node.getAttribute(attr);
-      } // return undef
+      }
+      /**
+       * Shortcut to Element.setAttribute() [DOM].
+       *
+       * @see Element.setAttribute()
+       *
+       * @param {Element} node - An Element node
+       * @param {string} attr - An attribute
+       * @param {string} value - The value
+       */
 
     }, {
       key: "setAttr",
       value: function setAttr(node, attr, value) {
         node.setAttribute(attr, value);
-      } // return undef
+      }
+      /**
+       * Shortcut to Element.removettribute() [DOM].
+       *
+       * @see Element.removeAttribute()
+       *
+       * @param {Element} node - An Element node
+       * @param {string} attr - An attribute
+       */
 
     }, {
       key: "delAttr",
       value: function delAttr(node, attr) {
         node.removeAttribute(attr);
       }
+      /**
+       * Creates a proxy function with bindings to instance and optionally an event.
+       *
+       * @param {function} method - A method from the current instance
+       * @returns {function}
+       * @todo untrusted method
+       */
+
     }, {
       key: "binds",
       value: function binds(method) {
@@ -1444,12 +1978,33 @@ try {
           method.call(self, e, this);
         };
       }
+      /**
+       * Provides a delay and executes a callback function
+       *
+       * @see setTimeout()
+       *
+       * @global {function} window.setTimeout
+       * @param {function} func - A function callback
+       * @param {mixed} node - An Element node -or- an ensemble.Compo composition
+       * @param {int} dtime - A default value of time in milliseconds
+       */
+
     }, {
       key: "delay",
       value: function delay(func, node, dtime) {
         var delay = node ? this.timing(node) : 0;
         setTimeout(func, delay || dtime);
       }
+      /**
+       * Calculates a time, based on a time property of the style of an element
+       *
+       * @global {function} ensemble.Compo
+       * @global {function} window.getComputedStyle
+       * @param {mixed} node - An Element node -or- an ensemble.Compo composition
+       * @param {string} prop - A style property
+       * @returns {int} time - Number of time in milliseconds
+       */
+
     }, {
       key: "timing",
       value: function timing(node) {
@@ -1474,12 +2029,32 @@ try {
    * @license MIT License
    */
 
+  /**
+   * ensemble.SocialShare component.
+   *
+   * @class
+   * @extends base
+   * @param {Element} element - A valid Element node that will be replaced with this component
+   * @param {objects} options - Options object
+   * @param {string} [options.ns=share] - The namespace for social share
+   * @param {string} [options.root=body] - The root Element node
+   * @param {object} [options.intents] - Activity intents
+   * @param {object} [options.uriform] - URI strings
+   * @param {object} [options.label] - Custom parameters for label
+   * @param {object} [options.locale] - Localization
+   * @param {function} [options.onInit] - onInit callback, fires when social share is initialized
+   * @param {function} [options.onIntent] - onIntent callback, fires when an action is called
+   */
+
 
   var SocialShare = /*#__PURE__*/function (_base) {
     _inherits(SocialShare, _base);
 
     var _super = _createSuper(SocialShare);
 
+    /**
+     * Constructor method.
+     */
     function SocialShare(element) {
       var _this;
 
@@ -1498,14 +2073,23 @@ try {
       _this.init();
 
       return _this;
-    } // className
-    //  tag, name
-    //  with no ns prefix
+    }
+    /**
+     * The generator creates almost everything the component needs and replaces the element placeholder.
+     *
+     * @todo
+     */
 
 
     _createClass(SocialShare, [{
       key: "_defaults",
-      value: function _defaults() {
+      value:
+      /**
+       * Options object default properties.
+       *
+       * @returns {object}
+       */
+      function _defaults() {
         return {
           ns: 'share',
           fx: true,
@@ -1548,6 +2132,10 @@ try {
           onIntent: function onIntent() {}
         };
       }
+      /**
+       * Methods binding.
+       */
+
     }, {
       key: "_bindings",
       value: function _bindings() {
@@ -1575,6 +2163,12 @@ try {
         share.append(actions);
         this.built = true;
       }
+      /**
+       * Initializes the component.
+       *
+       * @todo
+       */
+
     }, {
       key: "init",
       value: function init() {
@@ -1585,6 +2179,12 @@ try {
         this.populate();
         opts.onInit.call(this, this);
       }
+      /**
+       * In this stage the component is populated with all the content progeny.
+       *
+       * @global {function} window.navigator.share
+       */
+
     }, {
       key: "populate",
       value: function populate() {
@@ -1625,6 +2225,13 @@ try {
           this.action(intent, title);
         }
       }
+      /**
+       * Creates the whole set of buttons.
+       *
+       * @param {string} intent - The activity name
+       * @param {string} title - A title for activity
+       */
+
     }, {
       key: "action",
       value: function action(intent, title) {
@@ -1648,6 +2255,16 @@ try {
         button.append(icon);
         this.actions.append(action);
       }
+      /**
+       * The intent activity.
+       * This method is called from each action.
+       *
+       * @global {function} ensemble.Compo
+       * @global {object} window.location
+       * @param {Event} e - An Event
+       * @param {Element} target - The element that is invoking
+       */
+
     }, {
       key: "intent",
       value: function intent(e, target) {
@@ -1701,11 +2318,34 @@ try {
           }
         }
       }
+      /**
+       * Makes text substitutions and encodes to an URL
+       *
+       * @param {object} data - The data object
+       * @param {string} data.url - Shared URL
+       * @param {string} data.title - Shared title
+       * @param {string} data.text - Shared description text
+       * @param {string} data.summary - Shared summary
+       * @return {string} - The encoded URL text string
+       */
+
     }, {
       key: "text",
       value: function text(data) {
         return encodeURIComponent(data.text.replace('%url%', data.url).replace('%title%', data.title).replace('%summary%', data.summary));
       }
+      /**
+       * Generic social method for social network sharing intent.
+       *
+       * @global {function} window.open
+       * @param {Event} e - An Event
+       * @param {object} data - The data object
+       * @param {string} data.url - Shared URL
+       * @param {string} data.title - Shared title
+       * @param {string} data.text - Shared description text
+       * @param {string} data.summary - Shared summary
+       */
+
     }, {
       key: "social",
       value: function social(e, data, intent, action) {
@@ -1728,6 +2368,18 @@ try {
         console.log(url, title, options);
         window.open(url, title, options);
       }
+      /**
+       * Send email intent, it tries to open the default mail client.
+       *
+       * @global {function} window.navigator.share
+       * @param {Event} e - An Event
+       * @param {object} data - The data object
+       * @param {string} data.url - Shared URL
+       * @param {string} data.title - Shared title
+       * @param {string} data.text - Shared description text
+       * @param {string} data.summary - Shared summary
+       */
+
     }, {
       key: "sendEmail",
       value: function sendEmail(e, data) {
@@ -1736,6 +2388,19 @@ try {
         console.log(url, '_self');
         window.open(url, '_self');
       }
+      /**
+       * Copy link intent, it tries to copy URL on the clipboard.
+       *
+       * @global {function} document.createElement
+       * @global {function} document.execCommand
+       * @param {Event} e - An Event
+       * @param {object} data - The data object
+       * @param {string} data.url - Shared URL
+       * @param {string} data.title - Shared title
+       * @param {string} data.text - Shared description text
+       * @param {string} data.summary - Shared summary
+       */
+
     }, {
       key: "copyLink",
       value: function copyLink(e, data) {
@@ -1779,6 +2444,13 @@ try {
           }, gnd, 8e2);
         }
       }
+      /**
+       * Calls the native WebShare API for sharing.
+       *
+       * @async
+       * @global {function} window.navigator.share
+       */
+
     }, {
       key: "webShare",
       value: function () {
