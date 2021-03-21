@@ -22,7 +22,7 @@
 
   /**
    * @namespace ensemble
-   * @module Compo
+   * @exports Compo
    */
 
   /**
@@ -834,7 +834,6 @@ try {
    *
    * @example
    * new ensemble.Compo('namespace-of-my-foo-component', 'div', 'foo', { id: 'fooDiv', tabIndex: 1 });
-   * @lends ensemble.Compo
    * @class
    */
 
@@ -845,11 +844,11 @@ try {
      * @see document.createElement()
      * @see document.createElementNS()
      *
+     * //global document.createElement
      * @constructs
      * @constant {RegExp} REJECTED_TAG_NAMES - A regular expression for rejected tag names
      * @constant {RegExp} REJECTED_TAGS - A regular expression for rejected tag
      * @constant {RegExp} DENIED_PROPS - A regular expression for denied properties
-     * @global {function} document.createElement
      * @param {string} ns - Composition namespace
      * @param {string} tag - The [DOM] Element node tag -or- component name
      * @param {string} name
@@ -1023,7 +1022,7 @@ try {
       /**
        * Replace this composition with another compo.
        *
-       * @todo
+       * @todo TODO
        * @param {ensemble.Compo} compo - An ensemble.Compo composition
        */
 
@@ -1033,7 +1032,7 @@ try {
       /**
        * Clones this composition.
        * 
-       * @todo
+       * @todo TODO
        * @param {boolean} deep - Clone also all compo inside this composition
        */
 
@@ -1138,7 +1137,7 @@ try {
        *
        * @see window.getComputedStyle()
        *
-       * @global {function} window.getComputedStyle
+       * //global window.getComputedStyle
        * @param {string} prop - A style property
        * @returns {mixed}
        */
@@ -1188,7 +1187,7 @@ try {
        * Getter for node property, intended as the Element node inside this composition.
        * Note that a direct access to the Element node is discouraged.
        *
-       * @method getter
+       * @var {getter}
        * @returns {Element}
        */
 
@@ -1201,7 +1200,7 @@ try {
       /**
        * Getter for parent property, intended as the parent compo of this composition.
        *
-       * @method getter
+       * @var {getter}
        * @returns {ensemble.Compo}
        */
 
@@ -1214,7 +1213,7 @@ try {
       /**
        * Getter for children property, intended as children compo of this composition.
        *
-       * @method getter
+       * @var {getter}
        * @returns {array}
        */
 
@@ -1228,7 +1227,7 @@ try {
       /**
        * Getter for first property, intended as the first compo contained inside of this composition.
        *
-       * @method getter
+       * @var {getter}
        * @returns {ensemble.Compo}
        */
 
@@ -1241,7 +1240,7 @@ try {
       /**
        * Getter for last property, intended as the last compo contained inside of this composition.
        *
-       * @method getter
+       * @var {getter}
        * @returns {ensemble.Compo}
        */
 
@@ -1254,7 +1253,7 @@ try {
       /**
        * Getter for previous property, intended as the previous sibling of this composition.
        *
-       * @method getter
+       * @var {getter}
        * @returns {ensemble.Compo}
        */
 
@@ -1267,7 +1266,7 @@ try {
       /**
        * Getter for next property, intended as the next sibling of this composition.
        *
-       * @method getter
+       * @var {getter}
        * @returns {ensemble.Compo}
        */
 
@@ -1280,7 +1279,7 @@ try {
       /**
        * Getter for classList property, intended as the classList of the Element node inside this composition.
        *
-       * @method getter
+       * @var {getter}
        * @returns {DOMTokenList}
        */
 
@@ -1292,7 +1291,6 @@ try {
       /**
        * Check if passed object is an ensemble.Compo instance.
        *
-       * @function Compo.isCompo
        * @static
        * @returns {boolean}
        * @todo backward compatibility
@@ -1345,8 +1343,7 @@ try {
    * this object can store any kind of properties. 
    *
    * @example
-   * new ensemble.Data('namespace-of-my-foo-component', { compo: ensemble.Compo, foo: 'a text string', foobj: 'an object' });
-   * @lends ensemble.Data
+   * new ensemble.Data('namespace-of-my-foo-component', { compo: ensemble.Compo, foo: 'a text string', fooObj: 'an object' });
    * @class
    */
 
@@ -1383,8 +1380,7 @@ try {
      * When you create a composition with this method, it will create a Compo composition or simply an Object placeholder.
      * With the defer render you can have it rendered in place, refresh, or freeze.
      *
-     * @constructs
-     * @global {function} ensemble.Compo
+     * //global ensemble.Compo
      * @param {string} tag - Element node tag -or- component name
      * @param {string} name
      * @param {object} props - Properties for Element node -or- component
@@ -1430,8 +1426,8 @@ try {
       /**
        * Renderizes a composition, passed by reference.
        *
+       * //global ensemble.Compo
        * @async
-       * @global {function} ensemble.Compo
        * @param {mixed} slot - Reference of the element that will be rendered
        */
 
@@ -1555,7 +1551,6 @@ try {
       /**
        * Check if passed object is an ensemble.Data instance.
        *
-       * @function Data.isData
        * @static
        * @returns {boolean}
        * @todo backward compatibility
@@ -1608,7 +1603,6 @@ try {
    *
    * @example
    * new ensemble.Event('namespace-of-my-foo-component', 'mousewheel', node).add(func, { capture: true });
-   * @lends ensemble.Event
    * @class
    */
 
@@ -1620,8 +1614,8 @@ try {
      * @see Element.addEventListener()
      * @see Element.removeElementListener()
      *
+     * //global ensemble.Compo
      * @constructs
-     * @global {function} ensemble.Compo
      * @param {string} ns - Event namespace
      * @param {string} name - The [DOM] Event type name
      * @param {Element} node - A valid Element node -or- component
@@ -1677,7 +1671,6 @@ try {
       /**
        * Check if passed object is an ensemble.Event instance.
        *
-       * @function Event.isEvent
        * @static
        * @returns {boolean}
        * @todo backward compatibility
@@ -1769,7 +1762,7 @@ try {
        * When passed the first argument it makes a new Compo instance, 
        * otherwise it returns a reference to the Compo class.
        *
-       * @global {function} ensemble.Compo
+       * //global ensemble.Compo
        * @param {string} ns - Composition namespace
        * @param {string} tag - The [DOM] Element node tag -or- component name
        * @param {string} name
@@ -1787,7 +1780,7 @@ try {
        * When passed the first argument it makes a new Data instance, 
        * otherwise it returns a reference to the Data class.
        *
-       * @global {function} ensemble.Data
+       * //global ensemble.Data
        * @param {object} obj - A starter Object
        * @returns {mixed}
        */
@@ -1804,7 +1797,7 @@ try {
        * if you pass an Event as the first argument, a preventDefault and blur will be performed, 
        * otherwise it returns a reference to the Event class.
        *
-       * @global {function} ensemble.Event
+       * //global ensemble.Event
        * @param {object} obj - A starter Object
        * @returns {mixed}
        */
@@ -1828,7 +1821,7 @@ try {
        * @see Element.querySelectorAll()
        * @see Element.querySelector()
        *
-       * @global {object} document
+       * //global document
        * @param {string} query - A text query
        * @param {Element} node - An Element node where find
        * @param {boolean} all - Find single or multiple elements
@@ -1983,7 +1976,7 @@ try {
        *
        * @see setTimeout()
        *
-       * @global {function} window.setTimeout
+       * //global window.setTimeout
        * @param {function} func - A function callback
        * @param {mixed} node - An Element node -or- an ensemble.Compo composition
        * @param {int} dtime - A default value of time in milliseconds
@@ -1998,8 +1991,8 @@ try {
       /**
        * Calculates a time, based on a time property of the style of an element
        *
-       * @global {function} ensemble.Compo
-       * @global {function} window.getComputedStyle
+       * //global ensemble.Compo
+       * //global window.getComputedStyle
        * @param {mixed} node - An Element node -or- an ensemble.Compo composition
        * @param {string} prop - A style property
        * @returns {int} time - Number of time in milliseconds
@@ -2077,7 +2070,7 @@ try {
     /**
      * The generator creates almost everything the component needs and replaces the element placeholder.
      *
-     * @todo
+     * @todo TODO
      */
 
 
@@ -2166,7 +2159,7 @@ try {
       /**
        * Initializes the component.
        *
-       * @todo
+       * @todo TODO
        */
 
     }, {
@@ -2182,7 +2175,7 @@ try {
       /**
        * In this stage the component is populated with all the content progeny.
        *
-       * @global {function} window.navigator.share
+       * //global window.navigator.share
        */
 
     }, {
@@ -2259,8 +2252,8 @@ try {
        * The intent activity.
        * This method is called from each action.
        *
-       * @global {function} ensemble.Compo
-       * @global {object} window.location
+       * //global ensemble.Compo
+       * //global window.location
        * @param {Event} e - An Event
        * @param {Element} target - The element that is invoking
        */
@@ -2337,7 +2330,7 @@ try {
       /**
        * Generic social method for social network sharing intent.
        *
-       * @global {function} window.open
+       * //global window.open
        * @param {Event} e - An Event
        * @param {object} data - The data object
        * @param {string} data.url - Shared URL
@@ -2371,7 +2364,7 @@ try {
       /**
        * Send email intent, it tries to open the default mail client.
        *
-       * @global {function} window.navigator.share
+       * //global window.navigator.share
        * @param {Event} e - An Event
        * @param {object} data - The data object
        * @param {string} data.url - Shared URL
@@ -2391,8 +2384,8 @@ try {
       /**
        * Copy link intent, it tries to copy URL on the clipboard.
        *
-       * @global {function} document.createElement
-       * @global {function} document.execCommand
+       * //global document.createElement
+       * //global document.execCommand
        * @param {Event} e - An Event
        * @param {object} data - The data object
        * @param {string} data.url - Shared URL
@@ -2447,8 +2440,8 @@ try {
       /**
        * Calls the native WebShare API for sharing.
        *
+       * //global window.navigator.share
        * @async
-       * @global {function} window.navigator.share
        */
 
     }, {

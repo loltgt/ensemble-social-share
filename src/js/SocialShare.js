@@ -10,7 +10,6 @@
 
 /**
  * @namespace ensemble
- * @module SocialShare
  * @exports SocialShare
  */
 
@@ -110,7 +109,7 @@ class SocialShare extends base {
   /**
    * The generator creates almost everything the component needs and replaces the element placeholder.
    *
-   * @todo
+   * @todo TODO
    */
   generator() {
     const opts = this.options;
@@ -138,7 +137,7 @@ class SocialShare extends base {
   /**
    * Initializes the component.
    *
-   * @todo
+   * @todo TODO
    */
   init() {
     const opts = this.options;
@@ -156,7 +155,7 @@ class SocialShare extends base {
   /**
    * In this stage the component is populated with all the content progeny.
    *
-   * @global {function} window.navigator.share
+   * //global window.navigator.share
    */
   populate() {
     const opts = this.options;
@@ -219,8 +218,8 @@ class SocialShare extends base {
    * The intent activity.
    * This method is called from each action.
    *
-   * @global {function} ensemble.Compo
-   * @global {object} window.location
+   * //global ensemble.Compo
+   * //global window.location
    * @param {Event} e - An Event
    * @param {Element} target - The element that is invoking
    */
@@ -297,7 +296,7 @@ class SocialShare extends base {
   /**
    * Generic social method for social network sharing intent.
    *
-   * @global {function} window.open
+   * //global window.open
    * @param {Event} e - An Event
    * @param {object} data - The data object
    * @param {string} data.url - Shared URL
@@ -334,7 +333,7 @@ class SocialShare extends base {
   /**
    * Send email intent, it tries to open the default mail client.
    *
-   * @global {function} window.navigator.share
+   * //global window.navigator.share
    * @param {Event} e - An Event
    * @param {object} data - The data object
    * @param {string} data.url - Shared URL
@@ -355,8 +354,8 @@ class SocialShare extends base {
   /**
    * Copy link intent, it tries to copy URL on the clipboard.
    *
-   * @global {function} document.createElement
-   * @global {function} document.execCommand
+   * //global document.createElement
+   * //global document.execCommand
    * @param {Event} e - An Event
    * @param {object} data - The data object
    * @param {string} data.url - Shared URL
@@ -414,8 +413,8 @@ class SocialShare extends base {
   /**
    * Calls the native WebShare API for sharing.
    *
+   * //global window.navigator.share
    * @async
-   * @global {function} window.navigator.share
    */
   async webShare(e, data) {
     try {
