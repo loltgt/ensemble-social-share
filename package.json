@@ -1,0 +1,38 @@
+{
+  "name": "ensemble-social-share",
+  "version": "0.0.1",
+  "description": "ensemble.SocialShare JavaScript class from loltgt",
+  "main": "index.js",
+  "scripts": {
+    "build": "./node_modules/.bin/gulp",
+    "build-js": "./node_modules/.bin/gulp build_js",
+    "build-css": "./node_modules/.bin/gulp build_css",
+    "build-compat": "./node_modules/.bin/gulp compat",
+    "build-compat-js": "./node_modules/.bin/gulp compat_js",
+    "build-compat-css": "./node_modules/.bin/gulp compat_css",
+    "watch": "./node_modules/.bin/gulp watch"
+  },
+  "repository": "git+https://github.com/loltgt/ensemble-social-share.git",
+  "author": "Leonardo Laureti",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loltgt/ensemble-social-share/issues"
+  },
+  "homepage": "https://github.com/loltgt/ensemble-social-share#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.13.10",
+    "@babel/plugin-transform-modules-umd": "^7.13.0",
+    "@babel/plugin-transform-object-assign": "^7.12.13",
+    "@babel/preset-env": "^7.13.10",
+    "@rbnlffl/gulp-rollup": "^0.1.1",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^4.1.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-tap": "^2.0.0",
+    "gulp-terser": "^2.0.1",
+    "node-sass": "^5.0.0",
+    "regenerator-runtime": "^0.13.7"
+  }
+}
