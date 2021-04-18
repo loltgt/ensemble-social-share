@@ -1086,9 +1086,16 @@
    * @param {objects} options - Options object
    * @param {string} [options.ns=share] - The namespace for social share
    * @param {string} [options.root=body] - The root Element node
-   * @param {object} [options.intents] - Activity intents
+   * @param {string} [options.link=''] - The link, leave empty to auto-discover with selector or location.href
+   * @param {string} [options.title=''] - The title, leave empty to auto-discover with selector or window.title
+   * @param {string} [options.description=''] - The description, leave empty to auto-discover with selector
+   * @param {object} [options.displays=null] - What actions to display, default to all
+   * @param {object} [options.intents] - Action intents
    * @param {object} [options.uriform] - URI strings
    * @param {object} [options.label] - Custom parameters for label
+   * @param {object} [options.selectorLink] - An element selector to find link
+   * @param {object} [options.selectorTitle] - An element selector to find title
+   * @param {object} [options.selectorDescription] - An element selector to find description
    * @param {object} [options.locale] - Localization
    * @param {function} [options.onInit] - onInit callback, fires when social share is initialized
    * @param {function} [options.onIntent] - onIntent callback, fires when an action is called
@@ -1106,6 +1113,10 @@
         ns: 'share',
         fx: true,
         root: 'body',
+        link: '',
+        title: '',
+        description: '',
+        displays: null,
         intents: {
           'facebook': 0,
           'twitter': 0,
@@ -1125,6 +1136,15 @@
           'telegram': 'https://telegram.me/share/url?url=%url%&text=%text%',
           'linkedin': 'https://www.linkedin.com/sharing/share-offsite?mini=true&url=%url%&title=%title%&ro=false&summary=%summary%',
           'send-email': 'mailto:?subject=%subject%&body=%text%'
+        },
+        selectorLink: {
+          element: 'link[rel="canonical"]',
+          attribute: 'href'
+        },
+        selectorTitle: null,
+        selectorDescription: {
+          element: 'meta[name="description"]',
+          attribute: 'content'
         },
         label: {},
         locale: {
@@ -1187,6 +1207,11 @@
       if (opts.label) {
         const label = this.compo('span', 'label', opts.label);
         label.classList.add('label');
+
+        if ('innerText' in opts.label == false) {
+          label.innerText = opts.locale.label;
+        }
+
         share.append(label);
       }
 
@@ -1205,6 +1230,7 @@
       const opts = this.options;
       if (this.built) return;
       this.root = this.selector(opts.root);
+      this.displays = opts.displays && typeof opts.displays == 'object' ? opts.displays : Object.keys(opts.intents);
       this.generator();
       this.populate();
       opts.onInit.call(this, this);
@@ -1220,6 +1246,7 @@
       const opts = this.options;
 
       for (const intent in opts.intents) {
+        if (this.displays.indexOf(intent) == -1) continue;
         const name = intent in opts.locale ? opts.locale[intent] : intent.replace(/\w/, cap => cap.toUpperCase());
         let title;
 
@@ -1289,6 +1316,7 @@
      * //global window.location
      * @param {Event} e - An Event
      * @param {Element} target - The element that is invoking
+     * @todo url validation
      */
 
 
@@ -1300,18 +1328,31 @@
       const action = target.parent;
       if (!(action && action.hasAttr('data-share-intent'))) return;
       const intent = action.getAttr('data-share-intent');
+      if (this.displays.indexOf(intent) == -1) return;
       let url, title, summary, text;
 
-      if (this.selector('link[rel="canonical"]')) {
-        url = this.selector('link[rel="canonical"]').href;
+      if (opts.link) {
+        url = opts.link;
+      } else if (opts.selectorLink && typeof opts.selectorLink == 'object' && this.selector(opts.selectorLink.element)) {
+        url = this.getAttr(this.selector(opts.selectorLink.element), opts.selectorLink.attribute);
       } else {
         url = window.location.href;
       }
 
-      title = summary = document.title;
+      if (opts.title) {
+        title = opts.title;
+      } else if (opts.selectorTitle && typeof opts.selectorTitle == 'object' && this.selector(opts.selectorTitle.element)) {
+        title = this.getAttr(this.selector(opts.selectorTitle.element), opts.selectorTitle.attribute);
+      } else {
+        title = document.title;
+      }
 
-      if (this.selector('meta[name="description"]')) {
-        summary = this.selector('meta[name="description"]').content;
+      if (opts.description) {
+        summary = opts.description;
+      } else if (opts.selectorDescription && typeof opts.selectorDescription == 'object' && this.selector(opts.selectorDescription.element)) {
+        summary = this.getAttr(this.selector(opts.selectorDescription.element), opts.selectorDescription.attribute);
+      } else {
+        summary = title;
       }
 
       text = '\r\n\r\n%title%\r\n%url%\r\n\r\n';
