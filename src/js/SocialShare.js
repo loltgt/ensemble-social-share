@@ -2,6 +2,7 @@
  * loltgt ensemble.SocialShare
  *
  * @version 0.0.1
+ * @link https://github.com/loltgt/ensemble-social-share
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
  */
@@ -13,7 +14,7 @@
  * @exports SocialShare
  */
 
-import base from '../../../ensemble-stack-d1/base.js';
+import base from '../../../ensemble-stack-d1/lib/base.js';
 
 
 /**
@@ -21,14 +22,16 @@ import base from '../../../ensemble-stack-d1/base.js';
  *
  * @class
  * @extends base
- * @param {Element} element - A valid Element node that will be replaced with this component
- * @param {objects} options - Options object
+ * @inheritdoc
+ * @param {Element} [element] - A valid Element node that will be replaced with this component
+ * @param {object} options - Options object
  * @param {string} [options.ns=share] - The namespace for social share
  * @param {string} [options.root=body] - The root Element node
+ * @param {(string|string[])} [options.className=social-share] - The component CSS class name
  * @param {string} [options.link=''] - The link, leave empty to auto-discover with selector or location.href
  * @param {string} [options.title=''] - The title, leave empty to auto-discover with selector or window.title
  * @param {string} [options.description=''] - The description, leave empty to auto-discover with selector
- * @param {object} [options.displays=null] - What actions to display, default to all
+ * @param {object} [options.displays=null] - Actions to display, default to all
  * @param {object} [options.intents] - Action intents
  * @param {object} [options.uriform] - URI strings
  * @param {object} [options.label] - Custom parameters for label
@@ -38,6 +41,9 @@ import base from '../../../ensemble-stack-d1/base.js';
  * @param {object} [options.locale] - Localization
  * @param {function} [options.onInit] - onInit callback, fires when social share is initialized
  * @param {function} [options.onIntent] - onIntent callback, fires when an action is called
+ * @example
+ * new ensemble.SocialShare(document.getElementById('my-div-placeholder'), {});
+ * @todo arguments
  */
 class SocialShare extends base {
 
@@ -51,6 +57,7 @@ class SocialShare extends base {
       ns: 'share',
       fx: true,
       root: 'body',
+      className: 'social-share',
       link: '',
       title: '',
       description: '',
@@ -113,15 +120,12 @@ class SocialShare extends base {
   /**
    * Constructor method.
    */
-  constructor(element, options = {}) {
-    super();
+  constructor() {
+    if (! new.target) {
+      throw 'ensemble.SocialShare error: Bad invocation, must be called with new.';
+    }
 
-    this._bindings();
-
-    this.options = this.defaults(this._defaults(), options);
-    Object.freeze(this.options);
-
-    this.element = element;
+    super(...arguments);
 
     this.init();
   }
@@ -129,18 +133,17 @@ class SocialShare extends base {
   /**
    * The generator creates almost everything the component needs and replaces the element placeholder.
    *
-   * @todo TODO
+   * @todo dataset
    */
   generator() {
     const opts = this.options;
 
-    const share = this.share = this.compo('div', 'social-share');
+    const share = this.share = this.compo(false, false, {
+      className: typeof opts.className == 'object' ? opts.className.join(' ') : opts.className
+    });
     //TODO
     // dataset
     share.setAttr('data-social-share', '');
-    share.up(this.element, (function(node) {
-      this.element = node;
-    }).bind(this));
 
     if (opts.label) {
       const label = this.compo('span', 'label', opts.label);
@@ -173,6 +176,13 @@ class SocialShare extends base {
     this.displays = opts.displays && typeof opts.displays == 'object' ? opts.displays : Object.keys(opts.intents);
 
     this.generator();
+
+    if (this.element) {
+      this.share.up(this.element, (function(node) {
+        this.element = node;
+      }).bind(this));
+    }
+
     this.populate();
 
     opts.onInit.call(this, this);
@@ -181,7 +191,7 @@ class SocialShare extends base {
   /**
    * In this stage the component is populated with all the content progeny.
    *
-   * //global window.navigator.share
+   * @see window.navigator.share()
    */
   populate() {
     const opts = this.options;
@@ -216,6 +226,7 @@ class SocialShare extends base {
    *
    * @param {string} intent - The activity name
    * @param {string} title - A title for activity
+   * @todo dataset
    */
   action(intent, title) {
     const opts = this.options;
@@ -223,7 +234,7 @@ class SocialShare extends base {
     const action = this.compo('li', 'action', {
       className: opts.ns + '-action-' + intent
     });
-    const button = this.compo('button', 'intent', {
+    const button = this.compo('button', ['button', 'intent'], {
       className: opts.ns + '-intent-' + intent,
       title,
       ariaLabel: title,
@@ -246,8 +257,8 @@ class SocialShare extends base {
    * The intent activity.
    * This method is called from each action.
    *
-   * //global ensemble.Compo
-   * //global window.location
+   * @see window.location
+   *
    * @param {Event} e - An Event
    * @param {Element} target - The element that is invoking
    * @todo url validation
@@ -324,7 +335,7 @@ class SocialShare extends base {
    * @param {string} data.url - Shared URL
    * @param {string} data.title - Shared title
    * @param {string} data.text - Shared description text
-   * @param {string} data.summary - Shared summary
+   * @param {string} data.summary - Shared summary
    * @return {string} - The encoded URL text string
    */
   text(data) {
@@ -339,18 +350,19 @@ class SocialShare extends base {
   /**
    * Generic social method for social network sharing intent.
    *
-   * //global window.open
+   * @see window.open()
+   *
    * @param {Event} e - An Event
    * @param {object} data - The data object
    * @param {string} data.url - Shared URL
    * @param {string} data.title - Shared title
    * @param {string} data.text - Shared description text
-   * @param {string} data.summary - Shared summary
+   * @param {string} data.summary - Shared summary
    */
   social(e, data, intent, action) {
     const opts = this.options;
 
-    if (intent in opts.uriform === false) return;
+    if (intent in opts.uriform == false) return;
 
     let url = opts.uriform[intent]
       .replace('%url%', encodeURIComponent(data.url))
@@ -364,7 +376,7 @@ class SocialShare extends base {
     if (/%text%/.test(opts.uriform[intent])) {
       url = url.replace('%text%', this.text(data));
     }
-    if (intent === 'messenger') {
+    if (intent == 'messenger') {
       const app_id = 'messenger_app_id' in opts ? opts.messenger_app_id : '';
       url = url.replace('%app_id%', encodeURIComponent(app_id));
     }
@@ -376,13 +388,14 @@ class SocialShare extends base {
   /**
    * Send email intent, it tries to open the default mail client.
    *
-   * //global window.navigator.share
+   * @see window.open()
+   *
    * @param {Event} e - An Event
    * @param {object} data - The data object
    * @param {string} data.url - Shared URL
    * @param {string} data.title - Shared title
    * @param {string} data.text - Shared description text
-   * @param {string} data.summary - Shared summary
+   * @param {string} data.summary - Shared summary
    */
   sendEmail(e, data) {
     const opts = this.options;
@@ -397,16 +410,20 @@ class SocialShare extends base {
   /**
    * Copy link intent, it tries to copy URL on the clipboard.
    *
-   * //global document.createElement
-   * //global document.execCommand
+   * @see document.createElement()
+   * @see document.execCommand()
+   *
    * @param {Event} e - An Event
    * @param {object} data - The data object
    * @param {string} data.url - Shared URL
    * @param {string} data.title - Shared title
    * @param {string} data.text - Shared description text
-   * @param {string} data.summary - Shared summary
+   * @param {string} data.summary - Shared summary
+   * @todo TODO
    */
   copyLink(e, data) {
+    if (! this.element) return;
+
     const opts = this.options;
 
     const cb = document.createElement('textarea');
@@ -415,17 +432,18 @@ class SocialShare extends base {
 
     this.appendNode(this.element, cb);
 
-    if (/iPad|iPhone|iPod/.test(window.navigator.userAgent)) {
-      const sr = document.createRange();
-      const gs = getSelection();
-      sr.selectNodeContents(cb);
-      gs.removeAllRanges();
-      gs.addRange(sr);
-      cb.setSelectionRange(0, 999999);
-    } else {
+    //TODO obsolete (safari mobile | crios?)
+    // if (/iPad|iPhone|iPod/.test(window.navigator.userAgent)) {
+    //   const sr = document.createRange();
+    //   const gs = getSelection();
+    //   sr.selectNodeContents(cb);
+    //   gs.removeAllRanges();
+    //   gs.addRange(sr);
+    //   cb.setSelectionRange(0, 999999);
+    // } else {
       cb.focus();
       cb.select();
-    }
+    // }
 
     document.execCommand('copy');
 
@@ -435,7 +453,7 @@ class SocialShare extends base {
       const self = this;
       const root = this.root;
 
-      const gnd = this.compo('div', 'fx-copied-link--ground', { hidden: true });
+      const gnd = this.compo(false, 'fx-copied-link--ground', { hidden: true });
       const msg = this.compo('span', 'copied-link-message', { innerText: opts.locale.copied });
 
       root.classList.add('share-fx-copied-link');
@@ -456,7 +474,8 @@ class SocialShare extends base {
   /**
    * Calls the native WebShare API for sharing.
    *
-   * //global window.navigator.share
+   * @see window.navigator.share()
+   *
    * @async
    */
   async webShare(e, data) {

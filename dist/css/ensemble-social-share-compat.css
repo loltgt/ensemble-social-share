@@ -1,11 +1,12 @@
-/*!
+/*! * loltgt/ensemble.SocialShare (compat) * * @version 0.0.1 * @link https://github.com/loltgt/ensemble-social-share * @copyright Copyright (C) Leonardo Laureti * @license MIT License *//*!
  * loltgt ensemble.SocialShare
  *
  * @version 0.0.1
+ * @link https://github.com/loltgt/ensemble-social-share
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
  */
-.social-share, .share-actions, .share-action, .share-intent, .share-icon, .share-copied-link-message, .share-fx-copied-link--ground {
+.social-share, .share-actions, .share-action, .share-button, .share-intent, .share-icon, .share-copied-link-message, .share-fx-copied-link--ground {
   margin: 0;
   padding: 0;
   box-sizing: border-box; }
@@ -64,6 +65,16 @@
   margin: 0.2rem 0.2rem;
   text-align: center; }
 
+.share-button {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-highlight: none; }
+
+.share-button:active, .share-button:focus {
+  outline: 0;
+  -webkit-tap-highlight-color: transparent; }
+
 .share-intent {
   display: block;
   font-size: 24px;
@@ -74,15 +85,7 @@
   background: #aaaaaa;
   border: 0;
   border-radius: 0;
-  border-radius: 0;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  -webkit-highlight: none; }
-
-.share-intent:active, .share-intent:focus {
-  outline: 0;
-  -webkit-tap-highlight-color: transparent; }
+  border-radius: 0; }
 
 .share-icon {
   vertical-align: middle; }

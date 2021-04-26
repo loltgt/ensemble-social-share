@@ -1,0 +1,26 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": "defaults, not ie 11, not ie_mob 11"
+      }
+    ]
+  ],
+  "plugins": [
+    [
+      "@babel/plugin-transform-modules-umd", {
+        "globals": {
+          "Compo": "ensemble",
+          "Data": "ensemble",
+          "Event": "ensemble",
+          "base": "ensemble",
+          "Modal": "ensemble",
+          "Lightbox": "ensemble",
+          "SocialShare": "ensemble"
+        },
+        "exactGlobals": true
+      }
+    ]
+  ]
+}
