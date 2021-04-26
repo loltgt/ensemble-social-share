@@ -77,6 +77,13 @@ function _remove_comments(file) {
   file.contents = Buffer.from(contents);
 }
 
+function _force_inline(file) {
+  let contents = file.contents.toString();
+  contents = contents.replace(/\n/g, '');
+
+  file.contents = Buffer.from(contents);
+}
+
 function _bundle_banner(filename) {
   let pathName = path.parse(filename).name.replace('.min', '');
   let projectName;
@@ -112,6 +119,27 @@ function js() {
       sourcePath.dirname = _dst(sourcePath.dirname, 'src', 'dist');
       sourcePath.basename = 'ensemble-' + _cth(sourcePath.basename);
     }))
+    .pipe(tap(function(file) {
+      file.contents = Buffer.from(_bundle_banner(file.basename) + file.contents.toString());
+    }))
+    // .pipe(sourcemaps.mapSources(function(sourcePath, file) {
+    //   const base = path.relative(file.cwd, file.dirname);
+    //   return path.relative(base, sourcePath);
+    // }))
+    // .pipe(sourcemaps.write('.', { includeContent: false }))
+    .pipe(dest(DSTPATH));
+}
+
+function js_uglify() {
+  return src([BASEPATH + 'dist/js/**/*.js', '!**/*.min.js', '!node_modules/**/*.js', '!**/node_modules/**/*.js'])
+    // .pipe(sourcemaps.init())
+    .pipe(terser({ keep_classnames: true, keep_fnames: true }))
+    .pipe(rename(function(sourcePath) {
+      sourcePath.extname = '.min' + sourcePath.extname;
+    }))
+    // .pipe(tap(_remove_debug))
+    .pipe(tap(_remove_comments))
+    .pipe(tap(_force_inline))
     .pipe(tap(function(file) {
       file.contents = Buffer.from(_bundle_banner(file.basename) + file.contents.toString());
     }))
@@ -160,26 +188,6 @@ function js_compat() {
     .pipe(dest(DSTPATH));
 }
 
-function js_uglify() {
-  return src([BASEPATH + 'dist/js/**/*.js', '!**/*.min.js', '!node_modules/**/*.js', '!**/node_modules/**/*.js'])
-    // .pipe(sourcemaps.init())
-    .pipe(terser())
-    .pipe(rename(function(sourcePath) {
-      sourcePath.extname = '.min' + sourcePath.extname;
-    }))
-    // .pipe(tap(_remove_debug))
-    .pipe(tap(_remove_comments))
-    .pipe(tap(function(file) {
-      file.contents = Buffer.from(_bundle_banner(file.basename) + file.contents.toString());
-    }))
-    // .pipe(sourcemaps.mapSources(function(sourcePath, file) {
-    //   const base = path.relative(file.cwd, file.dirname);
-    //   return path.relative(base, sourcePath);
-    // }))
-    // .pipe(sourcemaps.write('.', { includeContent: false }))
-    .pipe(dest(DSTPATH));
-}
-
 function css() {
   return src([BASEPATH + 'src/scss/**/*.scss', '!**/*_compat.scss', '!node_modules/**/*.scss', '!**/node_modules/**/*.scss'])
     // .pipe(sourcemaps.init())
@@ -212,6 +220,7 @@ function css_uglify() {
       sourcePath.extname = '.min' + sourcePath.extname;
     }))
     .pipe(tap(_remove_comments))
+    .pipe(tap(_force_inline))
     .pipe(tap(function(file) {
       file.contents = Buffer.from(_bundle_banner(file.basename) + file.contents.toString());
     }))
@@ -253,6 +262,8 @@ function css_compat_uglify() {
       sourcePath.basename = 'ensemble-' + sourcePath.basename.replace('_', '-');
       sourcePath.extname = '.min' + sourcePath.extname;
     }))
+    .pipe(tap(_remove_comments))
+    .pipe(tap(_force_inline))
     .pipe(tap(function(file) {
       file.contents = Buffer.from(_bundle_banner(file.basename) + file.contents.toString());
     }))
