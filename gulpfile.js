@@ -7,7 +7,7 @@ const { series, parallel, watch, src, dest } = require('gulp');
 const tap = require('gulp-tap');
 const rename = require('gulp-rename');
 const babel = require('gulp-babel');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const terser = require('gulp-terser');
 const sourcemaps = require('gulp-sourcemaps');
 
@@ -17,22 +17,22 @@ const rollup = require('@rbnlffl/gulp-rollup');
 const project = {
   'ensemble-common': {
     name: 'loltgt/ensemble [common]',
-    version: '0.0.1',
+    version: '0.0.2',
     link: 'https://github.com/loltgt/ensemble'
   },
   'ensemble-modal': {
     name: 'loltgt/ensemble.Modal',
-    version: '0.0.1',
+    version: '0.0.2',
     link: 'https://github.com/loltgt/ensemble-modal'
   },
   'ensemble-lightbox': {
     name: 'loltgt/ensemble.Lightbox, loltgt/ensemble.Modal',
-    version: '0.0.1',
+    version: '0.0.2',
     link: 'https://github.com/loltgt/ensemble-lightbox'
   },
   'ensemble-social-share': {
     name: 'loltgt/ensemble.SocialShare',
-    version: '0.0.1',
+    version: '0.0.2',
     link: 'https://github.com/loltgt/ensemble-social-share'
   }
 };
@@ -191,7 +191,7 @@ function js_compat() {
 function css() {
   return src([BASEPATH + 'src/scss/**/*.scss', '!**/*_compat.scss', '!node_modules/**/*.scss', '!**/node_modules/**/*.scss'])
     // .pipe(sourcemaps.init())
-    .pipe(sass({ outputStyle: 'nested' }).on('error', sass.logError))
+    .pipe(sass().on('error', sass.logError))
     .pipe(rename(function(sourcePath) {
       sourcePath.dirname = _dst(sourcePath.dirname, 'src', 'dist');
       sourcePath.dirname = sourcePath.dirname.replace('scss', 'css');
@@ -235,7 +235,7 @@ function css_uglify() {
 function css_compat() {
   return src([BASEPATH + 'src/scss/**/*_compat.scss', '!node_modules/**/*.scss', '!**/node_modules/**/*.scss'])
     // .pipe(sourcemaps.init())
-    .pipe(sass({ outputStyle: 'nested' }).on('error', sass.logError))
+    .pipe(sass().on('error', sass.logError))
     .pipe(rename(function(sourcePath) {
       sourcePath.dirname = _dst(sourcePath.dirname, 'src', 'dist');
       sourcePath.dirname = sourcePath.dirname.replace('scss', 'css');

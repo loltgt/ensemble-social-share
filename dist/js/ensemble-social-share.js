@@ -1,4 +1,4 @@
-/*! * loltgt/ensemble.SocialShare * * @version 0.0.1 * @link https://github.com/loltgt/ensemble-social-share * @copyright Copyright (C) Leonardo Laureti * @license MIT License */(function (global, factory) {
+/*! * loltgt/ensemble.SocialShare * * @version 0.0.2 * @link https://github.com/loltgt/ensemble-social-share * @copyright Copyright (C) Leonardo Laureti * @license MIT License */(function (global, factory) {
   if (typeof define === "function" && define.amd) {
     define(["exports"], factory);
   } else if (typeof exports !== "undefined") {
@@ -15,7 +15,7 @@
   /*!
    * loltgt ensemble _Symbol
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -37,7 +37,7 @@
   /*!
    * loltgt ensemble _composition
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -225,7 +225,7 @@
   /*!
    * loltgt ensemble.Compo
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -277,7 +277,7 @@
       const ctag = tag ? tag.toString() : 'div';
 
       if (REJECTED_TAG_NAMES.test(tag)) {
-        throw new Error(`ensemble.Compo error: The tag name provided ('${ctag}') is not a valid name.`);
+        throw new Error("ensemble.Compo error: The tag name provided ('".concat(ctag, "') is not a valid name."));
       }
 
       const node = this[_ns] = this._element(ns, ctag, name, props, options, elementNS);
@@ -290,7 +290,7 @@
           const cprop = prop.toString();
 
           if (DENIED_PROPS.test(cprop)) {
-            throw new Error(`ensemble.Compo error: The property name provided ('${cprop}') is not a valid name.`);
+            throw new Error("ensemble.Compo error: The property name provided ('".concat(cprop, "') is not a valid name."));
           }
 
           if (cprop.indexOf('on') === 0 && props[cprop] && typeof props[cprop] == 'function') {
@@ -539,7 +539,7 @@
   /*!
    * loltgt ensemble.Data
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -597,7 +597,10 @@
      */
 
 
-    compo(tag, name, props, defer = false, fresh = false, stale = false) {
+    compo(tag, name, props) {
+      let defer = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+      let fresh = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+      let stale = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
       const ns = this[this._ns].ns;
       let compo;
 
@@ -714,7 +717,7 @@
   /*!
    * loltgt ensemble.Event
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -767,7 +770,9 @@
      */
 
 
-    add(handle, options = false) {
+    add(handle) {
+      let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
       this[this._ns].node.addEventListener(this[this._ns].name, handle, options);
     }
     /**
@@ -815,7 +820,7 @@
   /*!
    * loltgt ensemble.base
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble-stack-d1
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -849,11 +854,11 @@
       }
 
       if (options && typeof options != 'object') {
-        throw new TypeError(`${tname} error: The passed argument 'options' is not of type Object.`);
+        throw new TypeError("".concat(tname, " error: The passed argument 'options' is not of type Object."));
       }
 
       if (element && typeof element != 'object') {
-        throw new TypeError(`${tname} error: The passed argument 'element' is not of type Object.`);
+        throw new TypeError("".concat(tname, " error: The passed argument 'element' is not of type Object."));
       }
 
       this._bindings();
@@ -951,7 +956,8 @@
      */
 
 
-    selector(query, node, all = false) {
+    selector(query, node) {
+      let all = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       node = node || document;
       return all ? node.querySelectorAll(query) : node.querySelector(query);
     }
@@ -1008,7 +1014,8 @@
      */
 
 
-    cloneNode(node, deep = false) {
+    cloneNode(node) {
+      let deep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       return node.cloneNode(deep);
     }
     /**
@@ -1107,7 +1114,8 @@
      */
 
 
-    timing(node, prop = 'transitionDuration') {
+    timing(node) {
+      let prop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'transitionDuration';
       let time = Compo.isCompo(node) ? node.getStyle(prop) : window.getComputedStyle(node)[prop];
 
       if (time) {
@@ -1121,7 +1129,7 @@
   /*!
    * loltgt ensemble.SocialShare
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble-social-share
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License

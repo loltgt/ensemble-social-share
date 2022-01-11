@@ -1,4 +1,4 @@
-/*! * loltgt/ensemble.SocialShare (compat) * * @version 0.0.1 * @link https://github.com/loltgt/ensemble-social-share * @copyright Copyright (C) Leonardo Laureti * @license MIT License */(function (global, factory) {
+/*! * loltgt/ensemble.SocialShare (compat) * * @version 0.0.2 * @link https://github.com/loltgt/ensemble-social-share * @copyright Copyright (C) Leonardo Laureti * @license MIT License */(function (global, factory) {
   if (typeof define === "function" && define.amd) {
     define(["exports"], factory);
   } else if (typeof exports !== "undefined") {
@@ -15,7 +15,7 @@
   /*!
    * loltgt ensemble _Symbol
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -125,9 +125,9 @@ var runtime = (function (exports) {
   // This is a polyfill for %IteratorPrototype% for environments that
   // don't natively support it.
   var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
+  define(IteratorPrototype, iteratorSymbol, function () {
     return this;
-  };
+  });
 
   var getProto = Object.getPrototypeOf;
   var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
@@ -141,8 +141,9 @@ var runtime = (function (exports) {
 
   var Gp = GeneratorFunctionPrototype.prototype =
     Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunction.prototype = GeneratorFunctionPrototype;
+  define(Gp, "constructor", GeneratorFunctionPrototype);
+  define(GeneratorFunctionPrototype, "constructor", GeneratorFunction);
   GeneratorFunction.displayName = define(
     GeneratorFunctionPrototype,
     toStringTagSymbol,
@@ -256,9 +257,9 @@ var runtime = (function (exports) {
   }
 
   defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+  define(AsyncIterator.prototype, asyncIteratorSymbol, function () {
     return this;
-  };
+  });
   exports.AsyncIterator = AsyncIterator;
 
   // Note that simple async functions are implemented on top of
@@ -451,13 +452,13 @@ var runtime = (function (exports) {
   // iterator prototype chain incorrectly implement this, causing the Generator
   // object to not be returned from this call. This ensures that doesn't happen.
   // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
+  define(Gp, iteratorSymbol, function() {
     return this;
-  };
+  });
 
-  Gp.toString = function() {
+  define(Gp, "toString", function() {
     return "[object Generator]";
-  };
+  });
 
   function pushTryEntry(locs) {
     var entry = { tryLoc: locs[0] };
@@ -776,14 +777,19 @@ try {
 } catch (accidentalStrictMode) {
   // This module should not be running in strict mode, so the above
   // assignment should always work unless something is misconfigured. Just
-  // in case runtime.js accidentally runs in strict mode, we can escape
+  // in case runtime.js accidentally runs in strict mode, in modern engines
+  // we can explicitly access globalThis. In older engines we can escape
   // strict mode using a global Function call. This could conceivably fail
   // if a Content Security Policy forbids using Function, but in that case
   // the proper solution is to fix the accidental strict mode problem. If
   // you've misconfigured your bundler to force strict mode and applied a
   // CSP to forbid Function, and you're not willing to fix either of those
   // problems, please detail your unique predicament in a GitHub issue.
-  Function("r", "regeneratorRuntime = r")(runtime);
+  if (typeof globalThis === "object") {
+    globalThis.regeneratorRuntime = runtime;
+  } else {
+    Function("r", "regeneratorRuntime = r")(runtime);
+  }
 }
 
 
@@ -795,25 +801,25 @@ try {
 
   function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-  function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+  function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
   function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
-  function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+  function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
   function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
   function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-  function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+  function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
-  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
   function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
   function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
-  function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+  function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
 
   function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
@@ -825,13 +831,13 @@ try {
 
   function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-  function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+  function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
   var _Symbol = typeof Symbol == 'undefined' ? 0 : Symbol;
   /*!
    * loltgt ensemble _composition
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -1039,7 +1045,7 @@ try {
   /*!
    * loltgt ensemble.Compo
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -1061,7 +1067,7 @@ try {
    * new ensemble.Compo('namespace-of-my-foo-component', 'div', 'foo', { id: 'fooDiv', tabIndex: 1 });
    */
 
-  var Compo = /*#__PURE__*/function (_composition2) {
+  var Compo = /*#__PURE__*/function (_composition2, _Symbol$toStringTag) {
     _inherits(Compo, _composition2);
 
     var _super = _createSuper(Compo);
@@ -1369,7 +1375,7 @@ try {
        */
 
     }, {
-      key: _Symbol.toStringTag,
+      key: _Symbol$toStringTag,
       get:
       /**
        * Getter for Symbol property, returns the symbolic name for ensemble.Compo class.
@@ -1392,11 +1398,11 @@ try {
     }]);
 
     return Compo;
-  }(_composition);
+  }(_composition, _Symbol.toStringTag);
   /*!
    * loltgt ensemble.Data
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -1414,7 +1420,7 @@ try {
    */
 
 
-  var Data = /*#__PURE__*/function () {
+  var Data = /*#__PURE__*/function (_Symbol$toStringTag2) {
     /**
      * Constructor method.
      *
@@ -1621,7 +1627,7 @@ try {
        */
 
     }, {
-      key: _Symbol.toStringTag,
+      key: _Symbol$toStringTag2,
       get:
       /**
        * Getter for Symbol property, returns the symbolic name for ensemble.Data class.
@@ -1644,11 +1650,11 @@ try {
     }]);
 
     return Data;
-  }();
+  }(_Symbol.toStringTag);
   /*!
    * loltgt ensemble.Event
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -1665,7 +1671,7 @@ try {
    */
 
 
-  var Event = /*#__PURE__*/function () {
+  var Event = /*#__PURE__*/function (_Symbol$toStringTag3) {
     /**
      * Constructor method.
      *
@@ -1733,7 +1739,7 @@ try {
        */
 
     }, {
-      key: _Symbol.toStringTag,
+      key: _Symbol$toStringTag3,
       get:
       /**
        * Getter for Symbol property, returns the symbolic name for ensemble.Event class.
@@ -1756,11 +1762,11 @@ try {
     }]);
 
     return Event;
-  }();
+  }(_Symbol.toStringTag);
   /*!
    * loltgt ensemble.base
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble-stack-d1
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License
@@ -2091,7 +2097,7 @@ try {
   /*!
    * loltgt ensemble.SocialShare
    *
-   * @version 0.0.1
+   * @version 0.0.2
    * @link https://github.com/loltgt/ensemble-social-share
    * @copyright Copyright (C) Leonardo Laureti
    * @license MIT License

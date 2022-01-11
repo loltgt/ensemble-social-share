@@ -3,7 +3,7 @@
 ensemble.SocialShare JavaScript class from loltgt.
 
  
-For testing purpose — **under development**
+**beta stage**
 
  
 

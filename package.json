@@ -1,6 +1,6 @@
 {
   "name": "ensemble-social-share",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ensemble.SocialShare JavaScript class from loltgt",
   "main": "index.js",
   "scripts": {
@@ -28,11 +28,11 @@
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-rename": "^2.0.0",
-    "gulp-sass": "^4.1.0",
+    "gulp-sass": "^5.1.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-tap": "^2.0.0",
     "gulp-terser": "^2.0.1",
-    "node-sass": "^5.0.0",
+    "sass": "^1.45.2",
     "regenerator-runtime": "^0.13.7"
   }
 }

@@ -1,7 +1,7 @@
-/*! * loltgt/ensemble.SocialShare (compat) * * @version 0.0.1 * @link https://github.com/loltgt/ensemble-social-share * @copyright Copyright (C) Leonardo Laureti * @license MIT License *//*!
+/*! * loltgt/ensemble.SocialShare (compat) * * @version 0.0.2 * @link https://github.com/loltgt/ensemble-social-share * @copyright Copyright (C) Leonardo Laureti * @license MIT License *//*!
  * loltgt ensemble.SocialShare
  *
- * @version 0.0.1
+ * @version 0.0.2
  * @link https://github.com/loltgt/ensemble-social-share
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
@@ -9,7 +9,8 @@
 .social-share, .share-actions, .share-action, .share-button, .share-intent, .share-icon, .share-copied-link-message, .share-fx-copied-link--ground {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+}
 
 .share-intent {
   transform: scale3d(1, 1, 1);
@@ -27,8 +28,20 @@
   transition: transform 50ms linear;
   -webkit-transition: -webkit-transform 50ms linear;
   -webkit-transition: -moz-transform 50ms linear;
-  -ms-transition: -ms-transform 50ms linear; }
-  .share-intent:active, .share-intent:focus {
+  -ms-transition: -ms-transform 50ms linear;
+}
+.share-intent:active, .share-intent:focus {
+  transform: scale3d(1.1, 1.1, 1.1);
+  -webkit-transform: scale3d(1.1, 1.1, 1.1);
+  -moz-transform: scale3d(1.1, 1.1, 1.1);
+  -ms-transform: scale3d(1.1, 1.1, 1.1);
+  transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+}
+@media (hover: hover) {
+  .share-intent:hover {
     transform: scale3d(1.1, 1.1, 1.1);
     -webkit-transform: scale3d(1.1, 1.1, 1.1);
     -moz-transform: scale3d(1.1, 1.1, 1.1);
@@ -36,44 +49,41 @@
     transform: scale(1.1);
     -webkit-transform: scale(1.1);
     -moz-transform: scale(1.1);
-    -ms-transform: scale(1.1); }
-  @media (hover: hover) {
-    .share-intent:hover {
-      transform: scale3d(1.1, 1.1, 1.1);
-      -webkit-transform: scale3d(1.1, 1.1, 1.1);
-      -moz-transform: scale3d(1.1, 1.1, 1.1);
-      -ms-transform: scale3d(1.1, 1.1, 1.1);
-      transform: scale(1.1);
-      -webkit-transform: scale(1.1);
-      -moz-transform: scale(1.1);
-      -ms-transform: scale(1.1); } }
+    -ms-transform: scale(1.1);
+  }
+}
 
 .social-share {
   display: block;
   font-size: 16px;
   font-size: 1rem;
-  line-height: 1; }
+  line-height: 1;
+}
 
 .share-actions {
   margin: 0 -3px;
   margin: 0 -0.2rem;
-  list-style: none; }
+  list-style: none;
+}
 
 .share-action {
   float: left;
   margin: 3px 3px;
   margin: 0.2rem 0.2rem;
-  text-align: center; }
+  text-align: center;
+}
 
 .share-button {
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  -webkit-highlight: none; }
+  -webkit-highlight: none;
+}
 
 .share-button:active, .share-button:focus {
   outline: 0;
-  -webkit-tap-highlight-color: transparent; }
+  -webkit-tap-highlight-color: transparent;
+}
 
 .share-intent {
   display: block;
@@ -85,39 +95,51 @@
   background: #aaaaaa;
   border: 0;
   border-radius: 0;
-  border-radius: 0; }
+  border-radius: 0;
+}
 
 .share-icon {
-  vertical-align: middle; }
-  .share-icon:before, .share-icon:after {
-    display: block; }
+  vertical-align: middle;
+}
+.share-icon:before, .share-icon:after {
+  display: block;
+}
 
 .share-intent-facebook {
-  background: #365899; }
+  background: #365899;
+}
 
 .share-intent-twitter {
-  background: #1da1f2; }
+  background: #1da1f2;
+}
 
 .share-intent-pinterest {
-  background: #cc2127; }
+  background: #cc2127;
+}
 
 .share-intent-linkedin {
-  background: #0976b4; }
+  background: #0976b4;
+}
 
 .share-intent-whatsapp {
-  background: #25d366; }
+  background: #25d366;
+}
 
 .share-intent-messenger {
-  background: #0084ff; }
+  background: #0084ff;
+}
 
 .share-intent-telegram {
-  background: #179cde; }
+  background: #179cde;
+}
 
 .share-intent-send-email {
-  background: #886666; }
+  background: #886666;
+}
 
 .share-intent-copy-link {
-  background: #33ddff; }
+  background: #33ddff;
+}
 
 .share-copied-link-message {
   position: fixed;
@@ -139,13 +161,15 @@
   -webkit-transform: translate(-50%, -50%);
   -moz-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
-  z-index: 1002; }
+  z-index: 1002;
+}
 
 .share-fx-copied-link {
-  position: relative; }
+  position: relative;
+}
 
 .share-fx-copied-link--ground {
-  content: '';
+  content: "";
   display: block !important;
   position: fixed;
   top: 0;
@@ -160,31 +184,43 @@
   -moz-transition: opacity 0.8s ease-out;
   -ms-transition: opacity 0.8s ease-out;
   opacity: 0.78;
-  z-index: 1001; }
+  z-index: 1001;
+}
 
 .share-fx-copied-link--ground[hidden] {
   display: block !important;
-  opacity: 1; }
+  opacity: 1;
+}
 
 .share-action-callout {
   display: inline-block;
-  margin: .2rem .5rem; }
+  margin: 0.2rem 0.5rem;
+}
 
 .share-intent-callout {
   border-radius: 0;
   color: #ccc;
   outline: 0;
-  transform: none !important; }
+  transform: none !important;
+}
 
 @media (min-width: 992px) {
   .share-actions {
     margin: 0 -4px;
-    margin: 0 -0.3rem; }
+    margin: 0 -0.3rem;
+  }
+
   .share-action {
     margin: 3px 4px;
-    margin: 0.2rem 0.3rem; }
+    margin: 0.2rem 0.3rem;
+  }
+
   .share-intent {
     font-size: 32px;
-    font-size: 2rem; }
+    font-size: 2rem;
+  }
+
   .share-copied-link-message {
-    width: auto; } }
+    width: auto;
+  }
+}
