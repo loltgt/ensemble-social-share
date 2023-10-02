@@ -32,7 +32,7 @@ const project = {
   },
   'ensemble-social-share': {
     name: 'loltgt/ensemble.SocialShare',
-    version: '0.0.2',
+    version: '0.0.3',
     link: 'https://github.com/loltgt/ensemble-social-share'
   }
 };

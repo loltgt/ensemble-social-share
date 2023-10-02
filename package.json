@@ -1,6 +1,6 @@
 {
   "name": "ensemble-social-share",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "ensemble.SocialShare JavaScript class from loltgt",
   "main": "index.js",
   "scripts": {

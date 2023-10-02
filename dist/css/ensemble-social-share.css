@@ -1,4 +1,11 @@
-/*! * loltgt/ensemble.SocialShare * * @version 0.0.2 * @link https://github.com/loltgt/ensemble-social-share * @copyright Copyright (C) Leonardo Laureti * @license MIT License */
+/*!
+ * loltgt/ensemble.SocialShare
+ *
+ * @version 0.0.3
+ * @link https://github.com/loltgt/ensemble-social-share
+ * @copyright Copyright (C) Leonardo Laureti
+ * @license MIT License
+ */
 .social-share, .share-actions, .share-action, .share-button, .share-intent, .share-icon, .share-copied-link-message, .share-fx-copied-link--ground {
   margin: 0;
   padding: 0;
@@ -71,6 +78,10 @@
 
 .share-intent-facebook {
   background: #365899;
+}
+
+.share-intent-ex {
+  background: #4e4e5e;
 }
 
 .share-intent-twitter {

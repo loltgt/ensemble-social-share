@@ -1,7 +1,7 @@
 /*!
  * loltgt ensemble.SocialShare
  *
- * @version 0.0.2
+ * @version 0.0.3
  * @link https://github.com/loltgt/ensemble-social-share
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
@@ -61,9 +61,20 @@ class SocialShare extends base {
       link: '',
       title: '',
       description: '',
-      displays: null,
+      displays: [
+        'facebook',
+        'ex',
+        'whatsapp',
+        'messenger',
+        'telegram',
+        'linkedin',
+        'send-email',
+        'copy-link',
+        'web-share'
+      ],
       intents: {
         'facebook': 0,
+        'ex': 0,
         'twitter': 0,
         'whatsapp': 1,
         'messenger': 1,
@@ -75,6 +86,7 @@ class SocialShare extends base {
       },
       uriform: {
         'facebook': 'https://facebook.com/sharer.php?u=%url%',
+        'ex': 'https://x.com/share?url=%url%&text=%title%',
         'twitter': 'https://twitter.com/share?url=%url%&text=%title%',
         'whatsapp': 'https://api.whatsapp.com/send?text=%text%',
         'messenger': 'fb-messenger://share/?link=%url%&app_id=%app_id%',
@@ -103,6 +115,7 @@ class SocialShare extends base {
         copied: 'Copied link!',
         'whatsapp': 'WhatsApp',
         'linkedin': 'LinkedIn',
+        'ex': 'X (Twitter)',
         'web-share': 'Share'
       },
       onInit: function() {},

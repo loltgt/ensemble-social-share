@@ -2,15 +2,15 @@
 /* TEMPORARY */
 
 @font-face {
-  font-family: 'iconset';
-  src: url('iconset.tmp.woff?p7zmsr') format('woff');
+  font-family: "iconset";
+  src: url("iconset.tmp.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: block;
 }
 [class^="icon-"], [class*=" icon-"] {
-  font-family: 'iconset' !important;
-  speak: none;
+  font-family: "iconset" !important;
+  speak: never;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -69,4 +69,7 @@
 }
 .icon-youtube:before {
   content: "\e962";
+}
+.icon-ex:before {
+  content: "\e964";
 }
