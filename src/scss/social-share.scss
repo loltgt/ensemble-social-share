@@ -1,11 +1,13 @@
 /*!
- * loltgt ensemble.SocialShare
+ * ensemble SocialShare
  *
- * @version 0.0.3
+ * @version 0.0.4
  * @link https://github.com/loltgt/ensemble-social-share
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
  */
+
+@use "sass:math";
 
 %ensemble-socialshare_css_reset {
   margin: 0;
@@ -29,15 +31,15 @@
 }
 .share-actions {
 @if $ensemble_compat {
-  margin: 0 (-(floor($ensemble-socialshare_action_margin-x / 1rem * 16px)));
+  margin: 0 (-(math.floor(math.div($ensemble-socialshare_action_margin-x, 1rem) * 16px)));
 }
   margin: 0 (-$ensemble-socialshare_action_margin-x);
   list-style: none;
 }
 .share-action {
-  float: left;
+  display: inline-block;
 @if $ensemble_compat {
-  margin: floor($ensemble-socialshare_action_margin-y / 1rem * 16px) floor($ensemble-socialshare_action_margin-x / 1rem * 16px);
+  margin: math.floor(math.div($ensemble-socialshare_action_margin-y, 1rem) * 16px) math.floor(math.div($ensemble-socialshare_action_margin-x, 1rem) * 16px);
 }
   margin: $ensemble-socialshare_action_margin-y $ensemble-socialshare_action_margin-x;
   text-align: center;
@@ -45,8 +47,9 @@
 .share-button {
   cursor: pointer;
   appearance: none;
+@if $ensemble_compat {
   -webkit-appearance: none;
-  -webkit-highlight: none;
+}
 }
 .share-button:active, .share-button:focus {
   outline: 0;
@@ -55,7 +58,7 @@
 .share-intent {
   display: block;
 @if $ensemble_compat {
-  font-size: floor($ensemble-socialshare_intent_font-size / 1rem * 16px);
+  font-size: math.floor(math.div($ensemble-socialshare_intent_font-size, 1rem) * 16px);
 }
   padding: $ensemble-socialshare_intent_padding;
   font-size: $ensemble-socialshare_intent_font-size;
@@ -64,7 +67,7 @@
   background: $ensemble-socialshare_intent_background;
   border: $ensemble-socialshare_intent_border;
 @if $ensemble_compat {
-  border-radius: if($ensemble-socialshare_intent_border-radius != 0, $ensemble-socialshare_intent_border-radius / 1rem * 16px, 0);
+  border-radius: if($ensemble-socialshare_intent_border-radius != 0, math.floor(math.div($ensemble-socialshare_intent_border-radius, 1rem) * 16px), 0);
 }
   border-radius: $ensemble-socialshare_intent_border-radius;
   @extend %ensemble-socialshare_fx_intent;
@@ -96,7 +99,7 @@
   max-width: 80vw;
   width: 100%;
 @if $ensemble_compat {
-  font-size: floor($ensemble-socialshare_fx_intent_copy-link_message_font-size / 1rem * 16px);
+  font-size: math.floor(math.div($ensemble-socialshare_fx_intent_copy-link_message_font-size, 1rem) * 16px);
 }
   padding: $ensemble-socialshare_fx_intent_copy-link_message_padding;
   font-family: $ensemble-socialshare_fx_intent_copy-link_message_font-family;
@@ -121,10 +124,14 @@
   content: '';
   display: block !important;
   position: fixed;
+@if $ensemble_compat {
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+} @else {
+  inset: 0;
+}
   width: 100%;
   height: 100%;
   background: $ensemble-socialshare_fx_ground__background;
@@ -142,8 +149,6 @@
   opacity: 1;
 }
 
-
-
 .share-action-callout {
   display: inline-block;
   margin: .2rem .5rem;
@@ -156,26 +161,23 @@
 }
 
 
-
-
-
-
+//TODO
 @media (min-width: 992px) {
   .share-actions {
 @if $ensemble_compat {
-    margin: 0 (-(floor($ensemble-socialshare_md__action_margin-x / 1rem * 16px)));
+    margin: 0 (-(math.floor(math.div($ensemble-socialshare_md__action_margin-x, 1rem) * 16px)));
 }
     margin: 0 (-$ensemble-socialshare_md__action_margin-x);
   }
   .share-action {
 @if $ensemble_compat {
-    margin: floor($ensemble-socialshare_md__action_margin-y / 1rem * 16px) floor($ensemble-socialshare_md__action_margin-x / 1rem * 16px);
+    margin: math.floor(math.div($ensemble-socialshare_md__action_margin-y, 1rem) * 16px) math.floor(math.div($ensemble-socialshare_md__action_margin-x, 1rem) * 16px);
 }
     margin: $ensemble-socialshare_md__action_margin-y $ensemble-socialshare_md__action_margin-x;
   }
   .share-intent {
 @if $ensemble_compat {
-    font-size: floor($ensemble-socialshare_md__intent_font-size / 1rem * 16px);
+    font-size: math.floor(math.div($ensemble-socialshare_md__intent_font-size, 1rem) * 16px);
 }
     font-size: $ensemble-socialshare_md__intent_font-size;
   }

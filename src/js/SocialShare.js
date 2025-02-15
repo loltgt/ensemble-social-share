@@ -1,7 +1,7 @@
 /*!
- * loltgt ensemble.SocialShare
+ * ensemble SocialShare
  *
- * @version 0.0.3
+ * @version 0.0.4
  * @link https://github.com/loltgt/ensemble-social-share
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
@@ -14,41 +14,40 @@
  * @exports SocialShare
  */
 
-import base from '../../../ensemble-stack-d1/lib/base.js';
+import base from '@loltgt/ensemble';
 
 
 /**
- * ensemble.SocialShare component.
+ * SocialShare ensemble component
  *
  * @class
  * @extends base
  * @inheritdoc
- * @param {Element} [element] - A valid Element node that will be replaced with this component
- * @param {object} options - Options object
- * @param {string} [options.ns=share] - The namespace for social share
- * @param {string} [options.root=body] - The root Element node
- * @param {(string|string[])} [options.className=social-share] - The component CSS class name
- * @param {string} [options.link=''] - The link, leave empty to auto-discover with selector or location.href
- * @param {string} [options.title=''] - The title, leave empty to auto-discover with selector or window.title
- * @param {string} [options.description=''] - The description, leave empty to auto-discover with selector
- * @param {object} [options.displays=null] - Actions to display, default to all
- * @param {object} [options.intents] - Action intents
- * @param {object} [options.uriform] - URI strings
- * @param {object} [options.label] - Custom parameters for label
- * @param {object} [options.selectorLink] - An element selector to find link
- * @param {object} [options.selectorTitle] - An element selector to find title
- * @param {object} [options.selectorDescription] - An element selector to find description
- * @param {object} [options.locale] - Localization
- * @param {function} [options.onInit] - onInit callback, fires when social share is initialized
- * @param {function} [options.onIntent] - onIntent callback, fires when an action is called
+ * @param {Element} [element] A valid Element node that will be replaced with this component
+ * @param {object} options Options object
+ * @param {string} [options.ns=share] The namespace for social share
+ * @param {string} [options.root=body] The root Element node
+ * @param {(string|string[])} [options.className=social-share] The component CSS class name
+ * @param {string} [options.link=''] The link, leave empty to auto-discover with selector or location.href
+ * @param {string} [options.title=''] The title, leave empty to auto-discover with selector or window.title
+ * @param {string} [options.description=''] The description, leave empty to auto-discover with selector
+ * @param {string[]} [options.displays=null] Actions to display, default to all
+ * @param {object} [options.intents] Action intents
+ * @param {object} [options.uriform] URI strings
+ * @param {object} [options.label] Parameters for label
+ * @param {object} [options.selectorLink] An element selector to find link
+ * @param {object} [options.selectorTitle] An element selector to find title
+ * @param {object} [options.selectorDescription] An element selector to find description
+ * @param {object} [options.locale] Localization strings
+ * @param {function} [options.onInit] onInit callback, fires when social share is initialized
+ * @param {function} [options.onIntent] onIntent callback, fires when an action is called
  * @example
- * new ensemble.SocialShare(document.getElementById('my-div-placeholder'), {});
- * @todo arguments
+ * new ensemble.SocialShare(document.getElementById('placeholder'), {displays:['copy-link', 'web-share']});
  */
 class SocialShare extends base {
 
   /**
-   * Options object default properties.
+   * Default properties
    *
    * @returns {object}
    */
@@ -61,21 +60,10 @@ class SocialShare extends base {
       link: '',
       title: '',
       description: '',
-      displays: [
-        'facebook',
-        'ex',
-        'whatsapp',
-        'messenger',
-        'telegram',
-        'linkedin',
-        'send-email',
-        'copy-link',
-        'web-share'
-      ],
+      displays: null,
       intents: {
         'facebook': 0,
         'ex': 0,
-        'twitter': 0,
         'whatsapp': 1,
         'messenger': 1,
         'telegram': 1,
@@ -84,10 +72,10 @@ class SocialShare extends base {
         'copy-link': 3,
         'web-share': 4
       },
+      //TODO
       uriform: {
         'facebook': 'https://facebook.com/sharer.php?u=%url%',
-        'ex': 'https://x.com/share?url=%url%&text=%title%',
-        'twitter': 'https://twitter.com/share?url=%url%&text=%title%',
+        'ex': 'https://twitter.com/intent/tweet?text=%title%&url=%url%',
         'whatsapp': 'https://api.whatsapp.com/send?text=%text%',
         'messenger': 'fb-messenger://share/?link=%url%&app_id=%app_id%',
         'telegram': 'https://telegram.me/share/url?url=%url%&text=%text%',
@@ -115,7 +103,6 @@ class SocialShare extends base {
         copied: 'Copied link!',
         'whatsapp': 'WhatsApp',
         'linkedin': 'LinkedIn',
-        'ex': 'X (Twitter)',
         'web-share': 'Share'
       },
       onInit: function() {},
@@ -124,18 +111,18 @@ class SocialShare extends base {
   }
 
   /**
-   * Methods binding.
+   * Methods binding
    */
   _bindings() {
     this.intent = this.binds(this.intent);
   }
 
   /**
-   * Constructor method.
+   * Constructor method
    */
   constructor() {
     if (! new.target) {
-      throw 'ensemble.SocialShare error: Bad invocation, must be called with new.';
+      throw 'Bad invocation. Must be called with `new`.';
     }
 
     super(...arguments);
@@ -144,9 +131,7 @@ class SocialShare extends base {
   }
 
   /**
-   * The generator creates almost everything the component needs and replaces the element placeholder.
-   *
-   * @todo dataset
+   * Element generator
    */
   generator() {
     const opts = this.options;
@@ -154,8 +139,7 @@ class SocialShare extends base {
     const share = this.share = this.compo(false, false, {
       className: typeof opts.className == 'object' ? opts.className.join(' ') : opts.className
     });
-    //TODO
-    // dataset
+    //TODO dataset
     share.setAttr('data-social-share', '');
 
     if (opts.label) {
@@ -176,9 +160,7 @@ class SocialShare extends base {
   }
 
   /**
-   * Initializes the component.
-   *
-   * @todo TODO
+   * Initializes the component
    */
   init() {
     const opts = this.options;
@@ -191,7 +173,7 @@ class SocialShare extends base {
     this.generator();
 
     if (this.element) {
-      this.share.up(this.element, (function(node) {
+      this.share.overlap(this.element, (function(node) {
         this.element = node;
       }).bind(this));
     }
@@ -202,7 +184,7 @@ class SocialShare extends base {
   }
 
   /**
-   * In this stage the component is populated with all the content progeny.
+   * On this stage the component is populated with progeny
    *
    * @see window.navigator.share()
    */
@@ -235,11 +217,10 @@ class SocialShare extends base {
   }
 
   /**
-   * Creates the whole set of buttons.
+   * Creates the whole set of buttons
    *
-   * @param {string} intent - The activity name
-   * @param {string} title - A title for activity
-   * @todo dataset
+   * @param {string} intent The activity name
+   * @param {string} title A title for activity
    */
   action(intent, title) {
     const opts = this.options;
@@ -253,8 +234,7 @@ class SocialShare extends base {
       ariaLabel: title,
       onclick: this.intent
     });
-    //TODO
-    // dataset
+    //TODO dataset
     action.setAttr('data-share-intent', intent);
     action.append(button);
 
@@ -267,19 +247,19 @@ class SocialShare extends base {
   }
 
   /**
-   * The intent activity.
+   * Intent activity
+   *
    * This method is called from each action.
    *
    * @see window.location
    *
-   * @param {Event} e - An Event
-   * @param {Element} target - The element that is invoking
-   * @todo url validation
+   * @param {Event} evt An Event
+   * @param {Element} target The element is invoking
    */
-  intent(e, target) {
-    this.event(e);
+  intent(evt, target) {
+    this.event(evt);
 
-    if (! e.isTrusted) return;
+    if (! evt.isTrusted) return;
 
     const opts = this.options;
 
@@ -293,6 +273,7 @@ class SocialShare extends base {
 
     if (this.displays.indexOf(intent) == -1) return;
 
+    //TODO url validation
     let url, title, summary, text;
 
     if (opts.link) {
@@ -318,25 +299,25 @@ class SocialShare extends base {
     }
     text = '\r\n\r\n%title%\r\n%url%\r\n\r\n';
 
-    const data = { url, title, text, summary };
+    const data = {url, title, text, summary};
 
-    opts.onIntent.call(this, this, e, intent, data);
+    opts.onIntent.call(this, this, evt, intent, data);
 
     data.text = opts.locale.text.replace('%s', data.text);
 
     if (intent in opts.intents) {
       switch (intent) {
         case 'send-email':
-          this.sendEmail(e, data);
+          this.sendEmail(evt, data);
           break;
         case 'copy-link':
-          this.copyLink(e, data);
+          this.copyLink(evt, data);
           break;
         case 'web-share':
-          this.webShare(e, data);
+          this.webShare(evt, data);
           break;
         default:
-          this.social(e, data, intent, action);
+          this.social(evt, data, intent, action);
       }
     }
   }
@@ -344,12 +325,12 @@ class SocialShare extends base {
   /**
    * Makes text substitutions and encodes to an URL
    *
-   * @param {object} data - The data object
-   * @param {string} data.url - Shared URL
-   * @param {string} data.title - Shared title
-   * @param {string} data.text - Shared description text
-   * @param {string} data.summary - Shared summary
-   * @return {string} - The encoded URL text string
+   * @param {object} data The data object
+   * @param {string} data.url Shared URL
+   * @param {string} data.title Shared title
+   * @param {string} data.text Shared description text
+   * @param {string} data.summary Shared summary
+   * @return {string} The encoded URL text string
    */
   text(data) {
     return encodeURIComponent(
@@ -361,18 +342,18 @@ class SocialShare extends base {
   }
 
   /**
-   * Generic social method for social network sharing intent.
+   * Generic social method for social sharing intent
    *
    * @see window.open()
    *
-   * @param {Event} e - An Event
-   * @param {object} data - The data object
-   * @param {string} data.url - Shared URL
-   * @param {string} data.title - Shared title
-   * @param {string} data.text - Shared description text
-   * @param {string} data.summary - Shared summary
+   * @param {Event} evt An Event
+   * @param {object} data The data object
+   * @param {string} data.url Shared URL
+   * @param {string} data.title Shared title
+   * @param {string} data.text Shared description text
+   * @param {string} data.summary Shared summary
    */
-  social(e, data, intent, action) {
+  social(evt, data, intent, action) {
     const opts = this.options;
 
     if (intent in opts.uriform == false) return;
@@ -382,7 +363,7 @@ class SocialShare extends base {
       .replace('%title%', encodeURIComponent(data.title))
       .replace('%summary%', encodeURIComponent(data.summary));
 
-    //TODO
+    //TODO aria-label
     const title = action.getAttr('ariaLabel');
     const options = 'toolbar=0,status=0,width=640,height=480';
 
@@ -394,111 +375,107 @@ class SocialShare extends base {
       url = url.replace('%app_id%', encodeURIComponent(app_id));
     }
 
-    console.log(url, title, options);
+    console.log('social', url, title, options);
+
     window.open(url, title, options);
   }
 
   /**
-   * Send email intent, it tries to open the default mail client.
+   * Send email intent, it tries to open the default mail client
    *
    * @see window.open()
    *
-   * @param {Event} e - An Event
-   * @param {object} data - The data object
-   * @param {string} data.url - Shared URL
-   * @param {string} data.title - Shared title
-   * @param {string} data.text - Shared description text
-   * @param {string} data.summary - Shared summary
+   * @param {Event} evt An Event
+   * @param {object} data The data object
+   * @param {string} data.url Shared URL
+   * @param {string} data.title Shared title
+   * @param {string} data.text Shared description text
+   * @param {string} data.summary Shared summary
    */
-  sendEmail(e, data) {
+  sendEmail(evt, data) {
     const opts = this.options;
     const url = opts.uriform['send-email']
       .replace('%subject%', encodeURIComponent(opts.locale.subject))
       .replace('%text%', this.text(data));
 
-    console.log(url, '_self');
+    console.log('sendEmail', url, '_self');
+
     window.open(url, '_self');
   }
 
   /**
-   * Copy link intent, it tries to copy URL on the clipboard.
+   * Copy link intent
+   *
+   * It tries to copy URL on the clipboard.
    *
    * @see document.createElement()
    * @see document.execCommand()
    *
-   * @param {Event} e - An Event
-   * @param {object} data - The data object
-   * @param {string} data.url - Shared URL
-   * @param {string} data.title - Shared title
-   * @param {string} data.text - Shared description text
-   * @param {string} data.summary - Shared summary
-   * @todo TODO
+   * @param {Event} evt An Event
+   * @param {object} data The data object
+   * @param {string} data.url Shared URL
+   * @param {string} data.title Shared title
+   * @param {string} data.text Shared description text
+   * @param {string} data.summary Shared summary
    */
-  copyLink(e, data) {
+  copyLink(evt, data) {
     if (! this.element) return;
 
     const opts = this.options;
 
-    const cb = document.createElement('textarea');
-    cb.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
-    cb.value = data.url.toString();
+    const node = document.createElement('textarea');
+    node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
+    node.value = data.url.toString();
 
-    this.appendNode(this.element, cb);
+    this.appendNode(this.element, node);
 
-    //TODO obsolete (safari mobile | crios?)
-    // if (/iPad|iPhone|iPod/.test(window.navigator.userAgent)) {
-    //   const sr = document.createRange();
-    //   const gs = getSelection();
-    //   sr.selectNodeContents(cb);
-    //   gs.removeAllRanges();
-    //   gs.addRange(sr);
-    //   cb.setSelectionRange(0, 999999);
-    // } else {
-      cb.focus();
-      cb.select();
-    // }
+    node.focus();
+    node.select();
 
+    //TODO deprecated
     document.execCommand('copy');
 
-    cb.remove();
+    node.remove();
 
     if (opts.fx) {
       const self = this;
       const root = this.root;
 
-      const gnd = this.compo(false, 'fx-copied-link--ground', { hidden: true });
-      const msg = this.compo('span', 'copied-link-message', { innerText: opts.locale.copied });
+      const bg = this.compo(false, 'fx-copied-link--ground', {hidden: true});
+      const msg = this.compo('span', 'copied-link-message', {innerText: opts.locale.copied});
 
       root.classList.add('share-fx-copied-link');
 
-      gnd.install(root);
-      msg.install(root);
+      bg.bound(root);
+      msg.bound(root);
 
-      gnd.show();
+      bg.show();
 
       this.delay(function() {
-        msg.uninstall(root);
-        gnd.uninstall(root);
+        msg.unbound(root);
+        bg.unbound(root);
         root.classList.remove('share-fx-copied-link');
-      }, gnd, 8e2);
+      }, bg, 8e2);
     }
   }
 
   /**
-   * Calls the native WebShare API for sharing.
+   * Calls the native WebShare API for sharing
    *
    * @see window.navigator.share()
    *
    * @async
+   * @param {Event} evt An Event
+   * @param {object} data The data object
    */
-  async webShare(e, data) {
+  async webShare(evt, data) {
     try {
-      await window.navigator.share({ title: data.title, url: data.url });
+      await window.navigator.share({title: data.title, url: data.url});
     } catch (err) {
       if (err instanceof TypeError) {
-        console.info('ensemble.SocialShare.webShare', 'TODO fallback');
+        //TODO provide a fallback
       } else {
-        console.log('ensemble.SocialShare.webShare', err.message);
+        console.error('webShare', err.message);
       }
     }
   }

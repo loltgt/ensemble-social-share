@@ -3,17 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>loltgt ensemble.SocialShare test</title>
+<title>ensemble SocialShare demo</title>
 <link rel="stylesheet" href="../../ensemble-social-share/dist/css/ensemble-social-share.css">
 <link rel="stylesheet" href="iconset.tmp.css">
 <link rel="stylesheet" href="demo-ensemble-social-share.css">
 </head>
 <body>
 <main>
-<h1>loltgt ensemble.SocialShare test</h1>
-
-<p><strong>beta stage</strong>.</p>
-
+<h1>ensemble SocialShare demo</h1>
 
 <article>
 <h2>ensemble.SocialShare</h2>
@@ -23,24 +20,22 @@
 </article>
 </main>
 
-
-<!-- <script src="../../ensemble/Compo.js"></script> -->
-<!-- <script src="../../ensemble/Data.js"></script> -->
-<!-- <script src="../../ensemble/Event.js"></script> -->
-<!-- <script src="../../ensemble-stack-d1/base.js"></script> -->
+<!-- <script src="../../ensemble/src/js/Compo.js"></script> -->
+<!-- <script src="../../ensemble/src/js/Data.js"></script> -->
+<!-- <script src="../../ensemble/src/js/Event.js"></script> -->
+<!-- <script src="../../ensemble/src/js/base.js"></script> -->
+<!-- <script src="../../ensemble-social-share/src/js/SocialShare.js"></script> -->
 <script src="../../ensemble-social-share/dist/js/ensemble-social-share.min.js"></script>
 <script>
 const options = {
   locale: {
-    copied: 'localized: Copied link!'
+    copied: ':localized: Copied link!'
   }
 };
-
 
 const element = document.querySelector('.social-share');
 
 if (element) {
-  //TODO arguments
   new ensemble.SocialShare(element, options);
 }
 </script>

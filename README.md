@@ -1,12 +1,21 @@
 # ensemble SocialShare
 
-ensemble.SocialShare JavaScript class from loltgt.
+ensemble.SocialShare JavaScript class from loltgt
 
- 
-**beta stage**
 
- 
+## Usage
+
+Simple usage example:
+```
+new ensemble.SocialShare(
+  document.getElementById('placeholder'),
+  {
+    displays:['copy-link', 'web-share']
+  }
+);
+```
+
 
 ## License
 
-[MIT License](LICENSE).
+[MIT License](LICENSE)
