@@ -14,7 +14,21 @@
  * @exports SocialShare
  */
 
-import base from '@loltgt/ensemble';
+import base from "@loltgt/ensemble";
+
+
+/**
+ * SocialShare action enumeration
+ * 
+ * @object
+ */
+const SocialShareActionEnum = {
+  share: 0,
+  send: 1,
+  email: 2,
+  copy: 3,
+  webapi: 4
+}.freeze();
 
 
 /**
@@ -23,28 +37,70 @@ import base from '@loltgt/ensemble';
  * @class
  * @extends base
  * @inheritdoc
- * @param {Element} [element] A valid Element node that will be replaced with this component
+ * @param {Element} [element] A valid Element node placeholder to replace with the component
  * @param {object} options Options object
  * @param {string} [options.ns=share] The namespace for social share
- * @param {string} [options.root=body] The root Element node
- * @param {(string|string[])} [options.className=social-share] The component CSS class name
+ * @param {string} [options.root=body] A root Element node
+ * @param {string[]} [options.className=social-share] The component CSS class name
+ * @param {boolean} [options.effects=true] Allow effects
  * @param {string} [options.link=''] The link, leave empty to auto-discover with selector or location.href
  * @param {string} [options.title=''] The title, leave empty to auto-discover with selector or window.title
  * @param {string} [options.description=''] The description, leave empty to auto-discover with selector
- * @param {string[]} [options.displays=null] Actions to display, default to all
- * @param {object} [options.intents] Action intents
- * @param {object} [options.uriform] URI strings
- * @param {object} [options.label] Parameters for label
- * @param {object} [options.selectorLink] An element selector to find link
- * @param {object} [options.selectorTitle] An element selector to find title
- * @param {object} [options.selectorDescription] An element selector to find description
+ * @param {string[]} [options.intents] Sharing intent buttons to display, default to most popular
+ * @param {object} [options.scaffold] Scaffold for sharing intents with enumeration
+ * @param {object} [options.uriform] Object containing social sharing URL literals
+ * @param {object} [options.label] Parameters for label of the component
+ * @param {object} [options.selectorLink] An element selector for link
+ * @param {object} [options.selectorTitle] An element selector for title
+ * @param {object} [options.selectorDescription] An element selector for description
  * @param {object} [options.locale] Localization strings
- * @param {function} [options.onInit] onInit callback, fires when social share is initialized
- * @param {function} [options.onIntent] onIntent callback, fires when an action is called
+ * @param {function} [options.onInit] onInit callback, on component initialization
+ * @param {function} [options.onIntent] onIntent callback, on sharing intent call
  * @example
- * new ensemble.SocialShare(document.getElementById('placeholder'), {displays:['copy-link', 'web-share']});
+ * new ensemble.SocialShare(document.getElementById('placeholder'), {intents:['copy-link', 'web-share']});
  */
 class SocialShare extends base {
+
+  /**
+   * Shorthand for sharing action enum
+   *
+   * @returns {SocialShareActionEnum}
+   */
+  static actionEnum() {
+    return SocialShareActionEnum;
+  }
+
+  /**
+   * Default scaffold sharing intents
+   *
+   * @constant {object} SocialShareActionEnum Sharing action enum
+   * @returns {object}
+   */
+  _act() {
+    const i = SocialShareActionEnum;
+
+    return {
+      'facebook': i.share,
+      'x': i.share,
+      'linkedin': i.share,
+      'threads': i.share,
+      'bluesky': i.share,
+      'reddit': i.share,
+      'stumbleupon': i.share,
+      'mastodon': i.share,
+      'quora': i.share,
+      'whatsapp': i.send,
+      'messenger': i.send,
+      'telegram': i.send,
+      'skype': i.send,
+      'viber': i.send,
+      'line': i.send,
+      'snapchat': i.send,
+      'send-email': i.email,
+      'copy-link': i.copy,
+      'web-share': i.webapi
+    };
+  }
 
   /**
    * Default properties
@@ -52,34 +108,36 @@ class SocialShare extends base {
    * @returns {object}
    */
   _defaults() {
+    const scaffold = this._act();
+    const intents = Object.keys(scaffold).filter((a, i) => i < 3 || i > 8 && i < 10 || i > 10 && i < 19);
+
     return {
       ns: 'share',
-      fx: true,
       root: 'body',
       className: 'social-share',
+      effects: true,
       link: '',
       title: '',
       description: '',
-      displays: null,
-      intents: {
-        'facebook': 0,
-        'ex': 0,
-        'whatsapp': 1,
-        'messenger': 1,
-        'telegram': 1,
-        'linkedin': 0,
-        'send-email': 2,
-        'copy-link': 3,
-        'web-share': 4
-      },
-      //TODO
+      intents,
+      scaffold,
       uriform: {
-        'facebook': 'https://facebook.com/sharer.php?u=%url%',
-        'ex': 'https://twitter.com/intent/tweet?text=%title%&url=%url%',
+        'facebook': 'https://www.facebook.com/dialog/share?display=popup&href=%url%&app_id=%app_id%',
+        'x': 'https://twitter.com/intent/tweet?text=%title%&url=%url%',
+        'linkedin': 'https://www.linkedin.com/sharing/share-offsite?mini=true&url=%url%&title=%title%&ro=false&summary=%summary%',
+        'threads': 'https://threads.net/intent/post?text=%url%',
+        'bluesky': 'https://bsky.app/intent/compose?text=%url%',
+        'reddit': 'https://www.reddit.com/submit?url=%url%&title=%title%',
+        'stumbleupon': 'https://www.stumbleupon.com/submit?url=%url%&title=%title%',
+        'mastodon': 'https://mastodon.social/share?text=%text%',
+        'quora': 'https://www.quora.com/share?url=%url%&title=%title%',
         'whatsapp': 'https://api.whatsapp.com/send?text=%text%',
         'messenger': 'fb-messenger://share/?link=%url%&app_id=%app_id%',
         'telegram': 'https://telegram.me/share/url?url=%url%&text=%text%',
-        'linkedin': 'https://www.linkedin.com/sharing/share-offsite?mini=true&url=%url%&title=%title%&ro=false&summary=%summary%',
+        'skype': 'https://web.skype.com/share?url=%url%&text=%title%',
+        'viber': 'viber://forward?text=%text%',
+        'line': 'https://line.me/R/msg/text/?%text%',
+        'snapchat': 'https://www.snapchat.com/share?link=%url%',
         'send-email': 'mailto:?subject=%subject%&body=%text%'
       },
       selectorLink: {
@@ -97,7 +155,7 @@ class SocialShare extends base {
         share: 'Share on %s',
         send: 'Send to %s',
         subject: 'An interesting thing',
-        text: 'Hi! There is something may interesting you: %s',
+        text: 'Hi! Here something may interesting you: %s',
         email: 'Send via email',
         copy: 'Copy link',
         copied: 'Copied link!',
@@ -119,6 +177,8 @@ class SocialShare extends base {
 
   /**
    * Constructor method
+   *
+   * @constructs
    */
   constructor() {
     if (! new.target) {
@@ -147,7 +207,7 @@ class SocialShare extends base {
       label.classList.add('label');
 
       if ('innerText' in opts.label == false) {
-        label.innerText = opts.locale.label;
+        label.innerText = opts.locale.label.toString();
       }
 
       share.append(label);
@@ -168,7 +228,10 @@ class SocialShare extends base {
     if (this.built) return;
 
     this.root = this.selector(opts.root);
-    this.displays = opts.displays && typeof opts.displays == 'object' ? opts.displays : Object.keys(opts.intents);
+    this.intents = opts.intents && typeof opts.intents == 'object' ? opts.intents : Object.keys(opts.scaffold);
+
+    const intents = this.intents;
+    if ('twitter' in intents) intents.splice(intents.indexOf('twitter'), 1, 'x');
 
     this.generator();
 
@@ -186,30 +249,31 @@ class SocialShare extends base {
   /**
    * On this stage the component is populated with progeny
    *
-   * @see window.navigator.share()
+   * @see window.navigator.share
    */
   populate() {
-    const opts = this.options;
+    const opts = this.options, locale = opts.locale;
+    const act = SocialShareActionEnum;
 
-    for (const intent in opts.intents) {
-      if (this.displays.indexOf(intent) == -1) continue;
+    for (const intent in opts.scaffold) {
+      if (this.intents.indexOf(intent) == -1) continue;
 
-      const name = intent in opts.locale ? opts.locale[intent] : intent.replace(/\w/, cap => cap.toUpperCase());
+      const name = intent in locale ? locale[intent].toString() : intent.replace(/\w/, cap => cap.toUpperCase());
       let title;
 
-      switch (opts.intents[intent]) {
-        case 0: title = opts.locale.share.replace('%s', name); break;
-        case 1: title = opts.locale.send.replace('%s', name); break;
-        case 2: title = opts.locale.email; break;
-        case 3: title = opts.locale.copy; break;
-        case 4:
+      switch (opts.scaffold[intent]) {
+        case act.share: title = locale.share.toString().replace('%s', name); break;
+        case act.send: title = locale.send.toString().replace('%s', name); break;
+        case act.email: title = locale.email.toString(); break;
+        case act.copy: title = locale.copy.toString(); break;
+        case act.webapi:
           if (! ('share' in window.navigator && typeof window.navigator.share == 'function')) {
             continue;
           }
 
-          title = opts.locale['web-share'];
+          title = locale['web-share'].toString();
 
-          break;
+        break;
       }
 
       this.action(intent, title);
@@ -217,10 +281,10 @@ class SocialShare extends base {
   }
 
   /**
-   * Creates the whole set of buttons
+   * Creates the action with a share button
    *
-   * @param {string} intent The activity name
-   * @param {string} title A title for activity
+   * @param {string} intent The action name
+   * @param {string} title A title for action
    */
   action(intent, title) {
     const opts = this.options;
@@ -247,7 +311,7 @@ class SocialShare extends base {
   }
 
   /**
-   * Intent activity
+   * Selects a sharing intent
    *
    * This method is called from each action.
    *
@@ -261,7 +325,7 @@ class SocialShare extends base {
 
     if (! evt.isTrusted) return;
 
-    const opts = this.options;
+    const opts = this.options, locale = opts.locale;
 
     if (! this.compo().isCompo(target)) return;
 
@@ -271,9 +335,9 @@ class SocialShare extends base {
 
     const intent = action.getAttr('data-share-intent');
 
-    if (this.displays.indexOf(intent) == -1) return;
+    if (this.intents.indexOf(intent) == -1) return;
 
-    //TODO url validation
+    //TODO URL validation
     let url, title, summary, text;
 
     if (opts.link) {
@@ -303,9 +367,9 @@ class SocialShare extends base {
 
     opts.onIntent.call(this, this, evt, intent, data);
 
-    data.text = opts.locale.text.replace('%s', data.text);
+    data.text = locale.text.toString().replace('%s', data.text);
 
-    if (intent in opts.intents) {
+    if (intent in opts.scaffold) {
       switch (intent) {
         case 'send-email':
           this.sendEmail(evt, data);
@@ -317,20 +381,20 @@ class SocialShare extends base {
           this.webShare(evt, data);
           break;
         default:
-          this.social(evt, data, intent, action);
+          this.share(evt, data, intent, action);
       }
     }
   }
 
   /**
-   * Makes text substitutions and encodes to an URL
+   * Text substitutions and URL encodes
    *
-   * @param {object} data The data object
-   * @param {string} data.url Shared URL
-   * @param {string} data.title Shared title
-   * @param {string} data.text Shared description text
-   * @param {string} data.summary Shared summary
-   * @return {string} The encoded URL text string
+   * @param {object} data Sharing data object
+   * @param {string} data.url Share URL
+   * @param {string} data.title Share title text
+   * @param {string} data.text Share description text
+   * @param {string} data.summary Share summary text
+   * @return {string} URL encoded text string
    */
   text(data) {
     return encodeURIComponent(
@@ -342,18 +406,18 @@ class SocialShare extends base {
   }
 
   /**
-   * Generic social method for social sharing intent
+   * Share intent for social sharing action
    *
-   * @see window.open()
+   * @see window.open
    *
    * @param {Event} evt An Event
-   * @param {object} data The data object
-   * @param {string} data.url Shared URL
-   * @param {string} data.title Shared title
-   * @param {string} data.text Shared description text
-   * @param {string} data.summary Shared summary
+   * @param {object} data Sharing data object
+   * @param {string} data.url Share URL
+   * @param {string} data.title Share title text
+   * @param {string} data.text Share description text
+   * @param {string} data.summary Share summary text
    */
-  social(evt, data, intent, action) {
+  share(evt, data, intent, action) {
     const opts = this.options;
 
     if (intent in opts.uriform == false) return;
@@ -370,8 +434,8 @@ class SocialShare extends base {
     if (/%text%/.test(opts.uriform[intent])) {
       url = url.replace('%text%', this.text(data));
     }
-    if (intent == 'messenger') {
-      const app_id = 'messenger_app_id' in opts ? opts.messenger_app_id : '';
+    if (intent == 'facebook' || intent == 'messenger') {
+      const app_id = intent + '_app_id' in opts ? opts[intent + '_app_id'] : '';
       url = url.replace('%app_id%', encodeURIComponent(app_id));
     }
 
@@ -381,21 +445,23 @@ class SocialShare extends base {
   }
 
   /**
-   * Send email intent, it tries to open the default mail client
+   * Send email intent
    *
-   * @see window.open()
+   * Tries to open the default e-mail client.
+   *
+   * @see window.open
    *
    * @param {Event} evt An Event
-   * @param {object} data The data object
-   * @param {string} data.url Shared URL
-   * @param {string} data.title Shared title
-   * @param {string} data.text Shared description text
-   * @param {string} data.summary Shared summary
+   * @param {object} data Sharing data object
+   * @param {string} data.url Share URL
+   * @param {string} data.title Share title text
+   * @param {string} data.text Share description text
+   * @param {string} data.summary Share summary text
    */
   sendEmail(evt, data) {
-    const opts = this.options;
+    const opts = this.options, locale = opts.locale;
     const url = opts.uriform['send-email']
-      .replace('%subject%', encodeURIComponent(opts.locale.subject))
+      .replace('%subject%', encodeURIComponent(locale.subject.toString()))
       .replace('%text%', this.text(data));
 
     console.log('sendEmail', url, '_self');
@@ -406,22 +472,22 @@ class SocialShare extends base {
   /**
    * Copy link intent
    *
-   * It tries to copy URL on the clipboard.
+   * Tries to copy the link to the clipboard.
    *
-   * @see document.createElement()
-   * @see document.execCommand()
+   * @see document.createElement
+   * @see document.execCommand
    *
    * @param {Event} evt An Event
-   * @param {object} data The data object
-   * @param {string} data.url Shared URL
-   * @param {string} data.title Shared title
-   * @param {string} data.text Shared description text
-   * @param {string} data.summary Shared summary
+   * @param {object} data Sharing data object
+   * @param {string} data.url Share URL
+   * @param {string} data.title Share title text
+   * @param {string} data.text Share description text
+   * @param {string} data.summary Share summary text
    */
   copyLink(evt, data) {
     if (! this.element) return;
 
-    const opts = this.options;
+    const opts = this.options, locale = opts.locale;
 
     const node = document.createElement('textarea');
     node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
@@ -437,14 +503,14 @@ class SocialShare extends base {
 
     node.remove();
 
-    if (opts.fx) {
+    if (opts.effects) {
       const self = this;
       const root = this.root;
 
-      const bg = this.compo(false, 'fx-copied-link--ground', {hidden: true});
-      const msg = this.compo('span', 'copied-link-message', {innerText: opts.locale.copied});
+      const bg = this.compo(false, 'effects-copied-link--bg', {hidden: true});
+      const msg = this.compo('span', 'copied-link-msg', {innerText: locale.copied.toString()});
 
-      root.classList.add('share-fx-copied-link');
+      root.classList.add('share-effects-copied-link');
 
       bg.bound(root);
       msg.bound(root);
@@ -454,19 +520,21 @@ class SocialShare extends base {
       this.delay(function() {
         msg.unbound(root);
         bg.unbound(root);
-        root.classList.remove('share-fx-copied-link');
+        root.classList.remove('share-effects-copied-link');
       }, bg, 8e2);
     }
   }
 
   /**
-   * Calls the native WebShare API for sharing
+   * Share from device caller
    *
-   * @see window.navigator.share()
+   * Calls the native WebShare API
+   *
+   * @see window.navigator.share
    *
    * @async
    * @param {Event} evt An Event
-   * @param {object} data The data object
+   * @param {object} data Sharing data object
    */
   async webShare(evt, data) {
     try {

@@ -12,7 +12,8 @@ const {nodeResolve} = require('@rollup/plugin-node-resolve');
 const babel = require('gulp-babel');
 const terser = require('gulp-terser');
 
-var sourcemap_debug = false;
+// flag: -- --sourcemap-debug
+var sourcemap_debug = process.argv.indexOf('--sourcemap-debug') || false;
 
 
 function remove_debug(file) {
@@ -36,7 +37,6 @@ function bundle_basename() {
     basename = process.env.npm_package_name;
   } else {
     var npm_pkg = require('./package.json');
-
     basename = npm_pkg.name;
   }
 
@@ -134,7 +134,7 @@ function js_compat() {
 function _js_minify(options) {
   options = options || {compat: false};
 
-  return ! options.compat ? js() : js_compat()
+  return (! options.compat ? js() : js_compat())
     .pipe(sourcemaps.init({
       loadMaps: false,
       debug: sourcemap_debug,
@@ -173,7 +173,8 @@ function _css(options) {
   options = options || {minify: false, compat: false};
 
   return src([
-      ! options.compat ? 'src/scss/*.scss' : 'src/scss/compat_*.scss',
+      ! options.compat ? 'src/scss/*.scss' : 'src/scss/*_compat.scss',
+      ! options.compat ? '!src/scss/*_compat.scss' : '!',
       '!src/scss/demo_*.scss'
     ])
     .pipe(sourcemaps.init({
@@ -181,8 +182,11 @@ function _css(options) {
         debug: sourcemap_debug
     }))
     .pipe(sass({
+      loadPaths: [
+        './node_modules/@loltgt/ensemble-modal/src/scss'
+      ],
       silenceDeprecations: ['import'],
-      outputStyle: options.minify ? 'compressed' : 'expanded',
+      style: options.minify ? 'compressed' : 'expanded',
     }).on('error', sass.logError))
     .pipe(tap(remove_comments))
     .pipe(tap(function(file) {
@@ -191,6 +195,9 @@ function _css(options) {
     .pipe(rename(function(srcpath) {
       srcpath.basename = bundle_basename();
 
+      if (options.compat) {
+        srcpath.basename += '-compat';
+      }
       if (options.minify) {
         srcpath.extname = '.min' + srcpath.extname;
       }
@@ -231,10 +238,10 @@ function demo_css() {
         './node_modules/@loltgt/ensemble-modal/node_modules/@loltgt/ensemble/src/scss'
       ],
       silenceDeprecations: ['import'],
-      outputStyle: 'compressed'
+      style: 'compressed'
     }).on('error', sass.logError))
     .pipe(rename(function(srcpath) {
-      srcpath.basename = 'demo-ensemble-' + srcpath.basename;
+      srcpath.basename = srcpath.basename.replace('demo_', 'demo-ensemble-');
     }))
     // .pipe(sourcemaps.mapSources(function(srcpath, file) {
     //   const base = path.relative(file.cwd, file.dirname);
@@ -245,8 +252,8 @@ function demo_css() {
 }
 
 function watcher() {
-  watch('js/*.js', 'build.js');
-  watch('scss/*.scss', build_css);
+  watch('js/**/*.js', build_js);
+  watch('scss/**/*.scss', build_css);
 }
 
 
