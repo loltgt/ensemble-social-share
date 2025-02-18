@@ -1,30 +1,27 @@
 /*!
- * loltgt/ensemble.SocialShare
- *
- * @version 0.0.3
+ * ensemble Social Share
+ * @version 0.0.4
  * @link https://github.com/loltgt/ensemble-social-share
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
  */
-.social-share, .share-actions, .share-action, .share-button, .share-intent, .share-icon, .share-copied-link-message, .share-fx-copied-link--ground {
+
+.social-share, .share-actions, .share-action, .share-button, .share-intent, .share-icon, .share-copied-link-msg, .share-effects-copied-link--bg {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 .share-intent {
-  transform: scale3d(1, 1, 1);
   transform: scale(1);
   backface-visibility: hidden;
   transition: transform 50ms linear;
 }
 .share-intent:active, .share-intent:focus {
-  transform: scale3d(1.1, 1.1, 1.1);
   transform: scale(1.1);
 }
 @media (hover: hover) {
   .share-intent:hover {
-    transform: scale3d(1.1, 1.1, 1.1);
     transform: scale(1.1);
   }
 }
@@ -41,7 +38,7 @@
 }
 
 .share-action {
-  float: left;
+  display: inline-block;
   margin: 0.2rem 0.2rem;
   text-align: center;
 }
@@ -49,8 +46,6 @@
 .share-button {
   cursor: pointer;
   appearance: none;
-  -webkit-appearance: none;
-  -webkit-highlight: none;
 }
 
 .share-button:active, .share-button:focus {
@@ -64,7 +59,7 @@
   font-size: 1.5rem;
   line-height: 1;
   color: #fff;
-  background: #aaaaaa;
+  background: #888;
   border: 0;
   border-radius: 0;
 }
@@ -77,46 +72,82 @@
 }
 
 .share-intent-facebook {
-  background: #365899;
+  background: #1455b0;
 }
 
-.share-intent-ex {
-  background: #4e4e5e;
-}
-
-.share-intent-twitter {
-  background: #1da1f2;
-}
-
-.share-intent-pinterest {
-  background: #cc2127;
+.share-intent-x {
+  background: #404040;
 }
 
 .share-intent-linkedin {
-  background: #0976b4;
+  background: #187ab3;
+}
+
+.share-intent-threads {
+  background: #888;
+}
+
+.share-intent-bluesky {
+  background: #888;
+}
+
+.share-intent-reddit {
+  background: #888;
+}
+
+.share-intent-stumbleupon {
+  background: #888;
+}
+
+.share-intent-mastodon {
+  background: #888;
+}
+
+.share-intent-quora {
+  background: #888;
 }
 
 .share-intent-whatsapp {
-  background: #25d366;
+  background: #04b302;
 }
 
 .share-intent-messenger {
-  background: #0084ff;
+  background: #0174ff;
 }
 
 .share-intent-telegram {
   background: #179cde;
 }
 
+.share-intent-skype {
+  background: #888;
+}
+
+.share-intent-viber {
+  background: #888;
+}
+
+.share-intent-line {
+  background: #888;
+}
+
+.share-intent-snapchat {
+  background: #888;
+}
+
 .share-intent-send-email {
-  background: #886666;
+  background: #666;
 }
 
 .share-intent-copy-link {
-  background: #33ddff;
+  background: #666;
 }
 
-.share-copied-link-message {
+.share-intent-web-share {
+  background: #444;
+}
+
+.share-copied-link-msg {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -135,18 +166,15 @@
   z-index: 1002;
 }
 
-.share-fx-copied-link {
+.share-effects-copied-link {
   position: relative;
 }
 
-.share-fx-copied-link--ground {
+.share-effects-copied-link--bg {
   content: "";
   display: block !important;
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   background: rgba(250, 250, 250, 0.3);
@@ -155,7 +183,7 @@
   z-index: 1001;
 }
 
-.share-fx-copied-link--ground[hidden] {
+.share-effects-copied-link--bg[hidden] {
   display: block !important;
   opacity: 1;
 }
@@ -176,16 +204,13 @@
   .share-actions {
     margin: 0 -0.3rem;
   }
-
   .share-action {
     margin: 0.2rem 0.3rem;
   }
-
   .share-intent {
     font-size: 2rem;
   }
-
-  .share-copied-link-message {
+  .share-copied-link-msg {
     width: auto;
   }
 }

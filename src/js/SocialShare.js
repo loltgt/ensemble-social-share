@@ -22,13 +22,13 @@ import base from "@loltgt/ensemble";
  * 
  * @object
  */
-const SocialShareActionEnum = {
+const SocialShareActionEnum = Object.freeze({
   share: 0,
   send: 1,
   email: 2,
   copy: 3,
   webapi: 4
-}.freeze();
+});
 
 
 /**
@@ -76,7 +76,7 @@ class SocialShare extends base {
    * @constant {object} SocialShareActionEnum Sharing action enum
    * @returns {object}
    */
-  _act() {
+  _aks() {
     const i = SocialShareActionEnum;
 
     return {
@@ -108,8 +108,7 @@ class SocialShare extends base {
    * @returns {object}
    */
   _defaults() {
-    const scaffold = this._act();
-    const intents = Object.keys(scaffold).filter((a, i) => i < 3 || i > 8 && i < 10 || i > 10 && i < 19);
+    this.ska = this._aks();
 
     return {
       ns: 'share',
@@ -119,8 +118,8 @@ class SocialShare extends base {
       link: '',
       title: '',
       description: '',
-      intents,
-      scaffold,
+      intents: null,
+      scaffold: this.ska,
       uriform: {
         'facebook': 'https://www.facebook.com/dialog/share?display=popup&href=%url%&app_id=%app_id%',
         'x': 'https://twitter.com/intent/tweet?text=%title%&url=%url%',
@@ -196,11 +195,11 @@ class SocialShare extends base {
   generator() {
     const opts = this.options;
 
-    const share = this.share = this.compo(false, false, {
+    const stage = this.stage = this.compo(false, false, {
       className: typeof opts.className == 'object' ? opts.className.join(' ') : opts.className
     });
     //TODO dataset
-    share.setAttr('data-social-share', '');
+    stage.setAttr('data-social-share', '');
 
     if (opts.label) {
       const label = this.compo('span', 'label', opts.label);
@@ -210,11 +209,11 @@ class SocialShare extends base {
         label.innerText = opts.locale.label.toString();
       }
 
-      share.append(label);
+      stage.append(label);
     }
 
     const actions = this.actions = this.compo('ul', 'actions');
-    share.append(actions);
+    stage.append(actions);
 
     this.built = true;
   }
@@ -223,20 +222,30 @@ class SocialShare extends base {
    * Initializes the component
    */
   init() {
-    const opts = this.options;
-
     if (this.built) return;
 
-    this.root = this.selector(opts.root);
-    this.intents = opts.intents && typeof opts.intents == 'object' ? opts.intents : Object.keys(opts.scaffold);
+    const opts = this.options;
 
-    const intents = this.intents;
-    if ('twitter' in intents) intents.splice(intents.indexOf('twitter'), 1, 'x');
+    this.root = this.selector(opts.root);
+
+    let intents = [];
+
+    if (! opts.intents && this.ska === opts.scaffold) {
+      const a = Object.keys(this.ska);
+      for (const i of [0, 1, 9, 10, 11, 2, 16, 17, 18]) {
+        intents.push(a[i].toString());
+      }
+    } else if (Array.prototype.isPrototypeOf(opts.intents)) {
+      intents = opts.intents;
+    } else if (opts.intents) {
+      intents = Object.keys(opts.scaffold);
+    }
+    this.intents = intents;
 
     this.generator();
 
     if (this.element) {
-      this.share.overlap(this.element, (function(node) {
+      this.stage.overlap(this.element, (function(node) {
         this.element = node;
       }).bind(this));
     }
@@ -255,8 +264,8 @@ class SocialShare extends base {
     const opts = this.options, locale = opts.locale;
     const act = SocialShareActionEnum;
 
-    for (const intent in opts.scaffold) {
-      if (this.intents.indexOf(intent) == -1) continue;
+    for (const intent of this.intents) {
+      if (! intent in opts.scaffold) continue;
 
       const name = intent in locale ? locale[intent].toString() : intent.replace(/\w/, cap => cap.toUpperCase());
       let title;
@@ -295,7 +304,6 @@ class SocialShare extends base {
     const button = this.compo('button', ['button', 'intent'], {
       className: opts.ns + '-intent-' + intent,
       title,
-      ariaLabel: title,
       onclick: this.intent
     });
     //TODO dataset
@@ -326,6 +334,7 @@ class SocialShare extends base {
     if (! evt.isTrusted) return;
 
     const opts = this.options, locale = opts.locale;
+    const act = SocialShareActionEnum;
 
     if (! this.compo().isCompo(target)) return;
 
@@ -370,18 +379,11 @@ class SocialShare extends base {
     data.text = locale.text.toString().replace('%s', data.text);
 
     if (intent in opts.scaffold) {
-      switch (intent) {
-        case 'send-email':
-          this.sendEmail(evt, data);
-          break;
-        case 'copy-link':
-          this.copyLink(evt, data);
-          break;
-        case 'web-share':
-          this.webShare(evt, data);
-          break;
-        default:
-          this.share(evt, data, intent, action);
+      switch (opts.scaffold[intent]) {
+        case act.email: this.sendEmail(evt, data); break;
+        case act.copy: this.copyLink(evt, data); break;
+        case act.webapi: this.webShare(evt, data); break;
+        default: this.share(evt, data, intent, action);
       }
     }
   }
@@ -420,15 +422,15 @@ class SocialShare extends base {
   share(evt, data, intent, action) {
     const opts = this.options;
 
-    if (intent in opts.uriform == false) return;
+    if (! intent in opts.uriform) return;
 
     let url = opts.uriform[intent]
       .replace('%url%', encodeURIComponent(data.url))
       .replace('%title%', encodeURIComponent(data.title))
       .replace('%summary%', encodeURIComponent(data.summary));
 
-    //TODO aria-label
-    const title = action.getAttr('ariaLabel');
+    //TODO window title
+    const title = action.getAttr('title');
     const options = 'toolbar=0,status=0,width=640,height=480';
 
     if (/%text%/.test(opts.uriform[intent])) {
@@ -489,19 +491,22 @@ class SocialShare extends base {
 
     const opts = this.options, locale = opts.locale;
 
-    const node = document.createElement('textarea');
-    node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
-    node.value = data.url.toString();
+    //TODO clipboard api
+    {
+      const node = document.createElement('textarea');
+      node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
+      node.value = data.url.toString();
 
-    this.appendNode(this.element, node);
+      this.appendNode(this.element, node);
 
-    node.focus();
-    node.select();
+      node.focus();
+      node.select();
 
-    //TODO deprecated
-    document.execCommand('copy');
+      //TODO deprecated
+      document.execCommand('copy');
 
-    node.remove();
+      node.remove();
+    }
 
     if (opts.effects) {
       const self = this;
@@ -517,6 +522,7 @@ class SocialShare extends base {
 
       bg.show();
 
+      //TODO delay time option
       this.delay(function() {
         msg.unbound(root);
         bg.unbound(root);

@@ -10,14 +10,29 @@
 </head>
 <body>
 <main>
-<h1>ensemble SocialShare demo</h1>
+  <h1>ensemble SocialShare demo</h1>
 
-<article>
-<h2>ensemble.SocialShare</h2>
+  <section>
+    <h2>ensemble.SocialShare</h2>
 
-<div class="social-share" data-social-share>
+    <article>
+      <h2>Popular <em>default intents</em> with option <code>intents: null</code></h2>
 
-</article>
+      <div class="social-share" data-social-share>
+    </article>
+
+    <article>
+      <h2>Popular <em>all intents</em> with option <code>intents: true</code></h2>
+
+      <div class="social-share" data-social-share>
+    </article>
+
+    <article>
+      <h2>Minimal <em>local intents</em> with option <code>intents: ['send-email', 'copy-link', 'web-share']</code></h2>
+
+      <div class="social-share" data-social-share>
+    </article>
+  </section>
 </main>
 
 <!-- <script src="../../ensemble/src/js/Compo.js"></script> -->
@@ -26,18 +41,48 @@
 <!-- <script src="../../ensemble/src/js/base.js"></script> -->
 <!-- <script src="../../ensemble-social-share/src/js/SocialShare.js"></script> -->
 <script src="../../ensemble-social-share/dist/js/ensemble-social-share.min.js"></script>
+
+<!-- example: Popular default intents with options { intents: null } -->
 <script>
-const options = {
-  locale: {
-    copied: ':localized: Copied link!'
-  }
-};
+  var element = document.querySelector('article:nth-child(2) .social-share');
 
-const element = document.querySelector('.social-share');
-
-if (element) {
-  new ensemble.SocialShare(element, options);
-}
+  new ensemble.SocialShare(element,
+    {
+      intents: null,
+      locale: {
+        copied: ':localized: Copied link!'
+      }
+    }
+  );
 </script>
+
+<!-- example: Popular all intents with options { intents: true } -->
+<script>
+  var element = document.querySelector('article:nth-child(3) .social-share');
+
+  new ensemble.SocialShare(element,
+    {
+      intents: true,
+      locale: {
+        copied: ':localized: Copied link!'
+      }
+    }
+  );
+</script>
+
+<!-- example: Minimal local intents with options { intents: ['send-email', 'copy-link', 'web-share'] } -->
+<script>
+  var element = document.querySelector('article:nth-child(4) .social-share');
+
+  new ensemble.SocialShare(element,
+    {
+      intents: ['send-email', 'copy-link', 'web-share'],
+      locale: {
+        copied: ':localized: Copied link!'
+      }
+    }
+  );
+</script>
+
 </body>
 </html>

@@ -10,8 +10,7 @@
   font-display: block;
 }
 [class^="icon-"], [class*=" icon-"] {
-  font-family: "iconset" !important;
-  speak: never;
+  font-family: "iconset";
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -20,30 +19,21 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.icon-mail:before,
 .icon-send-email:before {
   content: "\e906";
 }
-.icon-share:before,
 .icon-web-share:before {
   content: "\e909";
 }
-.icon-link:before,
 .icon-copy-link:before {
   content: "\e90a";
 }
 .icon-facebook:before {
   content: "\e956";
 }
-.icon-github:before {
-  content: "\e957";
-}
-.icon-google-hangout:before {
+/*.icon-google-hangout:before {
   content: "\e958";
-}
-.icon-google-plus:before {
-  content: "\e959";
-}
+}*/
 .icon-instagram:before {
   content: "\e95a";
 }
@@ -53,24 +43,30 @@
 .icon-messenger:before {
   content: "\e95c";
 }
-.icon-skype:before {
+/*.icon-skype:before {
   content: "\e95d";
-}
+}*/
 .icon-telegram:before {
   content: "\e95e";
-}
-.icon-twitter:before {
-  content: "\e95f";
 }
 .icon-whatsapp:before {
   content: "\e960";
 }
-.icon-wordpress:before {
-  content: "\e961";
-}
-.icon-youtube:before {
-  content: "\e962";
-}
-.icon-ex:before {
+.icon-x:before {
   content: "\e964";
+  transform: scale(.965);
 }
+
+.icon-threads:before,
+.icon-bluesky:before,
+.icon-reddit:before,
+.icon-stumbleupon:before,
+.icon-mastodon:before,
+.icon-quora:before,
+.icon-skype:before,
+.icon-viber:before,
+.icon-line:before,
+.icon-snapchat:before {
+  content: "\e909";
+}
+
