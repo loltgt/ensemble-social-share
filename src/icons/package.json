@@ -1,0 +1,15 @@
+{
+  "name": "socialshare-iconset",
+  "description": "Icon set for ensemble SocialShare",
+  "type": "module",
+  "scripts": {
+    "copy.ionicons": "node ./copy.js ionicons",
+    "copy.simple-icons": "node ./copy.js simple-icons",
+    "copy": "node ./copy.js --default"
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "ionicons": "https://github.com/ionic-team/ionicons/archive/refs/tags/v7.4.0.tar.gz",
+    "simple-icons": "https://github.com/simple-icons/simple-icons/archive/refs/tags/14.7.0.tar.gz"
+  }
+}
