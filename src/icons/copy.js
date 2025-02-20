@@ -9,8 +9,8 @@ const IONICONS_PATH = `${BASE_PATH}/ionicons/src/svg`;
 const SIMPLEICONS_PATH = `${BASE_PATH}/simple-icons/icons`;
 
 const ICONS_DEFAULT = {
-  ionicons: [{'share-social': 'web-share'}, {'link-outline': 'copy-link'}, {'mail-outline': 'send-email'}, 'linkedin', 'skype', 'stumbleupon'],
-  simpleicons: ['bluesky', 'facebook', 'line', 'mastodon', 'messenger', 'quora', 'reddit', 'snapchat', 'telegram', 'threads', 'viber', 'whatsapp', 'x']
+  ionicons: [{'share-social': 'web-share'}, {'link-outline': 'copy-link'}, {'mail-outline': 'send-email'}, {'logo-linkedin': 'linkedin'}, {'logo-mastodon': 'mastodon'}, {'logo-skype': 'skype'}],
+  simpleicons: ['bluesky', 'facebook', 'line', 'messenger', 'quora', 'reddit', 'snapchat', 'telegram', 'threads', 'viber', 'whatsapp', 'x']
 };
 
 

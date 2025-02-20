@@ -9,6 +9,8 @@
 
 @use "sass:math";
 @use "sass:list";
+@use "sass:map";
+@use "sass:meta";
 
 %ensemble-socialshare_css_reset {
   margin: 0;
@@ -58,10 +60,10 @@
 }
 .share-intent {
   display: block;
+  padding: $ensemble-socialshare_intent_padding;
 @if $ensemble_compat {
   font-size: math.floor(math.div($ensemble-socialshare_intent_font-size, 1rem) * 16px);
 }
-  padding: $ensemble-socialshare_intent_padding;
   font-size: $ensemble-socialshare_intent_font-size;
   line-height: 1;
   color: $ensemble-socialshare_intent_foregrund;
@@ -81,8 +83,12 @@
   }
 }
 
-@each $intent, $background in $ensemble-socialshare_intents {
-.share-intent-#{$intent} { background: $background; }
+@each $intent, $color in $ensemble-socialshare_intents {
+@if meta.type-of($color) == "map" {
+.share-intent-#{$intent} { background: map.get($color, $ensemble-socialshare_intent_colouring); }
+} @else {
+.share-intent-#{$intent} { background: $color; }
+}
 }
 
 .share-copied-link-msg {
@@ -92,11 +98,11 @@
   display: inline-block;
   max-width: 80vw;
   width: 100%;
+  padding: $ensemble-socialshare_effects_intent_copy-link_msg_padding;
+  font-family: $ensemble-socialshare_effects_intent_copy-link_msg_font-family;
 @if $ensemble_compat {
   font-size: math.floor(math.div($ensemble-socialshare_effects_intent_copy-link_msg_font-size, 1rem) * 16px);
 }
-  padding: $ensemble-socialshare_effects_intent_copy-link_msg_padding;
-  font-family: $ensemble-socialshare_effects_intent_copy-link_msg_font-family;
   font-size: $ensemble-socialshare_effects_intent_copy-link_msg_font-size;
   font-weight: $ensemble-socialshare_effects_intent_copy-link_msg_font-weight;
   line-height: $ensemble-socialshare_effects_intent_copy-link_msg_line-height;
@@ -105,9 +111,9 @@
   text-align: $ensemble-socialshare_effects_intent_copy-link_msg_text-align;
   transform: translate(-50%, -50%);
 @if $ensemble_compat {
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
+@each $vendor in (webkit, moz, ms) {
+  -#{$vendor}-transform: translate(-50%, -50%);
+}
 }
   z-index: $ensemble-socialshare_effects_intent_copy-link_msg_zindex;
 }
@@ -131,9 +137,9 @@
   background: $ensemble-socialshare_effects_bg__background;
   transition: $ensemble-socialshare_effects_bg__transition;
 @if $ensemble_compat {
-  -webkit-transition: $ensemble-socialshare_effects_bg__transition;
-  -moz-transition: $ensemble-socialshare_effects_bg__transition;
-  -ms-transition: $ensemble-socialshare_effects_bg__transition;
+@each $vendor in (webkit, moz, ms) {
+  -#{$vendor}-transition: $ensemble-socialshare_effects_bg__transition;
+}
 }
   opacity: $ensemble-socialshare_effects_bg__opacity;
   z-index: $ensemble-socialshare_effects_bg__zindex;
@@ -146,16 +152,21 @@
 .share-action-callout {
   display: inline-block;
   margin: .2rem .5rem;
+  //TODO compat
 }
 .share-intent-callout {
   border-radius: 0;
   color: #ccc;
   outline: 0;
   transform: none !important;
+@if $ensemble_compat {
+@each $vendor in (webkit, moz, ms) {
+  -#{$vendor}-transition: $ensemble-socialshare_effects_bg__transition;
+}
+}
 }
 
 
-//TODO
 @media (min-width: 992px) {
   .share-actions {
 @if $ensemble_compat {

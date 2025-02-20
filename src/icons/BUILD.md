@@ -6,6 +6,9 @@ Follow these instructions to replicate the default icon set used by ensemble Soc
 > You can create your own icon set, create a new npm package with your settings
 > with `npm init` command, or rely to the existing "package.json" as starting point
 
+> [!NOTE]
+> Icons are edited and scaled to comply with brand guidelines and to conform with canvas size
+
 
 ## Get started
 
@@ -42,7 +45,6 @@ new ensemble.SocialShare(element,
     icons: 'symbols'
   }
 );
-)
 ```
 
 Copy all `*.svg` files from your "project" folder.
@@ -56,7 +58,7 @@ Create an new empty project and *Import Set*
 
 Select the previously copied icons from your "project" folder.
 
-Set the Grid size to: 32
+Set Grid size to: 32
 
 > [!IMPORTANT]
 > Do not forget to select a proper license for your webfont and enter the metadata in *Properties*

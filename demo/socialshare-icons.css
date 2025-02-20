@@ -1,0 +1,75 @@
+/**
+ * @todo
+ */
+
+@font-face {
+  font-family: "socialshare-icons";
+  src: url('socialshare-icons.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+[class^="icon-"], [class*=" icon-"] {
+  font-family: "socialshare-icons";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-web-share:before {
+  content: "\e900";
+}
+.icon-copy-link:before {
+  content: "\e901";
+}
+.icon-send-email:before {
+  content: "\e902";
+}
+.icon-linkedin:before {
+  content: "\e9";
+}
+.icon-mastodon:before {
+  content: "\ea";
+}
+.icon-skype:before {
+  content: "\e905";
+}
+.icon-facebook:before {
+  content: "\e906";
+}
+.icon-x:before {
+  content: "\e907";
+}
+.icon-threads:before {
+  content: "\e910";
+}
+.icon-bluesky:before {
+  content: "\e908";
+}
+.icon-reddit:before {
+  content: "\e90c";
+}
+.icon-quora:before {
+  content: "\e90b";
+}
+.icon-whatsapp:before {
+  content: "\e913";
+}
+.icon-messenger:before {
+  content: "\e90a";
+}
+.icon-telegram:before {
+  content: "\e90f";
+}
+.icon-viber:before {
+  content: "\e911";
+}
+.icon-line:before {
+  content: "\e909";
+}
+.icon-snapchat:before {
+  content: "\e90e";
+}

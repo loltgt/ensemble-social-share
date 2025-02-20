@@ -86,7 +86,6 @@ class SocialShare extends base {
       'threads': i.share,
       'bluesky': i.share,
       'reddit': i.share,
-      'stumbleupon': i.share,
       'mastodon': i.share,
       'quora': i.share,
       'whatsapp': i.send,
@@ -127,7 +126,6 @@ class SocialShare extends base {
         'threads': 'https://threads.net/intent/post?text=%url%',
         'bluesky': 'https://bsky.app/intent/compose?text=%url%',
         'reddit': 'https://www.reddit.com/submit?url=%url%&title=%title%',
-        'stumbleupon': 'https://www.stumbleupon.com/submit?url=%url%&title=%title%',
         'mastodon': 'https://mastodon.social/share?text=%text%',
         'quora': 'https://www.quora.com/share?url=%url%&title=%title%',
         'whatsapp': 'https://api.whatsapp.com/send?text=%text%',
@@ -232,7 +230,7 @@ class SocialShare extends base {
 
     if (! opts.intents && this.ska === opts.scaffold) {
       const a = Object.keys(this.ska);
-      for (const i of [0, 1, 9, 10, 11, 2, 16, 17, 18]) {
+      for (const i of [0, 1, 8, 9, 10, 2, 15, 16, 17]) {
         intents.push(a[i].toString());
       }
     } else if (Array.prototype.isPrototypeOf(opts.intents)) {

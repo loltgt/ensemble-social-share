@@ -13,15 +13,18 @@
 }
 
 .share-intent {
+  transform: scale3d(1);
   transform: scale(1);
   backface-visibility: hidden;
   transition: transform 50ms linear;
 }
 .share-intent:active, .share-intent:focus {
+  transform: scale3d(1.1);
   transform: scale(1.1);
 }
 @media (hover: hover) {
   .share-intent:hover {
+    transform: scale3d(1.1);
     transform: scale(1.1);
   }
 }
@@ -59,7 +62,7 @@
   font-size: 1.5rem;
   line-height: 1;
   color: #fff;
-  background: #888;
+  background: #999898;
   border: 0;
   border-radius: 0;
 }
@@ -71,8 +74,20 @@
   display: block;
 }
 
+.share-intent-web-share {
+  background: #2c8888;
+}
+
+.share-intent-copy-link {
+  background: #399d99;
+}
+
+.share-intent-send-email {
+  background: #399d99;
+}
+
 .share-intent-facebook {
-  background: #1455b0;
+  background: #0666f8;
 }
 
 .share-intent-x {
@@ -84,27 +99,23 @@
 }
 
 .share-intent-threads {
-  background: #888;
+  background: #404040;
 }
 
 .share-intent-bluesky {
-  background: #888;
+  background: #0285ff;
 }
 
 .share-intent-reddit {
-  background: #888;
-}
-
-.share-intent-stumbleupon {
-  background: #888;
+  background: #ff5000;
 }
 
 .share-intent-mastodon {
-  background: #888;
+  background: #6364ff;
 }
 
 .share-intent-quora {
-  background: #888;
+  background: #b92b27;
 }
 
 .share-intent-whatsapp {
@@ -120,31 +131,19 @@
 }
 
 .share-intent-skype {
-  background: #888;
+  background: #0078d7;
 }
 
 .share-intent-viber {
-  background: #888;
+  background: #8c73fe;
 }
 
 .share-intent-line {
-  background: #888;
+  background: #00c255;
 }
 
 .share-intent-snapchat {
-  background: #888;
-}
-
-.share-intent-send-email {
-  background: #666;
-}
-
-.share-intent-copy-link {
-  background: #666;
-}
-
-.share-intent-web-share {
-  background: #444;
+  background: #ccc00f;
 }
 
 .share-copied-link-msg {
@@ -160,7 +159,7 @@
   font-weight: bold;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.9);
-  background: rgba(5, 5, 5, 0.89);
+  background: rgba(5, 5, 5, 0.9);
   text-align: center;
   transform: translate(-50%, -50%);
   z-index: 1002;
