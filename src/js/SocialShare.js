@@ -64,6 +64,7 @@ class SocialShare extends base {
   /**
    * Shorthand for sharing action enum
    *
+   * @static
    * @returns {SocialShareActionEnum}
    */
   static actionEnum() {
@@ -76,7 +77,7 @@ class SocialShare extends base {
    * @constant {object} SocialShareActionEnum Sharing action enum
    * @returns {object}
    */
-  _aks() {
+  aks() {
     const i = SocialShareActionEnum;
 
     return {
@@ -106,8 +107,8 @@ class SocialShare extends base {
    *
    * @returns {object}
    */
-  _defaults() {
-    this.ska = this._aks();
+  defaults() {
+    this.ska = this.aks();
 
     return {
       ns: 'share',
@@ -168,8 +169,8 @@ class SocialShare extends base {
   /**
    * Methods binding
    */
-  _bindings() {
-    this.intent = this.binds(this.intent);
+  binds() {
+    this.intent = this.wrap(this.intent);
   }
 
   /**
@@ -193,25 +194,25 @@ class SocialShare extends base {
   generator() {
     const opts = this.options;
 
-    const stage = this.stage = this.compo(false, false, {
-      className: typeof opts.className == 'object' ? opts.className.join(' ') : opts.className
+    const compo = this.$ = this.compo(false, false, {
+      className: typeof opts.className == 'object' ? Object.values(opts.className).join(' ') : opts.className
     });
     //TODO dataset
-    stage.setAttr('data-social-share', '');
+    compo.setAttr('data-social-share', '');
 
     if (opts.label) {
       const label = this.compo('span', 'label', opts.label);
       label.classList.add('label');
 
-      if ('innerText' in opts.label == false) {
+      if (! 'innerText' in opts.label) {
         label.innerText = opts.locale.label.toString();
       }
 
-      stage.append(label);
+      compo.append(label);
     }
 
     const actions = this.actions = this.compo('ul', 'actions');
-    stage.append(actions);
+    compo.append(actions);
 
     this.built = true;
   }
@@ -233,7 +234,7 @@ class SocialShare extends base {
       for (const i of [0, 1, 8, 9, 10, 2, 15, 16, 17]) {
         intents.push(a[i].toString());
       }
-    } else if (Array.prototype.isPrototypeOf(opts.intents)) {
+    } else if (opts.intents instanceof Array) {
       intents = opts.intents;
     } else if (opts.intents) {
       intents = Object.keys(opts.scaffold);
@@ -243,7 +244,7 @@ class SocialShare extends base {
     this.generator();
 
     if (this.element) {
-      this.stage.overlap(this.element, (function(node) {
+      this.$.place(this.element, (function(node) {
         this.element = node;
       }).bind(this));
     }
@@ -515,15 +516,15 @@ class SocialShare extends base {
 
       root.classList.add('share-effects-copied-link');
 
-      bg.bound(root);
-      msg.bound(root);
+      bg.bind(root);
+      msg.bind(root);
 
       bg.show();
 
       //TODO delay time option
       this.delay(function() {
-        msg.unbound(root);
-        bg.unbound(root);
+        msg.unbind(root);
+        bg.unbind(root);
         root.classList.remove('share-effects-copied-link');
       }, bg, 8e2);
     }

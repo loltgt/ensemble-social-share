@@ -12,8 +12,12 @@
 <main>
   <h1>ensemble SocialShare demo</h1>
 
+  <strong>=== TESTING ===</strong>
+
   <section>
     <h2>ensemble.SocialShare</h2>
+
+    <strong>=== TESTING ===</strong>
 
     <article>
       <h2>Popular <em>default intents</em> with option <code>intents: null</code></h2>
@@ -21,17 +25,23 @@
       <div class="social-share" data-social-share>
     </article>
 
+    <strong>=== TESTING ===</strong>
+
     <article>
       <h2>Popular <em>all intents</em> with option <code>intents: true</code></h2>
 
       <div class="social-share" data-social-share>
     </article>
 
+    <strong>=== TESTING ===</strong>
+
     <article>
       <h2>Minimal <em>local intents</em> with option <code>intents: ['send-email', 'copy-link', 'web-share']</code></h2>
 
       <div class="social-share" data-social-share>
     </article>
+
+    <strong>=== TESTING ===</strong>
   </section>
 </main>
 
@@ -44,7 +54,7 @@
 
 <!-- example: Popular default intents with options { intents: null } -->
 <script>
-  var element = document.querySelector('article:nth-child(2) .social-share');
+  var element = document.querySelector('article:nth-child(3) .social-share');
 
   new ensemble.SocialShare(element,
     {
@@ -58,7 +68,7 @@
 
 <!-- example: Popular all intents with options { intents: true } -->
 <script>
-  var element = document.querySelector('article:nth-child(3) .social-share');
+  var element = document.querySelector('article:nth-child(5) .social-share');
 
   new ensemble.SocialShare(element,
     {
@@ -72,7 +82,7 @@
 
 <!-- example: Minimal local intents with options { intents: ['send-email', 'copy-link', 'web-share'] } -->
 <script>
-  var element = document.querySelector('article:nth-child(4) .social-share');
+  var element = document.querySelector('article:nth-child(7) .social-share');
 
   new ensemble.SocialShare(element,
     {

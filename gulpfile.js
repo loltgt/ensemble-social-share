@@ -18,7 +18,7 @@ var sourcemap_debug = process.argv.indexOf('--sourcemap-debug') || false;
 
 function remove_debug(file) {
   let contents = file.contents.toString();
-  contents = contents.replace(/console\.[^\(]+\(.+(?:(?:\)\;))/g, '');
+  contents = contents.replace(/console\.([^warn]+)+\(.+(?:(?:\);))/g, '');
 
   file.contents = Buffer.from(contents);
 }
