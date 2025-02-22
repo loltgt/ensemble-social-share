@@ -72,12 +72,11 @@ Finally press *Download* to get your generated font.
 
 ## Export the Webfont to WOFF2 Webfont format
 
-To create WOFF2 web font I used [Font Squirrel Webfont Generator](https://www.fontsquirrel.com/tools/webfont-generator)
+To create WOFF2 web font I used [Transfonter](https://transfonter.org)
 
-> [!TIP]
-> You can upload the file "generator_config.txt" to use the same preset I used
+Upload the previously generated font, press *Add fonts* and select `*.woff` font.
 
-Upload the previously generated font, select `*.ttf` font and *Upload*
+Set Formats to WOFF2 and press *Convert* to convert font.
 
 Wait until the font is generated and finally press *Download* to get your generated font.
 

@@ -25,7 +25,7 @@
 
     
     static defaults() {
-      return Object.fromEntries(['EBADH', 'ETAGN', 'EPROP', 'EMTAG', 'EOPTS', 'EELEM', 'EMETH', 'DOM'].map(a => [a, a]));
+      return Object.fromEntries(['ETAGN', 'EPROP', 'EMTAG', 'EOPTS', 'EELEM', 'EMETH', 'DOM'].map(a => [a, a]));
     }
   }
   
@@ -136,10 +136,6 @@
 
     
     constructor(ns, tag, name, props, options, elementNS) {
-      if (! new.target) {
-        throw l10n.EBADH;
-      }
-
       super();
 
       const ns0 = this.ns = '_' + ns;
@@ -188,7 +184,7 @@
         if (typeof name == 'string') {
           el.className = ns + '-' + name;
         } else if (typeof name == 'object') {
-          el.className = Object.values(name).map((a) => (ns + '-' + a)).join(' ');
+          el.className = Object.values(name).map(a => (ns + '-' + a)).join(' ');
         }
 
         if (nodeClass) {
@@ -296,10 +292,6 @@
 
     
     constructor(ns, obj) {
-      if (! new.target) {
-        throw l10n.EBADH;
-      }
-
       if (obj && typeof obj == 'object') {
         Object.assign(this, {}, obj);
       }
@@ -381,10 +373,6 @@
 
     
     constructor(ns, name, node) {
-      if (! new.target) {
-        throw l10n.EBADH;
-      }
-
       const ns0 = this.ns = '_' + ns;
 
       node = (Compo.isCompo(node) ? node[ns] : node) || document;
@@ -433,6 +421,9 @@
       if (args.length > 1) {
         element = args[0];
         options = args[1];
+     
+      } else if ('nodeType' in args[0] && !! args[0].nodeType) {
+        element = args[0];
       } else {
         options = args[0];
       }
@@ -453,7 +444,7 @@
     }
 
     
-    opts(defaults, options) {
+    opts(defaults, options = {}) {
       const opts = {};
 
       for (const key in defaults) {
@@ -685,10 +676,6 @@
 
     
     constructor() {
-      if (! new.target) {
-        throw 'Bad invocation. Must be called with `new`.';
-      }
-
       super(...arguments);
 
       this.init();
