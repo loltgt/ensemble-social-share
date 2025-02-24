@@ -42,6 +42,14 @@
     </article>
 
     <strong>=== TESTING ===</strong>
+
+    <article>
+      <h2>Minimal <em>local intents</em> and <em>vertical layout</em> with option <code>layout: 'v'</code> and <em>custom intent</em> to print</h2>
+
+      <div class="social-share" data-social-share>
+    </article>
+
+    <strong>=== TESTING ===</strong>
   </section>
 </main>
 
@@ -89,6 +97,24 @@
       intents: ['send-email', 'copy-link', 'web-share'],
       locale: {
         copied: ':localized: Copied link!'
+      }
+    }
+  );
+</script>
+
+<!-- example: Minimal local intents and vertical layout with option { layout: 'v' } and custom intent to print -->
+<script>
+  var element = document.querySelector('article:nth-child(9) .social-share');
+
+  new ensemble.SocialShare(element,
+    {
+      layout: 'v',
+      intents: ['send-email', 'print', 'copy-link', 'web-share'],
+      locale: {
+        copied: ':localized: Copied link!'
+      },
+      onIntent: (self, event, intent, data) => {
+        intent === 'print' && window.print();
       }
     }
   );

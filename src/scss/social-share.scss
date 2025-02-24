@@ -46,6 +46,10 @@
 }
   margin: $ensemble-socialshare_action_margin-y $ensemble-socialshare_action_margin-x;
   text-align: center;
+
+  .share-vertical & {
+    display: block;
+  }
 }
 .share-button {
   cursor: pointer;
@@ -62,9 +66,9 @@
   display: block;
   padding: $ensemble-socialshare_intent_padding;
 @if $ensemble_compat {
-  font-size: math.floor(math.div($ensemble-socialshare_intent_font-size, 1rem) * 16px);
+  font-size: math.floor(math.div($ensemble-socialshare_intent_size, 1rem) * 16px);
 }
-  font-size: $ensemble-socialshare_intent_font-size;
+  font-size: $ensemble-socialshare_intent_size;
   line-height: 1;
   color: $ensemble-socialshare_intent_foregrund;
   background: $ensemble-socialshare_intent_background;
@@ -80,6 +84,11 @@
 
   &:before, &:after {
     display: block;
+  }
+  svg {
+    width: $ensemble-socialshare_intent_size;
+    height: $ensemble-socialshare_intent_size;
+    fill: currentColor;
   }
 }
 
@@ -182,9 +191,14 @@
   }
   .share-intent {
 @if $ensemble_compat {
-    font-size: math.floor(math.div($ensemble-socialshare_md__intent_font-size, 1rem) * 16px);
+    font-size: math.floor(math.div($ensemble-socialshare_md__intent_size, 1rem) * 16px);
 }
-    font-size: $ensemble-socialshare_md__intent_font-size;
+    font-size: $ensemble-socialshare_md__intent_size;
+
+    svg {
+      width: $ensemble-socialshare_md__intent_size;
+      height: $ensemble-socialshare_md__intent_size;
+    }
   }
 
   .share-copied-link-msg {

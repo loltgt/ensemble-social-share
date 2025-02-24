@@ -42,6 +42,12 @@ const SocialShareActionEnum = Object.freeze({
  * @param {string} [options.ns=share] The namespace for social share
  * @param {string} [options.root=body] A root Element node
  * @param {string[]} [options.className=social-share] The component CSS class name
+ * @param {string} [options.layout='h'] Set layout model: h=horizontal, v=vertical
+ * @param {string} [options.icons='font'] Set icons model: font, svg, symbol
+ * @param {string} [options.iconPrefix='icon'] Set icon class name prefix
+ * @param {string} [options.iconSvgSrc] Set icon image svg src, for icons: svg
+ * @param {string} [options.iconSymbolHashPrefix='icon'] Set icon svg symbol hash prefix, for icons:  symbol
+ * @param {string} [options.iconSvgHashPrefix] Set icon image svg hash prefix, for icons: svg
  * @param {boolean} [options.effects=true] Allow effects
  * @param {string} [options.link=''] The link, leave empty to auto-discover with selector or location.href
  * @param {string} [options.title=''] The title, leave empty to auto-discover with selector or window.title
@@ -114,6 +120,12 @@ class SocialShare extends base {
       ns: 'share',
       root: 'body',
       className: 'social-share',
+      layout: 'h',
+      icons: 'font',
+      iconPrefix: 'icon',
+      iconSvgSrc: '',
+      iconSymbolHashPrefix: 'icon',
+      iconSvgHashPrefix: '',
       effects: true,
       link: '',
       title: '',
@@ -161,8 +173,8 @@ class SocialShare extends base {
         'linkedin': 'LinkedIn',
         'web-share': 'Share'
       },
-      onInit: function() {},
-      onIntent: function() {}
+      onInit: () => {},
+      onIntent: () => {}
     };
   }
 
@@ -193,7 +205,6 @@ class SocialShare extends base {
     const compo = this.$ = this.compo(false, false, {
       className: typeof opts.className == 'object' ? Object.values(opts.className).join(' ') : opts.className
     });
-    //TODO dataset
     compo.setAttr('data-social-share', '');
 
     if (opts.label) {
@@ -207,6 +218,10 @@ class SocialShare extends base {
       compo.append(label);
     }
 
+    if (opts.layout == 'v') {
+      compo.classList.add(`${opts.ns}-vertical`);
+    }
+
     const actions = this.actions = this.compo('ul', 'actions');
     compo.append(actions);
 
@@ -217,9 +232,10 @@ class SocialShare extends base {
    * Initializes the component
    */
   init() {
-    if (this.built) return;
+    if (this.built)
+      return;
 
-    const opts = this.options;
+    const {options: opts} = this;
 
     this.root = this.selector(opts.root);
 
@@ -248,19 +264,22 @@ class SocialShare extends base {
     this.populate();
 
     opts.onInit.call(this, this);
+    console.log('init', opts);
   }
 
   /**
    * On this stage the component is populated with progeny
    *
-   * @see window.navigator.share
+   * @see Navigator.share
    */
   populate() {
-    const opts = this.options, locale = opts.locale;
     const act = SocialShareActionEnum;
+    const {options: opts} = this;
+    const {locale} = opts;
 
     for (const intent of this.intents) {
-      if (! intent in opts.scaffold) continue;
+      if (! intent in opts.scaffold)
+        continue;
 
       const name = intent in locale ? locale[intent].toString() : intent.replace(/\w/, cap => cap.toUpperCase());
       let title;
@@ -271,12 +290,10 @@ class SocialShare extends base {
         case act.email: title = locale.email.toString(); break;
         case act.copy: title = locale.copy.toString(); break;
         case act.webapi:
-          if (! ('share' in window.navigator && typeof window.navigator.share == 'function')) {
+          if (! navigator.share)
             continue;
-          }
 
           title = locale['web-share'].toString();
-
         break;
       }
 
@@ -291,23 +308,43 @@ class SocialShare extends base {
    * @param {string} title A title for action
    */
   action(intent, title) {
-    const opts = this.options;
+    const {options: opts} = this;
 
     const action = this.compo('li', 'action', {
-      className: opts.ns + '-action-' + intent
+      className: `${opts.ns}-action-${intent}`
     });
     const button = this.compo('button', ['button', 'intent'], {
-      className: opts.ns + '-intent-' + intent,
+      className: `${opts.ns}-intent-${intent}`,
       title,
       onclick: this.intent
     });
-    //TODO dataset
     action.setAttr('data-share-intent', intent);
     action.append(button);
 
     const icon = this.compo('span', 'icon', {
-      className: 'icon-' + intent
+      className: `${opts.iconPrefix}-${intent}`
     });
+
+    const svgNsUri = 'http://www.w3.org/2000/svg';
+
+    if (opts.icons == 'symbol') {
+      const svg = new (this.compo())(opts.ns, 'svg', false, false, false, svgNsUri);
+      const symbol = new (this.compo())(opts.ns, 'use', false, false, false, svgNsUri);
+      const {iconSymbolHashPrefix: prefix} = opts;
+      const hash = prefix ? `${prefix}-${intent}` : intent;
+      symbol.setAttr('href', `#${hash}`);
+      svg.append(symbol);
+      icon.append(svg);
+    //TODO check origin ?
+    } else if (opts.icons == 'svg' && opts.iconSvgSrc) {
+      const {iconSvgSrc, iconSvgHashPrefix: prefix} = opts;
+      const hash = prefix ? `${prefix}-${intent}` : intent;
+      const img = this.compo('img', false, {
+        'src': `${iconSvgSrc}#${hash}`
+      });
+      icon.append(img);
+    }
+
     button.append(icon);
 
     this.actions.append(action);
@@ -328,18 +365,22 @@ class SocialShare extends base {
 
     if (! evt.isTrusted) return;
 
-    const opts = this.options, locale = opts.locale;
     const act = SocialShareActionEnum;
+    const {options: opts} = this;
+    const {locale} = opts;
 
-    if (! this.compo().isCompo(target)) return;
+    if (! this.compo().isCompo(target))
+      return;
 
     const action = target.parent;
 
-    if (! (action && action.hasAttr('data-share-intent'))) return;
+    if (! (action && action.hasAttr('data-share-intent')))
+      return;
 
     const intent = action.getAttr('data-share-intent');
 
-    if (this.intents.indexOf(intent) == -1) return;
+    if (this.intents.indexOf(intent) == -1)
+      return;
 
     //TODO URL validation
     let url, title, summary, text;
@@ -415,7 +456,7 @@ class SocialShare extends base {
    * @param {string} data.summary Share summary text
    */
   share(evt, data, intent, action) {
-    const opts = this.options;
+    const {options: opts} = this;
 
     if (! intent in opts.uriform) return;
 
@@ -432,11 +473,11 @@ class SocialShare extends base {
       url = url.replace('%text%', this.text(data));
     }
     if (intent == 'facebook' || intent == 'messenger') {
-      const app_id = intent + '_app_id' in opts ? opts[intent + '_app_id'] : '';
+      const app_id = `${intent}_app_id` in opts ? opts[`${intent}_app_id`] : '';
       url = url.replace('%app_id%', encodeURIComponent(app_id));
     }
 
-    console.log('social', url, title, options);
+    console.log('share', url, title, options);
 
     window.open(url, title, options);
   }
@@ -456,7 +497,9 @@ class SocialShare extends base {
    * @param {string} data.summary Share summary text
    */
   sendEmail(evt, data) {
-    const opts = this.options, locale = opts.locale;
+    const {options: opts} = this;
+    const {locale} = opts;
+
     const url = opts.uriform['send-email']
       .replace('%subject%', encodeURIComponent(locale.subject.toString()))
       .replace('%text%', this.text(data));
@@ -471,7 +514,7 @@ class SocialShare extends base {
    *
    * Tries to copy the link to the clipboard.
    *
-   * @see document.createElement
+   * @see Navigator.clipboard
    * @see document.execCommand
    *
    * @param {Event} evt An Event
@@ -484,23 +527,26 @@ class SocialShare extends base {
   copyLink(evt, data) {
     if (! this.element) return;
 
-    const opts = this.options, locale = opts.locale;
+    const {options: opts} = this;
+    const {locale} = opts;
 
-    //TODO clipboard api
-    {
-      const node = document.createElement('textarea');
-      node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
-      node.value = data.url.toString();
+    try {
+      navigator.clipboard.writeText(data.url.toString());
+    } catch (err) {
+      if (err instanceof TypeError) {
+        const node = document.createElement('textarea');
+        node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
+        node.value = data.url.toString();
+        this.appendNode(this.element, node);
+        node.focus();
+        node.select();
 
-      this.appendNode(this.element, node);
+        document.execCommand('copy'); // deprecated
 
-      node.focus();
-      node.select();
-
-      //TODO deprecated
-      document.execCommand('copy');
-
-      node.remove();
+        node.remove();
+      } else {
+        console.error('webShare', err.message);
+      }
     }
 
     if (opts.effects) {
@@ -511,10 +557,8 @@ class SocialShare extends base {
       const msg = this.compo('span', 'copied-link-msg', {innerText: locale.copied.toString()});
 
       root.classList.add('share-effects-copied-link');
-
       bg.bind(root);
       msg.bind(root);
-
       bg.show();
 
       //TODO delay time option
@@ -531,7 +575,7 @@ class SocialShare extends base {
    *
    * Calls the native WebShare API
    *
-   * @see window.navigator.share
+   * @see Navigator.share
    *
    * @async
    * @param {Event} evt An Event
@@ -539,7 +583,7 @@ class SocialShare extends base {
    */
   async webShare(evt, data) {
     try {
-      await window.navigator.share({title: data.title, url: data.url});
+      await navigator.share({title: data.title, url: data.url});
     } catch (err) {
       if (err instanceof TypeError) {
         //TODO provide a fallback

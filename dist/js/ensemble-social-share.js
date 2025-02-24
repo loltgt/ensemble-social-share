@@ -138,7 +138,7 @@
     constructor(ns, tag, name, props, options, elementNS) {
       super();
 
-      const ns0 = this.ns = '_' + ns;
+      const ns0 = this.ns = `_${ns}`;
       const tagName = tag ? tag.toString() : 'div';
 
       if (RegExp(REJECTED_TAGS, 'i').test(tagName)) {
@@ -147,7 +147,7 @@
 
       const el = this[ns0] = this.element(ns, tagName, name, props, options, elementNS);
 
-      this.__Compo = true;
+      this.__Compo = 1;
       this[ns0]._1 = this;
 
       if (props && typeof props == 'object') {
@@ -157,7 +157,7 @@
           if (RegExp(DENIED_PROPS).test(p)) {
             throw new Error(l10n.EPROP);
           }
-         
+
           if (p.indexOf('on') === 0 && props[p] && typeof props[p] == 'function') {
             el[p] = props[p].bind(this);
           } else if (typeof props[p] != 'object') {
@@ -165,10 +165,7 @@
           } else if (p == 'children') {
             if (typeof props[p] == 'object' && props[p].length) {
               for (const child of props.children) {
-                const tag = child.tag;
-                const name = child.name;
-                const props = child.props;
-
+                const {tag, name, props} = child;
                 this.append(new Compo(ns, tag, name, props));
               }
             }
@@ -182,13 +179,13 @@
         el.className = '';
 
         if (typeof name == 'string') {
-          el.className = ns + '-' + name;
+          el.className = `${ns}-${name}`;
         } else if (typeof name == 'object') {
-          el.className = Object.values(name).map(a => (ns + '-' + a)).join(' ');
+          el.className = Object.values(name).map(a => `${ns}-${a}`).join(' ');
         }
 
         if (nodeClass) {
-          el.className += ' ' + nodeClass;
+          el.className += ` ${nodeClass}`;
         }
       }
 
@@ -197,7 +194,7 @@
 
     
     element(ns, tag, name, props, options, elementNS) {
-      if (elementNS) return document.createElementNS(tag, [...elementNS, ...options]);
+      if (elementNS) return document.createElementNS(elementNS, tag, options);
       else return document.createElement(tag, options);
     }
 
@@ -223,7 +220,7 @@
 
     
     getStyle(prop) {
-      return window.getComputedStyle(this[this.ns])[prop];
+      return getComputedStyle(this[this.ns])[prop];
     }
 
     
@@ -256,7 +253,7 @@
     
     get parent() {
       const el = this[this.ns];
-      return el.parentElement && '_1' in el.parentElement ? el.parentElement._1 : null;
+      return el.parentElement && el.parentElement._1 ? el.parentElement._1 : null;
     }
 
     
@@ -296,16 +293,15 @@
         Object.assign(this, {}, obj);
       }
 
-      const ns0 = this.ns = '_' + ns;
+      const ns0 = this.ns = `_${ns}`;
 
-      this.__Data = false;
+      this.__Data = 0;
       this[ns0] = {ns};
     }
 
     
     compo(tag, name, props, defer = false, load = false, unload = false) {
       const ns = this[this.ns].ns;
-
       let compo;
 
       if (defer) {
@@ -373,11 +369,11 @@
 
     
     constructor(ns, name, node) {
-      const ns0 = this.ns = '_' + ns;
+      const ns0 = this.ns = `_${ns}`;
 
       node = (Compo.isCompo(node) ? node[ns] : node) || document;
 
-      this.__Event = false;
+      this.__Event = 0;
       this[ns0] = {name, node};
     }
 
@@ -422,7 +418,7 @@
         element = args[0];
         options = args[1];
      
-      } else if ('nodeType' in args[0] && !! args[0].nodeType) {
+      } else if (typeof args[0] == 'object' && args[0].nodeType) {
         element = args[0];
       } else {
         options = args[0];
@@ -532,7 +528,7 @@
 
     
     styleTime(node, prop) {
-      let time = Compo.isCompo(node) ? node.getStyle(prop) : window.getComputedStyle(node)[prop];
+      let time = Compo.isCompo(node) ? node.getStyle(prop) : getComputedStyle(node)[prop];
 
       if (time) {
         time = time.indexOf('s') ? (parseFloat(time) * 1e3) : parseInt(time);
@@ -617,6 +613,12 @@
         ns: 'share',
         root: 'body',
         className: 'social-share',
+        layout: 'h',
+        icons: 'font',
+        iconPrefix: 'icon',
+        iconSvgSrc: '',
+        iconSymbolHashPrefix: 'icon',
+        iconSvgHashPrefix: '',
         effects: true,
         link: '',
         title: '',
@@ -664,8 +666,8 @@
           'linkedin': 'LinkedIn',
           'web-share': 'Share'
         },
-        onInit: function() {},
-        onIntent: function() {}
+        onInit: () => {},
+        onIntent: () => {}
       };
     }
 
@@ -688,7 +690,6 @@
       const compo = this.$ = this.compo(false, false, {
         className: typeof opts.className == 'object' ? Object.values(opts.className).join(' ') : opts.className
       });
-     
       compo.setAttr('data-social-share', '');
 
       if (opts.label) {
@@ -702,6 +703,10 @@
         compo.append(label);
       }
 
+      if (opts.layout == 'v') {
+        compo.classList.add(`${opts.ns}-vertical`);
+      }
+
       const actions = this.actions = this.compo('ul', 'actions');
       compo.append(actions);
 
@@ -710,9 +715,10 @@
 
     
     init() {
-      if (this.built) return;
+      if (this.built)
+        return;
 
-      const opts = this.options;
+      const {options: opts} = this;
 
       this.root = this.selector(opts.root);
 
@@ -741,15 +747,18 @@
       this.populate();
 
       opts.onInit.call(this, this);
+      console.log('init', opts);
     }
 
     
     populate() {
-      const opts = this.options, locale = opts.locale;
       const act = SocialShareActionEnum;
+      const {options: opts} = this;
+      const {locale} = opts;
 
       for (const intent of this.intents) {
-        if (! intent in opts.scaffold) continue;
+        if (! intent in opts.scaffold)
+          continue;
 
         const name = intent in locale ? locale[intent].toString() : intent.replace(/\w/, cap => cap.toUpperCase());
         let title;
@@ -760,12 +769,10 @@
           case act.email: title = locale.email.toString(); break;
           case act.copy: title = locale.copy.toString(); break;
           case act.webapi:
-            if (! ('share' in window.navigator && typeof window.navigator.share == 'function')) {
+            if (! navigator.share)
               continue;
-            }
 
             title = locale['web-share'].toString();
-
           break;
         }
 
@@ -775,23 +782,43 @@
 
     
     action(intent, title) {
-      const opts = this.options;
+      const {options: opts} = this;
 
       const action = this.compo('li', 'action', {
-        className: opts.ns + '-action-' + intent
+        className: `${opts.ns}-action-${intent}`
       });
       const button = this.compo('button', ['button', 'intent'], {
-        className: opts.ns + '-intent-' + intent,
+        className: `${opts.ns}-intent-${intent}`,
         title,
         onclick: this.intent
       });
-     
       action.setAttr('data-share-intent', intent);
       action.append(button);
 
       const icon = this.compo('span', 'icon', {
-        className: 'icon-' + intent
+        className: `${opts.iconPrefix}-${intent}`
       });
+
+      const svgNsUri = 'http://www.w3.org/2000/svg';
+
+      if (opts.icons == 'symbol') {
+        const svg = new (this.compo())(opts.ns, 'svg', false, false, false, svgNsUri);
+        const symbol = new (this.compo())(opts.ns, 'use', false, false, false, svgNsUri);
+        const {iconSymbolHashPrefix: prefix} = opts;
+        const hash = prefix ? `${prefix}-${intent}` : intent;
+        symbol.setAttr('href', `#${hash}`);
+        svg.append(symbol);
+        icon.append(svg);
+     
+      } else if (opts.icons == 'svg' && opts.iconSvgSrc) {
+        const {iconSvgSrc, iconSvgHashPrefix: prefix} = opts;
+        const hash = prefix ? `${prefix}-${intent}` : intent;
+        const img = this.compo('img', false, {
+          'src': `${iconSvgSrc}#${hash}`
+        });
+        icon.append(img);
+      }
+
       button.append(icon);
 
       this.actions.append(action);
@@ -803,18 +830,22 @@
 
       if (! evt.isTrusted) return;
 
-      const opts = this.options, locale = opts.locale;
       const act = SocialShareActionEnum;
+      const {options: opts} = this;
+      const {locale} = opts;
 
-      if (! this.compo().isCompo(target)) return;
+      if (! this.compo().isCompo(target))
+        return;
 
       const action = target.parent;
 
-      if (! (action && action.hasAttr('data-share-intent'))) return;
+      if (! (action && action.hasAttr('data-share-intent')))
+        return;
 
       const intent = action.getAttr('data-share-intent');
 
-      if (this.intents.indexOf(intent) == -1) return;
+      if (this.intents.indexOf(intent) == -1)
+        return;
 
      
       let url, title, summary, text;
@@ -870,7 +901,7 @@
 
     
     share(evt, data, intent, action) {
-      const opts = this.options;
+      const {options: opts} = this;
 
       if (! intent in opts.uriform) return;
 
@@ -887,18 +918,20 @@
         url = url.replace('%text%', this.text(data));
       }
       if (intent == 'facebook' || intent == 'messenger') {
-        const app_id = intent + '_app_id' in opts ? opts[intent + '_app_id'] : '';
+        const app_id = `${intent}_app_id` in opts ? opts[`${intent}_app_id`] : '';
         url = url.replace('%app_id%', encodeURIComponent(app_id));
       }
 
-      console.log('social', url, title, options);
+      console.log('share', url, title, options);
 
       window.open(url, title, options);
     }
 
     
     sendEmail(evt, data) {
-      const opts = this.options, locale = opts.locale;
+      const {options: opts} = this;
+      const {locale} = opts;
+
       const url = opts.uriform['send-email']
         .replace('%subject%', encodeURIComponent(locale.subject.toString()))
         .replace('%text%', this.text(data));
@@ -912,23 +945,26 @@
     copyLink(evt, data) {
       if (! this.element) return;
 
-      const opts = this.options, locale = opts.locale;
+      const {options: opts} = this;
+      const {locale} = opts;
 
-     
-      {
-        const node = document.createElement('textarea');
-        node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
-        node.value = data.url.toString();
+      try {
+        navigator.clipboard.writeText(data.url.toString());
+      } catch (err) {
+        if (err instanceof TypeError) {
+          const node = document.createElement('textarea');
+          node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
+          node.value = data.url.toString();
+          this.appendNode(this.element, node);
+          node.focus();
+          node.select();
 
-        this.appendNode(this.element, node);
+          document.execCommand('copy');
 
-        node.focus();
-        node.select();
-
-       
-        document.execCommand('copy');
-
-        node.remove();
+          node.remove();
+        } else {
+          console.error('webShare', err.message);
+        }
       }
 
       if (opts.effects) {
@@ -938,10 +974,8 @@
         const msg = this.compo('span', 'copied-link-msg', {innerText: locale.copied.toString()});
 
         root.classList.add('share-effects-copied-link');
-
         bg.bind(root);
         msg.bind(root);
-
         bg.show();
 
        
@@ -956,7 +990,7 @@
     
     async webShare(evt, data) {
       try {
-        await window.navigator.share({title: data.title, url: data.url});
+        await navigator.share({title: data.title, url: data.url});
       } catch (err) {
         if (err instanceof TypeError) ; else {
           console.error('webShare', err.message);

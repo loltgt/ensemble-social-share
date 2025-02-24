@@ -45,6 +45,9 @@
   margin: 0.2rem 0.2rem;
   text-align: center;
 }
+.share-vertical .share-action {
+  display: block;
+}
 
 .share-button {
   cursor: pointer;
@@ -72,6 +75,11 @@
 }
 .share-icon:before, .share-icon:after {
   display: block;
+}
+.share-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
 }
 
 .share-intent-web-share {
@@ -208,6 +216,10 @@
   }
   .share-intent {
     font-size: 2rem;
+  }
+  .share-intent svg {
+    width: 2rem;
+    height: 2rem;
   }
   .share-copied-link-msg {
     width: auto;
