@@ -49,16 +49,17 @@ const SocialShareActionEnum = Object.freeze({
  * @param {string} [options.iconSymbolHashPrefix='icon'] Set icon svg symbol hash prefix, for icons:  symbol
  * @param {string} [options.iconSvgHashPrefix] Set icon image svg hash prefix, for icons: svg
  * @param {boolean} [options.effects=true] Allow effects
- * @param {string} [options.link=''] The link, leave empty to auto-discover with selector or location.href
- * @param {string} [options.title=''] The title, leave empty to auto-discover with selector or window.title
- * @param {string} [options.description=''] The description, leave empty to auto-discover with selector
+ * @param {string} [options.link=''] The link, leave empty to auto-discover, selector or location.href
+ * @param {string} [options.title=''] The title, leave empty to auto-discover, selector or window.title
+ * @param {string} [options.description=''] The description, leave empty to auto-discover, selector
  * @param {string[]} [options.intents] Sharing intent buttons to display, default to most popular
  * @param {object} [options.scaffold] Scaffold for sharing intents with enumeration
  * @param {object} [options.uriform] Object containing social sharing URL literals
- * @param {object} [options.label] Parameters for label of the component
- * @param {object} [options.selectorLink] An element selector for link
- * @param {object} [options.selectorTitle] An element selector for title
- * @param {object} [options.selectorDescription] An element selector for description
+ * @param {object} [options.label] Properties for label component, titling
+ * @param {int} [options.copiedEffectDelay=1000] Copied effect delay time in milliseconds
+ * @param {object} [options.selectorLink] An element selector {element, attribute} for link
+ * @param {object} [options.selectorTitle] An element selector {element, attribute} for title
+ * @param {object} [options.selectorDescription] An element selector {element, attribute} for description
  * @param {object} [options.locale] Localization strings
  * @param {function} [options.onInit] onInit callback, on component initialization
  * @param {function} [options.onIntent] onIntent callback, on sharing intent call
@@ -160,6 +161,7 @@ class SocialShare extends base {
         attribute: 'content'
       },
       label: {},
+      copiedEffectDelay: 1e3,
       locale: {
         label: 'Share',
         share: 'Share on %s',
@@ -211,8 +213,8 @@ class SocialShare extends base {
       const label = this.compo('span', 'label', opts.label);
       label.classList.add('label');
 
-      if (! 'innerText' in opts.label) {
-        label.innerText = opts.locale.label.toString();
+      if (! opts.label.innerText) {
+        label.innerText = opts.locale.label;
       }
 
       compo.append(label);
@@ -244,7 +246,7 @@ class SocialShare extends base {
     if (! opts.intents && this.ska === opts.scaffold) {
       const a = Object.keys(this.ska);
       for (const i of [0, 1, 8, 9, 10, 2, 15, 16, 17]) {
-        intents.push(a[i].toString());
+        intents.push(a[i]);
       }
     } else if (opts.intents instanceof Array) {
       intents = opts.intents;
@@ -304,7 +306,7 @@ class SocialShare extends base {
   /**
    * Creates the action with a share button
    *
-   * @param {string} intent The action name
+   * @param {string} intent The intent name
    * @param {string} title A title for action
    */
   action(intent, title) {
@@ -361,7 +363,7 @@ class SocialShare extends base {
    * @param {Element} target The element is invoking
    */
   intent(evt, target) {
-    this.event(evt);
+    this.event().prevent(evt);
 
     if (! evt.isTrusted) return;
 
@@ -382,31 +384,31 @@ class SocialShare extends base {
     if (this.intents.indexOf(intent) == -1)
       return;
 
-    //TODO URL validation
     let url, title, summary, text;
+    const {selectorLink, selectorTitle, selectorDescription} = opts;
 
     if (opts.link) {
-      url = opts.link;
-    } else if (opts.selectorLink && typeof opts.selectorLink == 'object' && this.selector(opts.selectorLink.element)) {
-      url = this.getAttr(this.selector(opts.selectorLink.element), opts.selectorLink.attribute);
+      url = new URL(opts.link).toString();
+    } else if (selectorLink && selectorLink.element && this.selector(selectorLink.element)) {
+      url = this.getAttr(this.selector(selectorLink.element), selectorLink.attribute);
     } else {
       url = window.location.href;
     }
     if (opts.title) {
       title = opts.title;
-    } else if (opts.selectorTitle && typeof opts.selectorTitle == 'object' && this.selector(opts.selectorTitle.element)) {
-      title = this.getAttr(this.selector(opts.selectorTitle.element), opts.selectorTitle.attribute);
+    } else if (selectorTitle && selectorTitle.element && this.selector(selectorTitle.element)) {
+      title = this.getAttr(this.selector(selectorTitle.element), selectorTitle.attribute);
     } else {
       title = document.title;
     }
     if (opts.description) {
       summary = opts.description;
-    } else if (opts.selectorDescription && typeof opts.selectorDescription == 'object' && this.selector(opts.selectorDescription.element)) {
-      summary = this.getAttr(this.selector(opts.selectorDescription.element), opts.selectorDescription.attribute);
+    } else if (selectorDescription && selectorDescription.element && this.selector(selectorDescription.element)) {
+      summary = this.getAttr(this.selector(selectorDescription.element), selectorDescription.attribute);
     } else {
       summary = title;
     }
-    text = '\r\n\r\n%title%\r\n%url%\r\n\r\n';
+    text = '\n\n%title%\n%url%\n\n';
 
     const data = {url, title, text, summary};
 
@@ -419,9 +421,13 @@ class SocialShare extends base {
         case act.email: this.sendEmail(evt, data); break;
         case act.copy: this.copyLink(evt, data); break;
         case act.webapi: this.webShare(evt, data); break;
-        default: this.share(evt, data, intent, action);
+        default: this.share(evt, data, intent);
       }
     }
+
+    this.event().blur(evt);
+
+    console.log('intent', this, target, evt, intent, data);
   }
 
   /**
@@ -454,8 +460,9 @@ class SocialShare extends base {
    * @param {string} data.title Share title text
    * @param {string} data.text Share description text
    * @param {string} data.summary Share summary text
+   * @param {string} intent The intent name
    */
-  share(evt, data, intent, action) {
+  share(evt, data, intent) {
     const {options: opts} = this;
 
     if (! intent in opts.uriform) return;
@@ -465,21 +472,19 @@ class SocialShare extends base {
       .replace('%title%', encodeURIComponent(data.title))
       .replace('%summary%', encodeURIComponent(data.summary));
 
-    //TODO window title
-    const title = action.getAttr('title');
-    const options = 'toolbar=0,status=0,width=640,height=480';
+    const features = 'toolbar=0,status=0,width=640,height=480';
 
     if (/%text%/.test(opts.uriform[intent])) {
       url = url.replace('%text%', this.text(data));
     }
     if (intent == 'facebook' || intent == 'messenger') {
-      const app_id = `${intent}_app_id` in opts ? opts[`${intent}_app_id`] : '';
+      const app_id = opts[`${intent}_app_id`] ?? '';
       url = url.replace('%app_id%', encodeURIComponent(app_id));
     }
 
-    console.log('share', url, title, options);
+    console.log('share', url, null, features);
 
-    window.open(url, title, options);
+    window.open(url, null, features);
   }
 
   /**
@@ -501,7 +506,7 @@ class SocialShare extends base {
     const {locale} = opts;
 
     const url = opts.uriform['send-email']
-      .replace('%subject%', encodeURIComponent(locale.subject.toString()))
+      .replace('%subject%', encodeURIComponent(locale.subject))
       .replace('%text%', this.text(data));
 
     console.log('sendEmail', url, '_self');
@@ -531,12 +536,12 @@ class SocialShare extends base {
     const {locale} = opts;
 
     try {
-      navigator.clipboard.writeText(data.url.toString());
+      navigator.clipboard.writeText(data.url);
     } catch (err) {
       if (err instanceof TypeError) {
         const node = document.createElement('textarea');
         node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
-        node.value = data.url.toString();
+        node.value = data.url;
         this.appendNode(this.element, node);
         node.focus();
         node.select();
@@ -551,22 +556,21 @@ class SocialShare extends base {
 
     if (opts.effects) {
       const self = this;
-      const root = this.root;
+      const {root} = this;
 
       const bg = this.compo(false, 'effects-copied-link--bg', {hidden: true});
-      const msg = this.compo('span', 'copied-link-msg', {innerText: locale.copied.toString()});
+      const msg = this.compo('span', 'copied-link-msg', {innerText: locale.copied});
 
       root.classList.add('share-effects-copied-link');
       bg.bind(root);
       msg.bind(root);
       bg.show();
 
-      //TODO delay time option
-      this.delay(function() {
+      this.delay(() => {
         msg.unbind(root);
         bg.unbind(root);
         root.classList.remove('share-effects-copied-link');
-      }, bg, 8e2);
+      }, bg, parseInt(opts.copiedEffectDelay) || 0);
     }
   }
 

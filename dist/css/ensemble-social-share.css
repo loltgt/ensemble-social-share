@@ -195,18 +195,6 @@
   opacity: 1;
 }
 
-.share-action-callout {
-  display: inline-block;
-  margin: 0.2rem 0.5rem;
-}
-
-.share-intent-callout {
-  border-radius: 0;
-  color: #ccc;
-  outline: 0;
-  transform: none !important;
-}
-
 @media (min-width: 992px) {
   .share-actions {
     margin: 0 -0.3rem;

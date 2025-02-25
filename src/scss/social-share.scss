@@ -158,23 +158,6 @@
   opacity: 1;
 }
 
-.share-action-callout {
-  display: inline-block;
-  margin: .2rem .5rem;
-  //TODO compat
-}
-.share-intent-callout {
-  border-radius: 0;
-  color: #ccc;
-  outline: 0;
-  transform: none !important;
-@if $ensemble_compat {
-@each $vendor in (webkit, moz, ms) {
-  -#{$vendor}-transition: $ensemble-socialshare_effects_bg__transition;
-}
-}
-}
-
 
 @media (min-width: 992px) {
   .share-actions {

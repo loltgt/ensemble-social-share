@@ -114,7 +114,10 @@
         copied: ':localized: Copied link!'
       },
       onIntent: (self, event, intent, data) => {
-        intent === 'print' && window.print();
+        console.log('example', self, event, intent, data);
+
+        // timeout 200ms prevents focus trap
+        return intent === 'print' && setTimeout(window.print, 2e2);
       }
     }
   );

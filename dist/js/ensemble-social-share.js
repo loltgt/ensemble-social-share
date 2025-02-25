@@ -323,6 +323,7 @@
     async render(slot) {
       const el = this[this.ns];
       const self = this;
+     
 
       if (el[slot] && el[slot]._) {
         el[slot].load();
@@ -336,6 +337,7 @@
     
     async unload(slot) {
       const el = this[this.ns];
+     
 
       if (el[slot] && el[slot]._) {
         el[slot].unload();
@@ -345,6 +347,7 @@
     
     async reflow(slot, force) {
       const el = this[this.ns];
+     
 
       if (force) {
         el[slot] = this.compo(el[slot]._.ns, el[slot]._.name, el[slot]._.props);
@@ -390,6 +393,23 @@
     }
 
     
+    static prevent(event) {
+      event.preventDefault();
+    }
+
+    
+    static focus(event, options) {
+      const {currentTarget} = event;
+      currentTarget && currentTarget.focus(options);
+    }
+
+    
+    static blur(event) {
+      const {currentTarget} = event;
+      currentTarget && currentTarget.blur();
+    }
+
+    
     static isEvent(obj) {
       return obj instanceof Event;
     }
@@ -404,12 +424,6 @@
   class base {
 
     
-   
-
-    
-   
-
-    
     constructor() {
       const args = arguments;
       let element, options;
@@ -418,7 +432,7 @@
         element = args[0];
         options = args[1];
      
-      } else if (typeof args[0] == 'object' && args[0].nodeType) {
+      } else if (args[0] && typeof args[0] == 'object' && args[0].nodeType) {
         element = args[0];
       } else {
         options = args[0];
@@ -467,22 +481,14 @@
     }
 
     
-    event(event, node) {
-      if (typeof event == 'string') {
-        return new Event(this.options.ns, event, node);
-      } else if (event) {
-        event.preventDefault();
-       
-        event.target.blur();
-      } else {
-        return Event;
-      }
+    event(name, node) {
+      const ns = this.options.ns;
+      return name != undefined ? new Event(ns, name, node) : Event;
     }
 
     
     selector(query, node, all = false) {
       node = node || document;
-
       return all ? node.querySelectorAll(query) : node.querySelector(query);
     }
 
@@ -497,8 +503,8 @@
     }
 
     
-    removeNode(root, node) {
-      return !! root.removeChild(node);
+    removeNode(parent, node) {
+      return !! parent.removeChild(node);
     }
 
     
@@ -653,6 +659,7 @@
           attribute: 'content'
         },
         label: {},
+        copiedEffectDelay: 1e3,
         locale: {
           label: 'Share',
           share: 'Share on %s',
@@ -696,8 +703,8 @@
         const label = this.compo('span', 'label', opts.label);
         label.classList.add('label');
 
-        if (false in opts.label) {
-          label.innerText = opts.locale.label.toString();
+        if (! opts.label.innerText) {
+          label.innerText = opts.locale.label;
         }
 
         compo.append(label);
@@ -727,7 +734,7 @@
       if (! opts.intents && this.ska === opts.scaffold) {
         const a = Object.keys(this.ska);
         for (const i of [0, 1, 8, 9, 10, 2, 15, 16, 17]) {
-          intents.push(a[i].toString());
+          intents.push(a[i]);
         }
       } else if (opts.intents instanceof Array) {
         intents = opts.intents;
@@ -826,7 +833,7 @@
 
     
     intent(evt, target) {
-      this.event(evt);
+      this.event().prevent(evt);
 
       if (! evt.isTrusted) return;
 
@@ -847,31 +854,31 @@
       if (this.intents.indexOf(intent) == -1)
         return;
 
-     
       let url, title, summary, text;
+      const {selectorLink, selectorTitle, selectorDescription} = opts;
 
       if (opts.link) {
-        url = opts.link;
-      } else if (opts.selectorLink && typeof opts.selectorLink == 'object' && this.selector(opts.selectorLink.element)) {
-        url = this.getAttr(this.selector(opts.selectorLink.element), opts.selectorLink.attribute);
+        url = new URL(opts.link).toString();
+      } else if (selectorLink && selectorLink.element && this.selector(selectorLink.element)) {
+        url = this.getAttr(this.selector(selectorLink.element), selectorLink.attribute);
       } else {
         url = window.location.href;
       }
       if (opts.title) {
         title = opts.title;
-      } else if (opts.selectorTitle && typeof opts.selectorTitle == 'object' && this.selector(opts.selectorTitle.element)) {
-        title = this.getAttr(this.selector(opts.selectorTitle.element), opts.selectorTitle.attribute);
+      } else if (selectorTitle && selectorTitle.element && this.selector(selectorTitle.element)) {
+        title = this.getAttr(this.selector(selectorTitle.element), selectorTitle.attribute);
       } else {
         title = document.title;
       }
       if (opts.description) {
         summary = opts.description;
-      } else if (opts.selectorDescription && typeof opts.selectorDescription == 'object' && this.selector(opts.selectorDescription.element)) {
-        summary = this.getAttr(this.selector(opts.selectorDescription.element), opts.selectorDescription.attribute);
+      } else if (selectorDescription && selectorDescription.element && this.selector(selectorDescription.element)) {
+        summary = this.getAttr(this.selector(selectorDescription.element), selectorDescription.attribute);
       } else {
         summary = title;
       }
-      text = '\r\n\r\n%title%\r\n%url%\r\n\r\n';
+      text = '\n\n%title%\n%url%\n\n';
 
       const data = {url, title, text, summary};
 
@@ -884,9 +891,13 @@
           case act.email: this.sendEmail(evt, data); break;
           case act.copy: this.copyLink(evt, data); break;
           case act.webapi: this.webShare(evt, data); break;
-          default: this.share(evt, data, intent, action);
+          default: this.share(evt, data, intent);
         }
       }
+
+      this.event().blur(evt);
+
+      console.log('intent', this, target, evt, intent, data);
     }
 
     
@@ -900,7 +911,7 @@
     }
 
     
-    share(evt, data, intent, action) {
+    share(evt, data, intent) {
       const {options: opts} = this;
 
       if (! intent in opts.uriform) return;
@@ -910,21 +921,19 @@
         .replace('%title%', encodeURIComponent(data.title))
         .replace('%summary%', encodeURIComponent(data.summary));
 
-     
-      const title = action.getAttr('title');
-      const options = 'toolbar=0,status=0,width=640,height=480';
+      const features = 'toolbar=0,status=0,width=640,height=480';
 
       if (/%text%/.test(opts.uriform[intent])) {
         url = url.replace('%text%', this.text(data));
       }
       if (intent == 'facebook' || intent == 'messenger') {
-        const app_id = `${intent}_app_id` in opts ? opts[`${intent}_app_id`] : '';
+        const app_id = opts[`${intent}_app_id`] ?? '';
         url = url.replace('%app_id%', encodeURIComponent(app_id));
       }
 
-      console.log('share', url, title, options);
+      console.log('share', url, null, features);
 
-      window.open(url, title, options);
+      window.open(url, null, features);
     }
 
     
@@ -933,7 +942,7 @@
       const {locale} = opts;
 
       const url = opts.uriform['send-email']
-        .replace('%subject%', encodeURIComponent(locale.subject.toString()))
+        .replace('%subject%', encodeURIComponent(locale.subject))
         .replace('%text%', this.text(data));
 
       console.log('sendEmail', url, '_self');
@@ -949,12 +958,12 @@
       const {locale} = opts;
 
       try {
-        navigator.clipboard.writeText(data.url.toString());
+        navigator.clipboard.writeText(data.url);
       } catch (err) {
         if (err instanceof TypeError) {
           const node = document.createElement('textarea');
           node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
-          node.value = data.url.toString();
+          node.value = data.url;
           this.appendNode(this.element, node);
           node.focus();
           node.select();
@@ -968,22 +977,21 @@
       }
 
       if (opts.effects) {
-        const root = this.root;
+        const {root} = this;
 
         const bg = this.compo(false, 'effects-copied-link--bg', {hidden: true});
-        const msg = this.compo('span', 'copied-link-msg', {innerText: locale.copied.toString()});
+        const msg = this.compo('span', 'copied-link-msg', {innerText: locale.copied});
 
         root.classList.add('share-effects-copied-link');
         bg.bind(root);
         msg.bind(root);
         bg.show();
 
-       
-        this.delay(function() {
+        this.delay(() => {
           msg.unbind(root);
           bg.unbind(root);
           root.classList.remove('share-effects-copied-link');
-        }, bg, 8e2);
+        }, bg, parseInt(opts.copiedEffectDelay) || 0);
       }
     }
 
