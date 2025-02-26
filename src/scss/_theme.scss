@@ -4,8 +4,8 @@ $ensemble_compat: false !default;
 
 // Action
 
-$ensemble-socialshare_action_margin-y: .2rem !default;
-$ensemble-socialshare_action_margin-x: .2rem !default;
+$ensemble-socialshare_action_row-gap: .2rem !default;
+$ensemble-socialshare_action_column-gap: .2rem !default;
 
 
 // Intents
@@ -61,22 +61,18 @@ $ensemble-socialshare_intents: (
   backface-visibility: hidden;
   transition: transform 50ms linear;
 @if $ensemble_compat {
-@each $vendor in (webkit, moz, ms) {
-  -#{$vendor}-transform: scale3d(1);
-  -#{$vendor}-transform: scale(1);
-  -#{$vendor}-backface-visibility: hidden;
-  -#{$vendor}-transition: -#{$vendor}-transform 50ms linear;
-}
+  -webkit-transform: scale3d(1);
+  -webkit-transform: scale(1);
+  -webkit-backface-visibility: hidden;
+  -webkit-transition: -webkit-transform 50ms linear;
 }
 
   &:active, &:focus {
     transform: scale3d(1.1);
     transform: scale(1.1);
 @if $ensemble_compat {
-@each $vendor in (webkit, moz, ms) {
-    -#{$vendor}-transform: scale3d(1.1);
-    -#{$vendor}-transform: scale(1.1);
-}
+    -webkit-transform: scale3d(1.1);
+    -webkit-transform: scale(1.1);
 }
   }
 
@@ -85,10 +81,8 @@ $ensemble-socialshare_intents: (
       transform: scale3d(1.1);
       transform: scale(1.1);
 @if $ensemble_compat {
-@each $vendor in (webkit, moz, ms) {
-      -#{$vendor}-transform: scale3d(1.1);
-      -#{$vendor}-transform: scale(1.1);
-}
+      -webkit-transform: scale3d(1.1);
+      -webkit-transform: scale(1.1);
 }
     }
   }
@@ -112,9 +106,15 @@ $ensemble-socialshare_effects_bg__zindex: 1001 !default;
 
 // Responsive
 
-// 992 – md
-$ensemble-socialshare_md__action_margin-y: .2rem !default;
-$ensemble-socialshare_md__action_margin-x: .3rem !default;
+// xs: 0       (extra-small 480)
+// sm: 576px   (small 640)
+// md: 768px   (medium 800)
+// lg: 992px   (large 1024)
+// xl: 1200px  (extra-large 1280)
 
-$ensemble-socialshare_md__intent_size: 2rem !default;
+// lg (large 1024)
+$ensemble-socialshare_lg__action_row-gap: .2rem !default;
+$ensemble-socialshare_lg__action_column-gap: .3rem !default;
+
+$ensemble-socialshare_lg__intent_size: 2rem !default;
 

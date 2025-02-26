@@ -7,7 +7,6 @@
  * @license MIT License
  */
 
-@use "sass:math";
 @use "sass:list";
 @use "sass:map";
 @use "sass:meta";
@@ -26,30 +25,38 @@
 }
 .social-share {
   display: block;
-@if $ensemble_compat {
-  font-size: 16px;
-}
   font-size: 1rem;
   line-height: 1;
 }
 .share-actions {
 @if $ensemble_compat {
-  margin: 0 (-(math.floor(math.div($ensemble-socialshare_action_margin-x, 1rem) * 16px)));
+  margin: 0 (-$ensemble-socialshare_action_row-gap);
+} @else {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $ensemble-socialshare_action_row-gap $ensemble-socialshare_action_column-gap;
 }
-  margin: 0 (-$ensemble-socialshare_action_margin-x);
   list-style: none;
+
+@if $ensemble_compat {
+} @else {
+  .share-vertical & {
+    flex-direction: column;
+  }
+}
 }
 .share-action {
-  display: inline-block;
 @if $ensemble_compat {
-  margin: math.floor(math.div($ensemble-socialshare_action_margin-y, 1rem) * 16px) math.floor(math.div($ensemble-socialshare_action_margin-x, 1rem) * 16px);
+  display: inline-block;
+  margin: $ensemble-socialshare_action_row-gap $ensemble-socialshare_action_column-gap;
 }
-  margin: $ensemble-socialshare_action_margin-y $ensemble-socialshare_action_margin-x;
   text-align: center;
 
+@if $ensemble_compat {
   .share-vertical & {
     display: block;
   }
+}
 }
 .share-button {
   cursor: pointer;
@@ -65,17 +72,11 @@
 .share-intent {
   display: block;
   padding: $ensemble-socialshare_intent_padding;
-@if $ensemble_compat {
-  font-size: math.floor(math.div($ensemble-socialshare_intent_size, 1rem) * 16px);
-}
   font-size: $ensemble-socialshare_intent_size;
   line-height: 1;
   color: $ensemble-socialshare_intent_foregrund;
   background: $ensemble-socialshare_intent_background;
   border: $ensemble-socialshare_intent_border;
-@if $ensemble_compat {
-  border-radius: if($ensemble-socialshare_intent_border-radius != 0, math.floor(math.div($ensemble-socialshare_intent_border-radius, 1rem) * 16px), 0);
-}
   border-radius: $ensemble-socialshare_intent_border-radius;
   @extend %ensemble-socialshare_effects_intent;
 }
@@ -109,9 +110,6 @@
   width: 100%;
   padding: $ensemble-socialshare_effects_intent_copy-link_msg_padding;
   font-family: $ensemble-socialshare_effects_intent_copy-link_msg_font-family;
-@if $ensemble_compat {
-  font-size: math.floor(math.div($ensemble-socialshare_effects_intent_copy-link_msg_font-size, 1rem) * 16px);
-}
   font-size: $ensemble-socialshare_effects_intent_copy-link_msg_font-size;
   font-weight: $ensemble-socialshare_effects_intent_copy-link_msg_font-weight;
   line-height: $ensemble-socialshare_effects_intent_copy-link_msg_line-height;
@@ -120,9 +118,7 @@
   text-align: $ensemble-socialshare_effects_intent_copy-link_msg_text-align;
   transform: translate(-50%, -50%);
 @if $ensemble_compat {
-@each $vendor in (webkit, moz, ms) {
-  -#{$vendor}-transform: translate(-50%, -50%);
-}
+  -webkit-transform: translate(-50%, -50%);
 }
   z-index: $ensemble-socialshare_effects_intent_copy-link_msg_zindex;
 }
@@ -146,9 +142,7 @@
   background: $ensemble-socialshare_effects_bg__background;
   transition: $ensemble-socialshare_effects_bg__transition;
 @if $ensemble_compat {
-@each $vendor in (webkit, moz, ms) {
-  -#{$vendor}-transition: $ensemble-socialshare_effects_bg__transition;
-}
+  -webkit-transition: $ensemble-socialshare_effects_bg__transition;
 }
   opacity: $ensemble-socialshare_effects_bg__opacity;
   z-index: $ensemble-socialshare_effects_bg__zindex;
@@ -159,28 +153,26 @@
 }
 
 
+// breakpoint: lg (large 1024)
 @media (min-width: 992px) {
   .share-actions {
 @if $ensemble_compat {
-    margin: 0 (-(math.floor(math.div($ensemble-socialshare_md__action_margin-x, 1rem) * 16px)));
+    margin: 0 (-$ensemble-socialshare_lg__action_column-gap);
+} @else {
+    gap: $ensemble-socialshare_lg__action_row-gap $ensemble-socialshare_lg__action_column-gap;
 }
-    margin: 0 (-$ensemble-socialshare_md__action_margin-x);
   }
   .share-action {
 @if $ensemble_compat {
-    margin: math.floor(math.div($ensemble-socialshare_md__action_margin-y, 1rem) * 16px) math.floor(math.div($ensemble-socialshare_md__action_margin-x, 1rem) * 16px);
+    margin: $ensemble-socialshare_lg__action_row-gap $ensemble-socialshare_lg__action_column-gap;
 }
-    margin: $ensemble-socialshare_md__action_margin-y $ensemble-socialshare_md__action_margin-x;
   }
   .share-intent {
-@if $ensemble_compat {
-    font-size: math.floor(math.div($ensemble-socialshare_md__intent_size, 1rem) * 16px);
-}
-    font-size: $ensemble-socialshare_md__intent_size;
+    font-size: $ensemble-socialshare_lg__intent_size;
 
     svg {
-      width: $ensemble-socialshare_md__intent_size;
-      height: $ensemble-socialshare_md__intent_size;
+      width: $ensemble-socialshare_lg__intent_size;
+      height: $ensemble-socialshare_lg__intent_size;
     }
   }
 
