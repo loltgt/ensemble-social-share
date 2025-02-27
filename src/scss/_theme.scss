@@ -1,5 +1,17 @@
 
+// Compatibility old browsers
+
 $ensemble_compat: false !default;
+
+
+// Compound size
+
+// 1rem (16px)  default to document font-size
+// 1em          1 : relative to parent font-size
+// 1rem         1 : relative to document font-size
+
+$ensemble_socialshare_compound_size: 1rem !default;
+$ensemble_socialshare_compound_line-height: 1 !default;
 
 
 // Action
@@ -94,11 +106,11 @@ $ensemble-socialshare_effects_intent_copy-link_msg_font-size: 1rem !default;
 $ensemble-socialshare_effects_intent_copy-link_msg_font-weight: bold !default;
 $ensemble-socialshare_effects_intent_copy-link_msg_line-height: 1.5 !default;
 $ensemble-socialshare_effects_intent_copy-link_msg_text-align: center !default;
-$ensemble-socialshare_effects_intent_copy-link_msg_foreground: rgba(255, 255, 255, .9) !default;
-$ensemble-socialshare_effects_intent_copy-link_msg_background: rgba(5, 5, 5, .9) !default;
+$ensemble-socialshare_effects_intent_copy-link_msg_color: rgba(255, 255, 255, .9) !default;
+$ensemble-socialshare_effects_intent_copy-link_msg_background: rgba(0, 0, 0, .9) !default;
 $ensemble-socialshare_effects_intent_copy-link_msg_zindex: 1002 !default;
 
-$ensemble-socialshare_effects_bg__background: rgba(250, 250, 250, .3) !default;
+$ensemble-socialshare_effects_bg__background: rgba(255, 255, 255, .3) !default;
 $ensemble-socialshare_effects_bg__transition: opacity .8s ease-out !default;
 $ensemble-socialshare_effects_bg__opacity: .78 !default;
 $ensemble-socialshare_effects_bg__zindex: 1001 !default;

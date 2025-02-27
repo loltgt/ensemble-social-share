@@ -7,26 +7,24 @@
  * @license MIT License
  */
 
+@use "sass:string";
 @use "sass:list";
 @use "sass:map";
 @use "sass:meta";
 
-%ensemble-socialshare_css_reset {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 @import "theme";
 
 
-.social-share, .share-actions, .share-action, .share-button, .share-intent, .share-icon, .share-copied-link-msg, .share-effects-copied-link--bg {
-  @extend %ensemble-socialshare_css_reset;
-}
 .social-share {
   display: block;
-  font-size: 1rem;
-  line-height: 1;
+  font-size: $ensemble-socialshare_compound-size;
+  line-height: $ensemble-socialshare_compound-line-height;
+
+  &, * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
 .share-actions {
 @if $ensemble_compat {
@@ -67,7 +65,7 @@
 }
 .share-button:active, .share-button:focus {
   outline: 0;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: string.unquote("transparent");
 }
 .share-intent {
   display: block;
@@ -113,7 +111,7 @@
   font-size: $ensemble-socialshare_effects_intent_copy-link_msg_font-size;
   font-weight: $ensemble-socialshare_effects_intent_copy-link_msg_font-weight;
   line-height: $ensemble-socialshare_effects_intent_copy-link_msg_line-height;
-  color: $ensemble-socialshare_effects_intent_copy-link_msg_foreground;
+  color: $ensemble-socialshare_effects_intent_copy-link_msg_color;
   background: $ensemble-socialshare_effects_intent_copy-link_msg_background;
   text-align: $ensemble-socialshare_effects_intent_copy-link_msg_text-align;
   transform: translate(-50%, -50%);

@@ -6,12 +6,6 @@
  * @license MIT License
  */
 
-.social-share, .share-actions, .share-action, .share-button, .share-intent, .share-icon, .share-copied-link-msg, .share-effects-copied-link--bg {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 .share-intent {
   transform: scale3d(1);
   transform: scale(1);
@@ -33,6 +27,11 @@
   display: block;
   font-size: 1rem;
   line-height: 1;
+}
+.social-share, .social-share * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .share-actions {
@@ -167,7 +166,7 @@
   font-weight: bold;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.9);
-  background: rgba(5, 5, 5, 0.9);
+  background: rgba(0, 0, 0, 0.9);
   text-align: center;
   transform: translate(-50%, -50%);
   z-index: 1002;
@@ -184,7 +183,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  background: rgba(250, 250, 250, 0.3);
+  background: rgba(255, 255, 255, 0.3);
   transition: opacity 0.8s ease-out;
   opacity: 0.78;
   z-index: 1001;

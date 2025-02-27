@@ -48,17 +48,17 @@
     }
 
     
-    bind(root, cb) {
+    bind(node, cb) {
       const el = this[this.ns];
       typeof cb == 'function' && cb.call(this, el);
-      return !! root.appendChild(el);
+      return !! node.appendChild(el);
     }
 
     
-    unbind(root, cb) {
+    unbind(node, cb) {
       const el = this[this.ns];
       typeof cb == 'function' && cb.call(this, el);
-      return !! root.removeChild(el);
+      return !! node.removeChild(el);
     }
 
     
@@ -404,9 +404,9 @@
     }
 
     
-    static blur(event) {
+    static blur(event, delay = 1e2) {
       const {currentTarget} = event;
-      currentTarget && currentTarget.blur();
+      setTimeout(() => currentTarget && currentTarget.blur(), delay);
     }
 
     
@@ -503,11 +503,6 @@
     }
 
     
-    removeNode(parent, node) {
-      return !! parent.removeChild(node);
-    }
-
-    
     cloneNode(node, deep = false) {
       return node.cloneNode(deep);
     }
@@ -523,13 +518,35 @@
     }
 
     
-    setAttr(node, attr, value) {
-      node.setAttribute(attr, value);
-    }
+    icon(type, name, prefix, path, hash) {
+      const ns = this.options.ns;
+      const className = prefix ? `${prefix}-${name}` : name;
+      const icon = this.compo('span', 'icon', {className});
 
-    
-    delAttr(node, attr) {
-      node.removeAttribute(attr);
+      if (type != 'font') {
+        if (type == 'symbol' || type == 'path') {
+          const svgNsUri = 'http://www.w3.org/2000/svg';
+          const svg = new Compo(ns, 'svg', false, false, false, svgNsUri);
+          const node = new Compo(ns, type, false, false, false, svgNsUri);
+
+          if (type == 'symbol') {
+            node.setAttr('href', `#${name}`);
+          } else {
+            node.setAttr('d', path);
+          }
+          svg.append(node);
+
+          icon.append(svg);
+       
+        } else if (type == 'svg' && path && hash) {
+          const img = new compo(ns, 'img', false, {
+            'src': `${path}#${hash}`
+          });
+          icon.append(img);
+        }
+      }
+
+      return icon;
     }
 
     
@@ -544,6 +561,13 @@
     }
 
     
+    delay(func, node, time) {
+      const delay = node ? this.styleTime(node, 'transitionDuration') : 0;
+
+      setTimeout(func, delay || time);
+    }
+
+    
     wrap(method) {
       const self = this;
 
@@ -552,13 +576,6 @@
       }
 
       return function(event) { method.call(self, event, this); }
-    }
-
-    
-    delay(func, node, time) {
-      const delay = node ? this.styleTime(node, 'transitionDuration') : 0;
-
-      setTimeout(func, delay || time);
     }
 
   }
@@ -620,11 +637,11 @@
         root: 'body',
         className: 'social-share',
         layout: 'h',
-        icons: 'font',
-        iconPrefix: 'icon',
-        iconSvgSrc: '',
-        iconSymbolHashPrefix: 'icon',
-        iconSvgHashPrefix: '',
+        icons: {
+          type: 'font',
+          prefix: 'icon',
+          src: ''
+        },
         effects: true,
         link: '',
         title: '',
@@ -658,7 +675,9 @@
           element: 'meta[name="description"]',
           attribute: 'content'
         },
-        label: {},
+        label: {
+          text: ''
+        },
         copiedEffectDelay: 1e3,
         locale: {
           label: 'Share',
@@ -687,6 +706,7 @@
     constructor() {
       super(...arguments);
 
+      this.encoder = encodeURIComponent;
       this.init();
     }
 
@@ -700,12 +720,11 @@
       compo.setAttr('data-social-share', '');
 
       if (opts.label) {
-        const label = this.compo('span', 'label', opts.label);
+        const {label: labelParams, locale} = opts;
+        const label = this.compo('span', 'label', {
+          innerText: labelParams.text ?? locale.label
+        });
         label.classList.add('label');
-
-        if (! opts.label.innerText) {
-          label.innerText = opts.locale.label;
-        }
 
         compo.append(label);
       }
@@ -725,7 +744,7 @@
       if (this.built)
         return;
 
-      const {options: opts} = this;
+      const opts = this.options;
 
       this.root = this.selector(opts.root);
 
@@ -760,8 +779,8 @@
     
     populate() {
       const act = SocialShareActionEnum;
-      const {options: opts} = this;
-      const {locale} = opts;
+      const opts = this.options;
+      const locale = opts.locale;
 
       for (const intent of this.intents) {
         if (! intent in opts.scaffold)
@@ -789,7 +808,7 @@
 
     
     action(intent, title) {
-      const {options: opts} = this;
+      const opts = this.options;
 
       const action = this.compo('li', 'action', {
         className: `${opts.ns}-action-${intent}`
@@ -802,31 +821,12 @@
       action.setAttr('data-share-intent', intent);
       action.append(button);
 
-      const icon = this.compo('span', 'icon', {
-        className: `${opts.iconPrefix}-${intent}`
-      });
+      {
+        const {type, prefix} = opts.icons;
+        const icon = this.icon(type, intent, prefix);
 
-      const svgNsUri = 'http://www.w3.org/2000/svg';
-
-      if (opts.icons == 'symbol') {
-        const svg = new (this.compo())(opts.ns, 'svg', false, false, false, svgNsUri);
-        const symbol = new (this.compo())(opts.ns, 'use', false, false, false, svgNsUri);
-        const {iconSymbolHashPrefix: prefix} = opts;
-        const hash = prefix ? `${prefix}-${intent}` : intent;
-        symbol.setAttr('href', `#${hash}`);
-        svg.append(symbol);
-        icon.append(svg);
-     
-      } else if (opts.icons == 'svg' && opts.iconSvgSrc) {
-        const {iconSvgSrc, iconSvgHashPrefix: prefix} = opts;
-        const hash = prefix ? `${prefix}-${intent}` : intent;
-        const img = this.compo('img', false, {
-          'src': `${iconSvgSrc}#${hash}`
-        });
-        icon.append(img);
+        button.append(icon);
       }
-
-      button.append(icon);
 
       this.actions.append(action);
     }
@@ -838,8 +838,8 @@
       if (! evt.isTrusted) return;
 
       const act = SocialShareActionEnum;
-      const {options: opts} = this;
-      const {locale} = opts;
+      const opts = this.options;
+      const locale = opts.locale;
 
       if (! this.compo().isCompo(target))
         return;
@@ -902,7 +902,9 @@
 
     
     text(data) {
-      return encodeURIComponent(
+      const encoder = this.encoder;
+
+      return encoder(
         data.text
           .replace('%url%', data.url)
           .replace('%title%', data.title)
@@ -912,14 +914,14 @@
 
     
     share(evt, data, intent) {
-      const {options: opts} = this;
+      const {options: opts, encoder} = this;
 
       if (! intent in opts.uriform) return;
 
       let url = opts.uriform[intent]
-        .replace('%url%', encodeURIComponent(data.url))
-        .replace('%title%', encodeURIComponent(data.title))
-        .replace('%summary%', encodeURIComponent(data.summary));
+        .replace('%url%', encoder(data.url))
+        .replace('%title%', encoder(data.title))
+        .replace('%summary%', encoder(data.summary));
 
       const features = 'toolbar=0,status=0,width=640,height=480';
 
@@ -928,7 +930,7 @@
       }
       if (intent == 'facebook' || intent == 'messenger') {
         const app_id = opts[`${intent}_app_id`] ?? '';
-        url = url.replace('%app_id%', encodeURIComponent(app_id));
+        url = url.replace('%app_id%', encoder(app_id));
       }
 
       console.log('share', url, null, features);
@@ -938,11 +940,11 @@
 
     
     sendEmail(evt, data) {
-      const {options: opts} = this;
-      const {locale} = opts;
+      const {options: opts, encoder} = this;
+      const locale = opts.locale;
 
       const url = opts.uriform['send-email']
-        .replace('%subject%', encodeURIComponent(locale.subject))
+        .replace('%subject%', encoder(locale.subject))
         .replace('%text%', this.text(data));
 
       console.log('sendEmail', url, '_self');
@@ -954,13 +956,14 @@
     copyLink(evt, data) {
       if (! this.element) return;
 
-      const {options: opts} = this;
-      const {locale} = opts;
+      const opts = this.options;
+      const locale = opts.locale;
 
       try {
         navigator.clipboard.writeText(data.url);
       } catch (err) {
         if (err instanceof TypeError) {
+         
           const node = document.createElement('textarea');
           node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
           node.value = data.url;

@@ -43,11 +43,10 @@ const SocialShareActionEnum = Object.freeze({
  * @param {string} [options.root=body] A root Element node
  * @param {string[]} [options.className=social-share] The component CSS class name
  * @param {string} [options.layout='h'] Set layout model: h=horizontal, v=vertical
- * @param {string} [options.icons='font'] Set icons model: font, svg, symbol
- * @param {string} [options.iconPrefix='icon'] Set icon class name prefix
- * @param {string} [options.iconSvgSrc] Set icon image svg src, for icons: svg
- * @param {string} [options.iconSymbolHashPrefix='icon'] Set icon svg symbol hash prefix, for icons:  symbol
- * @param {string} [options.iconSvgHashPrefix] Set icon image svg hash prefix, for icons: svg
+ * @param {object} [options.icons] Set icons model
+ * @param {string} [options.icons.type='font'] Set icons type: font, svg, symbol, shape
+ * @param {string} [options.icons.prefix='icon'] Set icons CSS class name prefix, for icons: font
+ * @param {string} [options.icons.src] Set icons SVG symbol href or SVG image hash, for icons: symbol, svg
  * @param {boolean} [options.effects=true] Allow effects
  * @param {string} [options.link=''] The link, leave empty to auto-discover, selector or location.href
  * @param {string} [options.title=''] The title, leave empty to auto-discover, selector or window.title
@@ -55,7 +54,8 @@ const SocialShareActionEnum = Object.freeze({
  * @param {string[]} [options.intents] Sharing intent buttons to display, default to most popular
  * @param {object} [options.scaffold] Scaffold for sharing intents with enumeration
  * @param {object} [options.uriform] Object containing social sharing URL literals
- * @param {object} [options.label] Properties for label component, titling
+ * @param {object} [options.label] Parameters for label, titling
+ * @param {string} [options.label.text] Label text
  * @param {int} [options.copiedEffectDelay=1000] Copied effect delay time in milliseconds
  * @param {object} [options.selectorLink] An element selector {element, attribute} for link
  * @param {object} [options.selectorTitle] An element selector {element, attribute} for title
@@ -122,11 +122,11 @@ class SocialShare extends base {
       root: 'body',
       className: 'social-share',
       layout: 'h',
-      icons: 'font',
-      iconPrefix: 'icon',
-      iconSvgSrc: '',
-      iconSymbolHashPrefix: 'icon',
-      iconSvgHashPrefix: '',
+      icons: {
+        type: 'font',
+        prefix: 'icon',
+        src: ''
+      },
       effects: true,
       link: '',
       title: '',
@@ -160,7 +160,9 @@ class SocialShare extends base {
         element: 'meta[name="description"]',
         attribute: 'content'
       },
-      label: {},
+      label: {
+        text: ''
+      },
       copiedEffectDelay: 1e3,
       locale: {
         label: 'Share',
@@ -195,6 +197,7 @@ class SocialShare extends base {
   constructor() {
     super(...arguments);
 
+    this.encoder = encodeURIComponent;
     this.init();
   }
 
@@ -210,12 +213,11 @@ class SocialShare extends base {
     compo.setAttr('data-social-share', '');
 
     if (opts.label) {
-      const label = this.compo('span', 'label', opts.label);
+      const {label: labelParams, locale} = opts;
+      const label = this.compo('span', 'label', {
+        innerText: labelParams.text ?? locale.label
+      });
       label.classList.add('label');
-
-      if (! opts.label.innerText) {
-        label.innerText = opts.locale.label;
-      }
 
       compo.append(label);
     }
@@ -237,7 +239,7 @@ class SocialShare extends base {
     if (this.built)
       return;
 
-    const {options: opts} = this;
+    const opts = this.options;
 
     this.root = this.selector(opts.root);
 
@@ -276,8 +278,8 @@ class SocialShare extends base {
    */
   populate() {
     const act = SocialShareActionEnum;
-    const {options: opts} = this;
-    const {locale} = opts;
+    const opts = this.options;
+    const locale = opts.locale;
 
     for (const intent of this.intents) {
       if (! intent in opts.scaffold)
@@ -310,7 +312,7 @@ class SocialShare extends base {
    * @param {string} title A title for action
    */
   action(intent, title) {
-    const {options: opts} = this;
+    const opts = this.options;
 
     const action = this.compo('li', 'action', {
       className: `${opts.ns}-action-${intent}`
@@ -323,31 +325,12 @@ class SocialShare extends base {
     action.setAttr('data-share-intent', intent);
     action.append(button);
 
-    const icon = this.compo('span', 'icon', {
-      className: `${opts.iconPrefix}-${intent}`
-    });
+    {
+      const {type, prefix} = opts.icons;
+      const icon = this.icon(type, intent, prefix);
 
-    const svgNsUri = 'http://www.w3.org/2000/svg';
-
-    if (opts.icons == 'symbol') {
-      const svg = new (this.compo())(opts.ns, 'svg', false, false, false, svgNsUri);
-      const symbol = new (this.compo())(opts.ns, 'use', false, false, false, svgNsUri);
-      const {iconSymbolHashPrefix: prefix} = opts;
-      const hash = prefix ? `${prefix}-${intent}` : intent;
-      symbol.setAttr('href', `#${hash}`);
-      svg.append(symbol);
-      icon.append(svg);
-    //TODO check origin ?
-    } else if (opts.icons == 'svg' && opts.iconSvgSrc) {
-      const {iconSvgSrc, iconSvgHashPrefix: prefix} = opts;
-      const hash = prefix ? `${prefix}-${intent}` : intent;
-      const img = this.compo('img', false, {
-        'src': `${iconSvgSrc}#${hash}`
-      });
-      icon.append(img);
+      button.append(icon);
     }
-
-    button.append(icon);
 
     this.actions.append(action);
   }
@@ -368,8 +351,8 @@ class SocialShare extends base {
     if (! evt.isTrusted) return;
 
     const act = SocialShareActionEnum;
-    const {options: opts} = this;
-    const {locale} = opts;
+    const opts = this.options;
+    const locale = opts.locale;
 
     if (! this.compo().isCompo(target))
       return;
@@ -441,7 +424,9 @@ class SocialShare extends base {
    * @return {string} URL encoded text string
    */
   text(data) {
-    return encodeURIComponent(
+    const encoder = this.encoder;
+
+    return encoder(
       data.text
         .replace('%url%', data.url)
         .replace('%title%', data.title)
@@ -463,14 +448,14 @@ class SocialShare extends base {
    * @param {string} intent The intent name
    */
   share(evt, data, intent) {
-    const {options: opts} = this;
+    const {options: opts, encoder} = this;
 
     if (! intent in opts.uriform) return;
 
     let url = opts.uriform[intent]
-      .replace('%url%', encodeURIComponent(data.url))
-      .replace('%title%', encodeURIComponent(data.title))
-      .replace('%summary%', encodeURIComponent(data.summary));
+      .replace('%url%', encoder(data.url))
+      .replace('%title%', encoder(data.title))
+      .replace('%summary%', encoder(data.summary));
 
     const features = 'toolbar=0,status=0,width=640,height=480';
 
@@ -479,7 +464,7 @@ class SocialShare extends base {
     }
     if (intent == 'facebook' || intent == 'messenger') {
       const app_id = opts[`${intent}_app_id`] ?? '';
-      url = url.replace('%app_id%', encodeURIComponent(app_id));
+      url = url.replace('%app_id%', encoder(app_id));
     }
 
     console.log('share', url, null, features);
@@ -502,11 +487,11 @@ class SocialShare extends base {
    * @param {string} data.summary Share summary text
    */
   sendEmail(evt, data) {
-    const {options: opts} = this;
-    const {locale} = opts;
+    const {options: opts, encoder} = this;
+    const locale = opts.locale;
 
     const url = opts.uriform['send-email']
-      .replace('%subject%', encodeURIComponent(locale.subject))
+      .replace('%subject%', encoder(locale.subject))
       .replace('%text%', this.text(data));
 
     console.log('sendEmail', url, '_self');
@@ -532,13 +517,14 @@ class SocialShare extends base {
   copyLink(evt, data) {
     if (! this.element) return;
 
-    const {options: opts} = this;
-    const {locale} = opts;
+    const opts = this.options;
+    const locale = opts.locale;
 
     try {
       navigator.clipboard.writeText(data.url);
     } catch (err) {
       if (err instanceof TypeError) {
+        // [DOM]
         const node = document.createElement('textarea');
         node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
         node.value = data.url;
