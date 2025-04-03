@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>ensemble SocialShare demo</title>
+<link rel="stylesheet" href="demo-ensemble-social-share.css">
+<link rel="stylesheet" href="socialshare-icons.css">
+
+<!-- ensemble socialshare stylesheet -->
+<link rel="stylesheet" href="../dist/css/ensemble-social-share.css">
+</head>
+<body>
+<main>
+  <h1>ensemble SocialShare demo</h1>
+
+  <section>
+    <h2 class="js-class">ensemble.SocialShare</h2>
+
+    <article class="example" id="example-1">
+      <h2>Popular <em>default intents</em> with option <code>intents: null</code></h2>
+
+      <div class="social-share" data-social-share>
+    </article>
+
+    <article class="example" id="example-2">
+      <h2>Popular <em>all intents</em> with option <code>intents: true</code></h2>
+
+      <div class="social-share" data-social-share>
+    </article>
+
+    <article class="example" id="example-3">
+      <h2>Minimal <em>local intents</em> with option <code>intents: ['send-email', 'copy-link', 'web-share']</code></h2>
+
+      <div class="social-share" data-social-share>
+    </article>
+
+    <article class="example" id="example-4">
+      <h2>Minimal <em>local intents</em> and <em>vertical layout</em> with option <code>layout: 'v'</code> and <em>custom intent</em> to print</h2>
+
+      <div class="social-share" data-social-share>
+    </article>
+
+  </section>
+</main>
+
+<!-- ensmble socialshare javascript -->
+<script src="../dist/js/ensemble-social-share.min.js"></script>
+
+
+<!-- example: Popular default intents with options { intents: null } -->
+<script>
+  var element = document.querySelector('#example-1 .social-share');
+
+  new ensemble.SocialShare(element,
+    {
+      intents: null,
+      locale: {
+        copied: ':localized: Copied link!'
+      }
+    }
+  );
+</script>
+
+<!-- example: Popular all intents with options { intents: true } -->
+<script>
+  var element = document.querySelector('#example-2 .social-share');
+
+  new ensemble.SocialShare(element,
+    {
+      intents: true,
+      locale: {
+        copied: ':localized: Copied link!'
+      }
+    }
+  );
+</script>
+
+<!-- example: Minimal local intents with options { intents: ['send-email', 'copy-link', 'web-share'] } -->
+<script>
+  var element = document.querySelector('#example-3 .social-share');
+
+  new ensemble.SocialShare(element,
+    {
+      intents: ['send-email', 'copy-link', 'web-share'],
+      locale: {
+        copied: ':localized: Copied link!'
+      }
+    }
+  );
+</script>
+
+<!-- example: Minimal local intents and vertical layout with option { layout: 'v' } and custom intent to print -->
+<script>
+  var element = document.querySelector('#example-4 .social-share');
+
+  new ensemble.SocialShare(element,
+    {
+      layout: 'v',
+      intents: ['send-email', 'print', 'copy-link', 'web-share'],
+      locale: {
+        copied: ':localized: Copied link!'
+      },
+      onIntent: (self, event, intent, data) => {
+        console.log('example-4', self, event, intent, data);
+
+        // note: timeout 200ms prevents focus trap
+        return intent === 'print' && setTimeout(window.print, 2e2);
+      }
+    }
+  );
+</script>
+
+</body>
+</html>
