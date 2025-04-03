@@ -1,9 +1,9 @@
 
-import { argv, exit } from 'node:process';
-import { copyFile, mkdir, access } from 'node:fs/promises';
+import {argv, exit} from 'node:process';
+import {copyFile, mkdir, access} from 'node:fs/promises';
 
 const BASE_PATH = './node_modules';
-const DEST_PATH = './project';
+const DEST_PATH = './imgs';
 
 const IONICONS_PATH = `${BASE_PATH}/ionicons/src/svg`;
 const SIMPLEICONS_PATH = `${BASE_PATH}/simple-icons/icons`;
