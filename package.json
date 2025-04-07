@@ -1,12 +1,13 @@
 {
-  "name": "ensemble-social-share-demo",
+  "name": "ensemble-social-share--demo",
   "version": "0.0.4",
   "description": "ensemble SocialShare demo content",
   "scripts": {
-    "demo.css": "npx gulp demo.css",
+    "demo:css": "npx gulp demo:css",
+    "demo:prepublish": "npx gulp demo:prepublish",
     "demo": "npx gulp"
   },
-  "repository": "git+https://github.com/loltgt/ensemble-social-share.git",
+  "repository": "git+https://github.com/loltgt/ensemble-social-share.git#demo",
   "author": "Leonardo Laureti",
   "license": "MIT",
   "bugs": {

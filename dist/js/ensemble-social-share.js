@@ -518,27 +518,30 @@
     }
 
     
-    icon(type, name, prefix, path, hash) {
+    icon(type, name, prefix, path, hash, viewBox) {
       const ns = this.options.ns;
       const className = prefix ? `${prefix}-${name}` : name;
       const icon = this.compo('span', 'icon', {className});
 
       if (type != 'font') {
-        if (type == 'symbol' || type == 'path') {
+       
+        if (type == 'symbol' || type == 'shape') {
           const svgNsUri = 'http://www.w3.org/2000/svg';
           const svg = new Compo(ns, 'svg', false, false, false, svgNsUri);
-          const node = new Compo(ns, type, false, false, false, svgNsUri);
+          const node = new Compo(ns, type == 'symbol' ? 'use' : 'path', false, false, false, svgNsUri);
 
+          if (viewBox) {
+            svg.setAttr('viewBox', viewBox);
+          }
           if (type == 'symbol') {
-            node.setAttr('href', `#${name}`);
+            node.setAttr('href', `#${hash}`);
           } else {
             node.setAttr('d', path);
           }
           svg.append(node);
 
           icon.append(svg);
-       
-        } else if (type == 'svg' && path && hash) {
+        } else if (type == 'svg' && this.origin()) {
           const img = new compo(ns, 'img', false, {
             'src': `${path}#${hash}`
           });
@@ -547,6 +550,14 @@
       }
 
       return icon;
+    }
+
+    
+    origin(b, a) {
+      a = URL.canParse(a) ? a : (window.origin != 'null' ? window.origin : window.location.origin);
+      b = URL.canParse(b) ? new URL(b).origin : a;
+
+      return a && b && a === b;
     }
 
     
@@ -639,8 +650,7 @@
         layout: 'h',
         icons: {
           type: 'font',
-          prefix: 'icon',
-          src: ''
+          prefix: 'icon'
         },
         effects: true,
         link: '',
@@ -822,8 +832,8 @@
       action.append(button);
 
       {
-        const {type, prefix} = opts.icons;
-        const icon = this.icon(type, intent, prefix);
+        const {type, prefix, src, viewBox} = opts.icons;
+        const icon = this.icon(type, intent, prefix, src, intent, viewBox);
 
         button.append(icon);
       }
@@ -1003,9 +1013,7 @@
       try {
         await navigator.share({title: data.title, url: data.url});
       } catch (err) {
-        if (err instanceof TypeError) ; else {
-          console.error('webShare', err.message);
-        }
+        console.error('webShare', err.message);
       }
     }
 
