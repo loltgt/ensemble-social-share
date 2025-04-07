@@ -6,13 +6,13 @@
   "exports": "./index.js",
   "scripts": {
     "build": "npx gulp build",
-    "build.js": "npx gulp build.js",
-    "build.css": "npx gulp build.css",
-    "build.compat": "npx gulp build.compat",
-    "build.compat.js": "npx gulp build.compat.js",
-    "build.compat.css": "npx gulp build.compat.css",
-    "build.demo.css": "npx gulp build.demo.css",
-    "watch": "npx gulp watch"
+    "build:js": "npx gulp build:js",
+    "build:css": "npx gulp build:css",
+    "build:compat": "npx gulp build:compat",
+    "build:compat:js": "npx gulp build:compat:js",
+    "build:compat:css": "npx gulp build:compat:css",
+    "watch": "npx gulp watch",
+    "dev:demo": "cd demo; rm -r dist; ln -s dist ../dist"
   },
   "repository": "git+https://github.com/loltgt/ensemble-social-share.git",
   "author": "Leonardo Laureti",

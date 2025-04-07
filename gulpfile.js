@@ -226,31 +226,6 @@ function css_compat_minify() {
   return _css({compat: true, minify: true});
 }
 
-function demo_css() {
-  return src('src/scss/demo_*.scss')
-    .pipe(sourcemaps.init({
-      loadMaps: false,
-      debug: sourcemap_debug
-    }))
-    .pipe(sass({
-      loadPaths: [
-        './node_modules/@loltgt/ensemble/src/scss',
-        './node_modules/@loltgt/ensemble-modal/node_modules/@loltgt/ensemble/src/scss'
-      ],
-      silenceDeprecations: ['import'],
-      style: 'compressed'
-    }).on('error', sass.logError))
-    .pipe(rename(function(srcpath) {
-      srcpath.basename = srcpath.basename.replace('demo_', 'demo-ensemble-');
-    }))
-    // .pipe(sourcemaps.mapSources(function(srcpath, file) {
-    //   const base = path.relative(file.cwd, file.dirname);
-    //   return path.relative(base, srcpath);
-    // }))
-    // .pipe(sourcemaps.write('.', { includeContent: false }))
-    .pipe(dest('demo'));
-}
-
 function watcher() {
   watch('js/**/*.js', build_js);
   watch('scss/**/*.scss', build_css);
@@ -262,15 +237,13 @@ const build_css = series([css, css_minify]);
 const build_compat_js = series([js_compat, js_compat_minify]);
 const build_compat_css = series([css_compat, css_compat_minify]);
 const build_compat = parallel([build_compat_js, build_compat_css]);
-const build_demo_css = demo_css;
 const build = parallel([build_js, build_css]);
 
 exports['build'] = build;
-exports['build.js'] = build_js;
-exports['build.css'] = build_css;
-exports['build.compat.js'] = build_compat_js;
-exports['build.compat.css'] = build_compat_css;
-exports['build.compat'] = build_compat;
-exports['build.demo.css'] = build_demo_css;
+exports['build:js'] = build_js;
+exports['build:css'] = build_css;
+exports['build:compat:js'] = build_compat_js;
+exports['build:compat:css'] = build_compat_css;
+exports['build:compat'] = build_compat;
 exports['watch'] = watcher;
 exports.default = build;

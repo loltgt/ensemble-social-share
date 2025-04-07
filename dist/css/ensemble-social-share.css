@@ -72,7 +72,7 @@
 .share-icon {
   vertical-align: middle;
 }
-.share-icon:before, .share-icon:after {
+.share-icon:before, .share-icon:after, .share-icon svg {
   display: block;
 }
 .share-icon svg {

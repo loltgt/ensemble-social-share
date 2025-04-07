@@ -19,8 +19,9 @@ import base from "@loltgt/ensemble";
 
 /**
  * SocialShare action enumeration
- * 
+ *
  * @object
+ * @enum {int}
  */
 const SocialShareActionEnum = Object.freeze({
   share: 0,
@@ -47,6 +48,7 @@ const SocialShareActionEnum = Object.freeze({
  * @param {string} [options.icons.type='font'] Set icons type: font, svg, symbol, shape
  * @param {string} [options.icons.prefix='icon'] Set icons CSS class name prefix, for icons: font
  * @param {string} [options.icons.src] Set icons SVG symbol href or SVG image hash, for icons: symbol, svg
+ * @param {string} [options.icons.viewBox] Set icons SVG viewBox
  * @param {boolean} [options.effects=true] Allow effects
  * @param {string} [options.link=''] The link, leave empty to auto-discover, selector or location.href
  * @param {string} [options.title=''] The title, leave empty to auto-discover, selector or window.title
@@ -124,8 +126,7 @@ class SocialShare extends base {
       layout: 'h',
       icons: {
         type: 'font',
-        prefix: 'icon',
-        src: ''
+        prefix: 'icon'
       },
       effects: true,
       link: '',
@@ -326,8 +327,8 @@ class SocialShare extends base {
     action.append(button);
 
     {
-      const {type, prefix} = opts.icons;
-      const icon = this.icon(type, intent, prefix);
+      const {type, prefix, src, viewBox} = opts.icons;
+      const icon = this.icon(type, intent, prefix, src, intent, viewBox);
 
       button.append(icon);
     }
@@ -575,11 +576,7 @@ class SocialShare extends base {
     try {
       await navigator.share({title: data.title, url: data.url});
     } catch (err) {
-      if (err instanceof TypeError) {
-        //TODO provide a fallback
-      } else {
-        console.error('webShare', err.message);
-      }
+      console.error('webShare', err.message);
     }
   }
 
