@@ -1,5 +1,5 @@
 
-Copyright 2025 various owners (Ionic, Simple Icons, many brand owners)
+Copyright 2025 various owners (brand owners, Simple Icons, Ionic, Leonardo Laureti)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,11 +18,12 @@ Icon set for ensemble SocialShare
 
 Derived work – various authors
 
-- Share, link, e-mail, missing logos, icon artworks derived from Ionicons
+- Share icon, e-mail icon, print icon, missing logos, icon artworks derived from Ionicons
+- Copy link icon, icon artwork derived from ctlcltd/iconset
 - Social sharing logos, icon artworks derived from Simple Icons
 
 Icons are scaled to conform with canvas size
-Edited icons to comply with brand guidelines: line, reddit, telegram
+Edited icons to comply with brand guidelines: line, reddit, telegram, snapchat
 
 
 Ionicons
@@ -42,5 +43,14 @@ Licensed under Creative Commons Zero v1.0 Universal license
 Website URL: https://simpleicons.org/
 Source URL: https://github.com/simple-icons/simple-icons
 License URL: https://raw.githubusercontent.com/simple-icons/simple-icons/develop/LICENSE.md
+
+
+ctlcltd/iconset
+
+Copyright (C) Leonardo Laureti
+Licensed under MIT License
+
+Source URL: https://github.com/ctlcltd/iconset
+License URL: https://raw.githubusercontent.com/ctlcltd/iconset/master/LICENSE
 
 

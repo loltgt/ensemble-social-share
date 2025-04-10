@@ -41,26 +41,26 @@ $ensemble-socialshare_intents: (
   // local intents
   // 
   'web-share': #2c8888,
-  'copy-link': #399d99,//#399d99
-  'send-email': #399d99,//#399d99
+  'copy-link': #399d99,
+  'send-email': #399d99,
 
   // remote intents
   // 
   'facebook': ( original: #0866ff, themed: #0666f8 ),
-  'x': ( original: #000, themed: #404040 ),//404040
-  'linkedin': ( original: #0077b5, themed: #187ab3 ),//#187ab3
-  'threads': ( original: #000, themed: #404040 ),//404040
+  'x': ( original: #000, themed: #393939 ),
+  'linkedin': ( original: #0a66c2, themed: #2471d7 ),
+  'threads': ( original: #000, themed: #404040 ),
   'bluesky': (original: #1185fe, themed: #0285ff ),
   'reddit': ( original: #ff4500, themed: #ff5000 ),
-  'mastodon': ( original: #6364ff, themed: #6364ff ),//#6364ff
-  'quora': ( original: #f52936, themed: #b92b27 ),//#b92b27
-  'whatsapp': ( original: #25d366, themed: #04b302 ),
+  'mastodon': ( original: #6364ff, themed: #6364ff ),
+  'quora': ( original: #b92b27, themed: #b92b27 ),
+  'whatsapp': ( original: #25d366, themed: #02b12c ),   // #00ad59
   'messenger': ( original: #0a7cff, themed: #0174ff ),
-  'telegram': ( original: #888, themed: #179cde ),//#26a5e4
-  'skype': ( original: #0078d7, themed: #0078d7 ),//#0078d7
-  'viber': ( original: #7360f2, themed: #8c73fe ),
-  'line': ( original: #06c755, themed: #00c255 ),
-  'snapchat': ( original: #fffc00, themed: #ccc00f ),
+  'telegram': ( original: #04a4ec, themed: #0091dc ),   // #009be1
+  'skype': ( original: #0078d7, themed: #0078d7 ),
+  'viber': ( original: #7360f2, themed: #7c64f3 ),      // #7859fa
+  'line': ( original: #06c755, themed: #22bb4f ),
+  'snapchat': ( original: #fffc00, themed: #c7c000 ),
 
 );
 

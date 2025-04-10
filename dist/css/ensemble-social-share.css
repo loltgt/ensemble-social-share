@@ -98,11 +98,11 @@
 }
 
 .share-intent-x {
-  background: #404040;
+  background: #393939;
 }
 
 .share-intent-linkedin {
-  background: #187ab3;
+  background: #2471d7;
 }
 
 .share-intent-threads {
@@ -126,7 +126,7 @@
 }
 
 .share-intent-whatsapp {
-  background: #04b302;
+  background: #02b12c;
 }
 
 .share-intent-messenger {
@@ -134,7 +134,7 @@
 }
 
 .share-intent-telegram {
-  background: #179cde;
+  background: #0091dc;
 }
 
 .share-intent-skype {
@@ -142,15 +142,15 @@
 }
 
 .share-intent-viber {
-  background: #8c73fe;
+  background: #7c64f3;
 }
 
 .share-intent-line {
-  background: #00c255;
+  background: #22bb4f;
 }
 
 .share-intent-snapchat {
-  background: #ccc00f;
+  background: #c7c000;
 }
 
 .share-copied-link-msg {
