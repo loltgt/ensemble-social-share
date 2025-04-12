@@ -15,8 +15,8 @@
           "height": 512
         },
         "url": "https://ionic.io/ionicons/",
-        "licenseURL": "https://raw.githubusercontent.com/ionic-team/ionicons/main/LICENSE",
         "license": "MIT",
+        "licenseURL": "https://raw.githubusercontent.com/ionic-team/ionicons/main/LICENSE",
         "designer": "Ionic",
         "designerURL": "https://ionic.io/"
       },
@@ -36,10 +36,10 @@
           "height": 24
         },
         "url": "https://simpleicons.org/",
-        "licenseURL": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/LICENSE.md",
         "license": "CC0-1.0",
-        "designerURL": "https://simpleicons.org/",
-        "designer": "Simple Icons Collaborators"
+        "licenseURL": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/LICENSE.md",
+        "designer": "Simple Icons Collaborators",
+        "designerURL": "https://simpleicons.org/"
       },
       "height": 1024,
       "prevSize": 32,
@@ -61,8 +61,8 @@
         "minorVersion": 0,
         "fontURL": "https://github.com/loltgt/ensemble/ensemble-socialshare/tree/main/src/icons",
         "description": "Icon set for ensemble SocialShare",
-        "licenseURL": "https://raw.githubusercontent.com/loltgt/ensemble/ensemble-socialshare/main/dist/font/LICENSE",
-        "license": "Apache-2.0"
+        "license": "Apache-2.0",
+        "licenseURL": "https://raw.githubusercontent.com/loltgt/ensemble/ensemble-socialshare/main/dist/font/LICENSE"
       },
       "metrics": {
         "emSize": 1024,
