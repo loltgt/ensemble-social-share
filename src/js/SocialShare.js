@@ -529,12 +529,10 @@ class SocialShare extends base {
         const node = document.createElement('textarea');
         node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
         node.value = data.url;
-        this.appendNode(this.element, node);
+        document.append(node);
         node.focus();
         node.select();
-
         document.execCommand('copy'); // deprecated
-
         node.remove();
       } else {
         console.error('webShare', err.message);
