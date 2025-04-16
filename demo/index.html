@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>ensemble SocialShare demo</title>
+<meta name="description" content="ensemble SocialShare demo page showing the share component in action: intents option, vertical layout and custom print button">
+<link rel="canonical" href="https://loltgt.github.io/ensemble-social-share/demo/">
 <link rel="stylesheet" href="demo-ensemble-social-share.css">
 <link rel="stylesheet" href="../dist/font/socialshare-icons.css">
 
@@ -14,39 +16,43 @@
 <main>
   <h1>ensemble SocialShare demo</h1>
 
+  <p>ensemble SocialShare is a social sharing component JavaScript class, based on ensemble from loltgt. This page shows the component in action, intents option, vertical layout and a customization to display a print button.</p>
+  <p>View source from this page to discover options and examples</p>
+
   <section>
-    <h2 class="js-class">ensemble.SocialShare</h2>
+    <h2 class="js-class"><a href="https://github.com/loltgt/ensemble-social-share/blob/main/src/js/SocialShare.js" target="_blank">ensemble.SocialShare</a></h2>
 
     <article class="example" id="example-1">
-      <h2>Popular <em>default intents</em> with option <code>intents: null</code></h2>
+      <h3>Popular <em>default intents</em> with option <code>intents: null</code></h3>
 
       <div class="social-share" data-social-share>
     </article>
 
     <article class="example" id="example-2">
-      <h2>Popular <em>all intents</em> with option <code>intents: true</code></h2>
+      <h3>Popular <em>all intents</em> with option <code>intents: true</code></h3>
 
       <div class="social-share" data-social-share>
     </article>
 
     <article class="example" id="example-3">
-      <h2>Minimal <em>local intents</em> with option <code>intents: ['send-email', 'copy-link', 'web-share']</code></h2>
+      <h3>Minimal <em>local intents</em> with option <code>intents: ["send-email", "copy-link", "web-share"]</code></h3>
 
       <div class="social-share" data-social-share>
     </article>
 
     <article class="example" id="example-4">
-      <h2>Minimal <em>local intents</em> and <em>vertical layout</em> with option <code>layout: 'v'</code> and <em>custom intent</em> to print</h2>
+      <h3>Minimal <em>local intents</em> and <em>vertical layout</em> with option <code>layout: "v"</code> and <em>custom intent</em> to print</h3>
 
       <div class="social-share" data-social-share>
     </article>
 
   </section>
-
-  <footer>
-    <p>Icons font licensed under <a href="../dist/font/LICENSE">Apache 2.0 License</a>, full details in <a href="../dist/font/NOTICE"">NOTICE file</a>.</p>
-  </footer>
 </main>
+<footer>
+  <p>ensemble.SocialShare is free and licensed under <a href="../LICENSE" target="_blank" onclick="return!(window.origin!='null'&&fetch(this.href).then((r)=>r.blob().then((b)=>window.open(window.URL.createObjectURL(b),'_blank'))))">MIT License</a>.</p>
+  <p>Icons font licensed under <a href="../dist/font/LICENSE" target="_blank" onclick="return!(window.origin!='null'&&fetch(this.href).then((r)=>r.blob().then((b)=>window.open(window.URL.createObjectURL(b),'_blank'))))">Apache 2.0 License</a>, full details in <a href="../dist/font/NOTICE" target="_blank" onclick="return!(window.origin!='null'&&fetch(this.href).then((r)=>r.blob().then((b)=>window.open(window.URL.createObjectURL(b),'_blank'))))">NOTICE file</a>.</p>
+  <a class="repo" href="https://github.com/loltgt/ensemble-social-share">GitHub repo</a>
+</footer>
 
 <!-- ensmble socialshare javascript -->
 <script src="../dist/js/ensemble-social-share.js"></script>
@@ -54,13 +60,13 @@
 
 <!-- example: Popular default intents with options { intents: null } -->
 <script>
-  var element = document.querySelector('#example-1 .social-share');
+  var element = document.querySelector("#example-1 .social-share");
 
   new ensemble.SocialShare(element,
     {
       intents: null,
       locale: {
-        copied: ':localized: Copied link!'
+        copied: ":localized: Copied link!"
       }
     }
   );
@@ -68,48 +74,48 @@
 
 <!-- example: Popular all intents with options { intents: true } -->
 <script>
-  var element = document.querySelector('#example-2 .social-share');
+  var element = document.querySelector("#example-2 .social-share");
 
   new ensemble.SocialShare(element,
     {
       intents: true,
       locale: {
-        copied: ':localized: Copied link!'
+        copied: ":localized: Copied link!"
       }
     }
   );
 </script>
 
-<!-- example: Minimal local intents with options { intents: ['send-email', 'copy-link', 'web-share'] } -->
+<!-- example: Minimal local intents with options { intents: ["send-email", "copy-link", "web-share"] } -->
 <script>
-  var element = document.querySelector('#example-3 .social-share');
+  var element = document.querySelector("#example-3 .social-share");
 
   new ensemble.SocialShare(element,
     {
-      intents: ['send-email', 'copy-link', 'web-share'],
+      intents: ["send-email", "copy-link", "web-share"],
       locale: {
-        copied: ':localized: Copied link!'
+        copied: ":localized: Copied link!"
       }
     }
   );
 </script>
 
-<!-- example: Minimal local intents and vertical layout with option { layout: 'v' } and custom intent to print -->
+<!-- example: Minimal local intents and vertical layout with option { layout: "v" } and custom intent to print -->
 <script>
-  var element = document.querySelector('#example-4 .social-share');
+  var element = document.querySelector("#example-4 .social-share");
 
   new ensemble.SocialShare(element,
     {
-      layout: 'v',
-      intents: ['send-email', 'print', 'copy-link', 'web-share'],
+      layout: "v",
+      intents: ["send-email", "print", "copy-link", "web-share"],
       locale: {
-        copied: ':localized: Copied link!'
+        copied: ":localized: Copied link!"
       },
       onIntent: (self, event, intent, data) => {
-        console.log('example-4', self, event, intent, data);
+        console.log("example-4", self, event, intent, data);
 
         // note: timeout 200ms prevents focus trap
-        return intent === 'print' && setTimeout(window.print, 2e2);
+        return intent === "print" && setTimeout(window.print, 2e2);
       }
     }
   );

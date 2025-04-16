@@ -77,7 +77,7 @@
     
     prepend(compo) {
       const ns = this.ns, el = this[ns];
-      return !! el.prependChild(compo[ns]);
+      return !! el.insertBefore(compo[ns], el.firstElementChild || null);
     }
 
     
@@ -493,16 +493,6 @@
     }
 
     
-    appendNode(parent, node) {
-      return !! parent.appendChild(node);
-    }
-
-    
-    prependNode(parent, node) {
-      return !! parent.prependChild(node);
-    }
-
-    
     cloneNode(node, deep = false) {
       return node.cloneNode(deep);
     }
@@ -561,7 +551,7 @@
     }
 
     
-    styleTime(node, prop) {
+    cst(node, prop) {
       let time = Compo.isCompo(node) ? node.getStyle(prop) : getComputedStyle(node)[prop];
 
       if (time) {
@@ -573,7 +563,7 @@
 
     
     delay(func, node, time) {
-      const delay = node ? this.styleTime(node, 'transitionDuration') : 0;
+      const delay = node ? this.cst(node, 'transitionDuration') : 0;
 
       setTimeout(func, delay || time);
     }
@@ -977,12 +967,10 @@
           const node = document.createElement('textarea');
           node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
           node.value = data.url;
-          this.appendNode(this.element, node);
+          document.append(node);
           node.focus();
           node.select();
-
           document.execCommand('copy');
-
           node.remove();
         } else {
           console.error('webShare', err.message);

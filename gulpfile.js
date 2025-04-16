@@ -9,8 +9,7 @@ function demo_css() {
   return src('src/scss/demo_*.scss')
     .pipe(sass({
       loadPaths: [
-        './node_modules/@loltgt/ensemble--demo/src/scss',
-        './node_modules/@loltgt/ensemble-modal--demo/src/scss'
+        './node_modules/@loltgt/ensemble--demo/src/scss'
       ],
       silenceDeprecations: ['import'],
       style: 'compressed'
