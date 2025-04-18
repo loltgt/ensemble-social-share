@@ -18,9 +18,9 @@ npm install --save-dev loltgt/ensemble-social-share
 
 ## Demo
 
-Live demo on this page: [https://loltgt.github.io/ensemble-social-share/demo/](https://loltgt.github.io/ensemble-social-share/demo/) | source on `demo` branch.
+Live demo on this page: [https://loltgt.github.io/ensemble-social-share/demo/](https://loltgt.github.io/ensemble-social-share/demo/)
 
-View source from demo page to discover options and examples.
+View source from `demo` to discover options and examples.
 
 
 ## Usage
