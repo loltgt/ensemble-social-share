@@ -9,19 +9,19 @@ It has copy link to clipboard and send to e-mail buttons.
 It comes with options and hooks to customize.
 
 
-## Install
-
-Using npm:
-```shell
-npm install --save-dev loltgt/ensemble-social-share
-```
-
 ## Demo
 
 Live demo on this page: [https://loltgt.github.io/ensemble-social-share/demo/](https://loltgt.github.io/ensemble-social-share/demo/)
 
 View source from `demo` to discover options and examples.
 
+
+## Install
+
+Using npm:
+```shell
+npm install --save-dev loltgt/ensemble-social-share
+```
 
 ## Usage
 
