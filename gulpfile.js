@@ -26,7 +26,8 @@ const demo_prepublish = series([
       .pipe(dest('.'));
   },
   function demo_prepublish() {
-    return src(['dist/**'], {cwd: '../', base: '.'})
+    // font binary bogus
+    return src(['dist/**', '!dist/font/*.woff2'], {cwd: '../', base: '.'})
     .pipe(dest('dist'));
   }
 ]);
