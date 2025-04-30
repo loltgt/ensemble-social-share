@@ -12,3 +12,19 @@
   margin: 1rem 0 3rem;
 }
 
+.social-share :focus-visible {
+  outline: revert;
+}
+
+// screen reader only rule
+// used by inner label by default
+// 
+// note: This rule is not intended for use in production
+// 
+html .sr-only {
+  --note: "demo purpose";
+  display: block;
+  height: 1px;
+  margin: -1px;
+}
+

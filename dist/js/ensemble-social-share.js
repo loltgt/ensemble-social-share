@@ -127,6 +127,7 @@
 
 
 
+ 
   const REJECTED_TAGS = 'html|head|body|meta|link|style|script';
   const DENIED_PROPS ='attributes|classList|innerHTML|outerHTML|nodeName|nodeType';
 
@@ -514,7 +515,6 @@
       const icon = this.compo('span', 'icon', {className});
 
       if (type != 'font') {
-       
         if (type == 'symbol' || type == 'shape') {
           const svgNsUri = 'http://www.w3.org/2000/svg';
           const svg = new Compo(ns, 'svg', false, false, false, svgNsUri);
@@ -576,7 +576,7 @@
         throw new TypeError(l10n.EMETH);
       }
 
-      return function(event) { method.call(self, event, this); }
+      return function() { method.call(self, ...arguments, this); }
     }
 
   }
@@ -676,8 +676,9 @@
           attribute: 'content'
         },
         label: {
-          text: ''
+          className: 'sr-only'
         },
+        ariaLabel: true,
         copiedEffectDelay: 1e3,
         locale: {
           label: 'Share',
@@ -713,18 +714,22 @@
     
     generator() {
       const opts = this.options;
+      const locale = opts.locale;
 
       const compo = this.$ = this.compo(false, false, {
         className: typeof opts.className == 'object' ? Object.values(opts.className).join(' ') : opts.className
       });
-      compo.setAttr('data-social-share', '');
+      if (opts.ariaLabel) {
+        const ariaLabel = opts.ariaLabel;
+        compo.setAttr('aria-label', typeof ariaLabel == 'string' ? ariaLabel : locale.label);
+      }
 
       if (opts.label) {
-        const {label: labelParams, locale} = opts;
+        const labelParams = opts.label;
         const label = this.compo('span', 'label', {
+          className: labelParams.className,
           innerText: labelParams.text ?? locale.label
         });
-        label.classList.add('label');
 
         compo.append(label);
       }
