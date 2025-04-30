@@ -63,7 +63,7 @@
   -webkit-appearance: none;
 }
 }
-.share-button:active, .share-button:focus {
+.share-button:active, .share-button:focus:not(:focus-visible) {
   outline: 0;
   -webkit-tap-highlight-color: string.unquote("transparent");
 }

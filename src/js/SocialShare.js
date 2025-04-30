@@ -56,8 +56,10 @@ const SocialShareActionEnum = Object.freeze({
  * @param {string[]} [options.intents] Sharing intent buttons to display, default to most popular
  * @param {object} [options.scaffold] Scaffold for sharing intents with enumeration
  * @param {object} [options.uriform] Object containing social sharing URL literals
- * @param {object} [options.label] Parameters for label, titling
- * @param {string} [options.label.text] Label text
+ * @param {string|boolean} [options.ariaLabel] Parameter text for aria-label, false to disable, default to locale.label
+ * @param {object|boolean} [options.label] Parameters for titling label, false to disable
+ * @param {string} [options.label.text] Label text, default to locale.label
+ * @param {string[]} [options.label.className] Label CSS class name
  * @param {int} [options.copiedEffectDelay=1000] Copied effect delay time in milliseconds
  * @param {object} [options.selectorLink] An element selector {element, attribute} for link
  * @param {object} [options.selectorTitle] An element selector {element, attribute} for title
@@ -162,8 +164,9 @@ class SocialShare extends base {
         attribute: 'content'
       },
       label: {
-        text: ''
+        className: 'sr-only'
       },
+      ariaLabel: true,
       copiedEffectDelay: 1e3,
       locale: {
         label: 'Share',
@@ -207,18 +210,22 @@ class SocialShare extends base {
    */
   generator() {
     const opts = this.options;
+    const locale = opts.locale;
 
     const compo = this.$ = this.compo(false, false, {
       className: typeof opts.className == 'object' ? Object.values(opts.className).join(' ') : opts.className
     });
-    compo.setAttr('data-social-share', '');
+    if (opts.ariaLabel) {
+      const ariaLabel = opts.ariaLabel;
+      compo.setAttr('aria-label', typeof ariaLabel == 'string' ? ariaLabel : locale.label);
+    }
 
     if (opts.label) {
-      const {label: labelParams, locale} = opts;
+      const labelParams = opts.label;
       const label = this.compo('span', 'label', {
+        className: labelParams.className,
         innerText: labelParams.text ?? locale.label
       });
-      label.classList.add('label');
 
       compo.append(label);
     }
@@ -383,7 +390,7 @@ class SocialShare extends base {
     } else if (selectorTitle && selectorTitle.element && this.selector(selectorTitle.element)) {
       title = this.getAttr(this.selector(selectorTitle.element), selectorTitle.attribute);
     } else {
-      title = document.title;
+      title = document.title; // [DOM]
     }
     if (opts.description) {
       summary = opts.description;
