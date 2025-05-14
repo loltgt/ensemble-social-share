@@ -60,15 +60,15 @@ const SocialShareActionEnum = Object.freeze({
  * @param {object|boolean} [options.label] Parameters for titling label, false to disable
  * @param {string} [options.label.text] Label text, default to locale.label
  * @param {string[]} [options.label.className] Label CSS class name
- * @param {int} [options.copiedEffectDelay=1000] Copied effect delay time in milliseconds
+ * @param {number} [options.copiedEffectDelay=1000] Copied effect delay time in milliseconds
  * @param {object} [options.selectorLink] An element selector {element, attribute} for link
  * @param {object} [options.selectorTitle] An element selector {element, attribute} for title
  * @param {object} [options.selectorDescription] An element selector {element, attribute} for description
  * @param {object} [options.locale] Localization strings
- * @param {function} [options.onInit] onInit callback, on component initialization
  * @param {function} [options.onIntent] onIntent callback, on sharing intent call
+ * @param {function} [options.onInit] onInit callback, on component initialization
  * @example
- * new ensemble.SocialShare(document.getElementById('placeholder'), {intents:['copy-link', 'web-share']});
+ * new ensemble.SocialShare(document.querySelector("[data-social-share]"), {intents:["send-email", "copy-link", "web-share"]});
  */
 class SocialShare extends base {
 
@@ -181,8 +181,8 @@ class SocialShare extends base {
         'linkedin': 'LinkedIn',
         'web-share': 'Share'
       },
-      onInit: () => {},
-      onIntent: () => {}
+      onIntent: () => {},
+      onInit: () => {}
     };
   }
 
@@ -194,21 +194,71 @@ class SocialShare extends base {
   }
 
   /**
-   * Constructor method
+   * Constructor
    *
    * @constructs
    */
   constructor() {
     super(...arguments);
 
+    /**
+     * @see encodeURIComponent
+     *
+     * @name encoder
+     * @function
+     */
     this.encoder = encodeURIComponent;
     this.init();
   }
 
   /**
-   * Element generator
+   * Initializes the component
+   *
+   * @emits #options.onInit
    */
-  generator() {
+  init() {
+    if (this.built)
+      return;
+
+    const opts = this.options;
+    this.root = this.selector(opts.root);
+
+    let intents = [];
+
+    if (! opts.intents && this.ska === opts.scaffold) {
+      const a = Object.keys(this.ska);
+      for (const i of [0, 1, 8, 9, 10, 2, 15, 16, 17]) {
+        intents.push(a[i]);
+      }
+    } else if (opts.intents instanceof Array) {
+      intents = opts.intents;
+    } else if (opts.intents) {
+      intents = Object.keys(opts.scaffold);
+    }
+    this.intents = intents;
+
+    this.layout();
+
+    if (this.element) {
+      this.$.place(this.element, (function(node) {
+        this.element = node;
+      }).bind(this));
+    }
+
+    this.drawer();
+
+    /**
+     * @event #options.onInit
+     * @type {function}
+     * @param {object} this
+     */
+    opts.onInit.call(this, this);
+  }
+
+  /**
+   * Lead layout
+   */
+  layout() {
     const opts = this.options;
     const locale = opts.locale;
 
@@ -241,50 +291,11 @@ class SocialShare extends base {
   }
 
   /**
-   * Initializes the component
-   */
-  init() {
-    if (this.built)
-      return;
-
-    const opts = this.options;
-
-    this.root = this.selector(opts.root);
-
-    let intents = [];
-
-    if (! opts.intents && this.ska === opts.scaffold) {
-      const a = Object.keys(this.ska);
-      for (const i of [0, 1, 8, 9, 10, 2, 15, 16, 17]) {
-        intents.push(a[i]);
-      }
-    } else if (opts.intents instanceof Array) {
-      intents = opts.intents;
-    } else if (opts.intents) {
-      intents = Object.keys(opts.scaffold);
-    }
-    this.intents = intents;
-
-    this.generator();
-
-    if (this.element) {
-      this.$.place(this.element, (function(node) {
-        this.element = node;
-      }).bind(this));
-    }
-
-    this.populate();
-
-    opts.onInit.call(this, this);
-    console.log('init', opts);
-  }
-
-  /**
-   * On this stage the component is populated with progeny
+   * Places all the actions in a drawer
    *
    * @see Navigator.share
    */
-  populate() {
+  drawer() {
     const act = SocialShareActionEnum;
     const opts = this.options;
     const locale = opts.locale;
@@ -316,8 +327,8 @@ class SocialShare extends base {
   /**
    * Creates the action with a share button
    *
-   * @param {string} intent The intent name
-   * @param {string} title A title for action
+   * @param {string} intent Intent name
+   * @param {string} title Title for action
    */
   action(intent, title) {
     const opts = this.options;
@@ -348,7 +359,9 @@ class SocialShare extends base {
    *
    * This method is called from each action.
    *
-   * @see window.location
+   * @see Window.location
+   *
+   * @emits #options.onIntent
    *
    * @param {Event} evt An Event
    * @param {Element} target The element is invoking
@@ -403,6 +416,14 @@ class SocialShare extends base {
 
     const data = {url, title, text, summary};
 
+    /**
+     * @event #options.onIntent
+     * @type {function}
+     * @param {object} this
+     * @param {Event} evt
+     * @param {string} intent
+     * @param {object} data
+     */
     opts.onIntent.call(this, this, evt, intent, data);
 
     data.text = locale.text.toString().replace('%s', data.text);
@@ -417,8 +438,6 @@ class SocialShare extends base {
     }
 
     this.event().blur(evt);
-
-    console.log('intent', this, target, evt, intent, data);
   }
 
   /**
@@ -445,7 +464,7 @@ class SocialShare extends base {
   /**
    * Share intent for social sharing action
    *
-   * @see window.open
+   * @see Window.open
    *
    * @param {Event} evt An Event
    * @param {object} data Sharing data object
@@ -453,7 +472,7 @@ class SocialShare extends base {
    * @param {string} data.title Share title text
    * @param {string} data.text Share description text
    * @param {string} data.summary Share summary text
-   * @param {string} intent The intent name
+   * @param {string} intent Intent name
    */
   share(evt, data, intent) {
     const {options: opts, encoder} = this;
@@ -475,8 +494,6 @@ class SocialShare extends base {
       url = url.replace('%app_id%', encoder(app_id));
     }
 
-    console.log('share', url, null, features);
-
     window.open(url, null, features);
   }
 
@@ -485,7 +502,7 @@ class SocialShare extends base {
    *
    * Tries to open the default e-mail client.
    *
-   * @see window.open
+   * @see Window.open
    *
    * @param {Event} evt An Event
    * @param {object} data Sharing data object
@@ -502,8 +519,6 @@ class SocialShare extends base {
       .replace('%subject%', encoder(locale.subject))
       .replace('%text%', this.text(data));
 
-    console.log('sendEmail', url, '_self');
-
     window.open(url, '_self');
   }
 
@@ -513,7 +528,7 @@ class SocialShare extends base {
    * Tries to copy the link to the clipboard.
    *
    * @see Navigator.clipboard
-   * @see document.execCommand
+   * @see Document.execCommand
    *
    * @param {Event} evt An Event
    * @param {object} data Sharing data object
@@ -533,13 +548,14 @@ class SocialShare extends base {
     } catch (err) {
       if (err instanceof TypeError) {
         // [DOM]
-        const node = document.createElement('textarea');
+        const doc = document;
+        const node = doc.createElement('textarea');
         node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
         node.value = data.url;
-        document.append(node);
+        doc.append(node);
         node.focus();
         node.select();
-        document.execCommand('copy'); // deprecated
+        doc.execCommand('copy'); // deprecated
         node.remove();
       } else {
         console.error('webShare', err.message);
@@ -547,7 +563,6 @@ class SocialShare extends base {
     }
 
     if (opts.effects) {
-      const self = this;
       const {root} = this;
 
       const bg = this.compo(false, 'effects-copied-link--bg', {hidden: true});
