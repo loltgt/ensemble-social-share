@@ -12,30 +12,22 @@
 
 
   
-  class locale {
-
+  const l10n = new Proxy({}, {
     
-    constructor(lang) {
-      if (typeof locale[lang] == 'object') {
-        return locale[lang];
-      } else {
-        return locale[0];
-      }
+    get(self, marker) {
+      return self.lang && self[self.lang][marker] || marker;
     }
-
-    
-    static defaults() {
-      return Object.fromEntries(['ETAGN', 'EPROP', 'EMTAG', 'EOPTS', 'EELEM', 'EMETH', 'DOM'].map(a => [a, a]));
-    }
-  }
-  
-  const l10n = locale.defaults();
+  });
 
   
 
 
 
-  const REJECTED_TAGS$1 = 'html|head|body|meta|link|style|script';
+  
+  const REJECTED_TAGS = 'html|head|body|meta|link|style|script';
+
+  
+  const DENIED_PROPS = 'attributes|classList|innerHTML|outerHTML|nodeName|nodeType';
 
 
   
@@ -88,7 +80,7 @@
 
     
     fill(node) {
-      if (! node instanceof Element || RegExp(REJECTED_TAGS$1, 'i').test(node.tagName) || RegExp(`(<(${REJECTED_TAGS$1})*>)`, 'i').test(node.innerHTML)) {
+      if (! node instanceof Element || RegExp(REJECTED_TAGS, 'i').test(node.tagName) || RegExp(`(<(${REJECTED_TAGS})*>)`, 'i').test(node.innerHTML)) {
         throw new Error(l10n.EMTAG);
       }
 
@@ -125,11 +117,6 @@
 
   
 
-
-
- 
-  const REJECTED_TAGS = 'html|head|body|meta|link|style|script';
-  const DENIED_PROPS ='attributes|classList|innerHTML|outerHTML|nodeName|nodeType';
 
 
   
@@ -518,18 +505,28 @@
         if (type == 'symbol' || type == 'shape') {
           const svgNsUri = 'http://www.w3.org/2000/svg';
           const svg = new Compo(ns, 'svg', false, false, null, svgNsUri);
-          const node = new Compo(ns, type == 'symbol' ? 'use' : 'path', false, false, null, svgNsUri);
+          const tag = type == 'symbol' ? 'use' : 'path';
+          const node = new Compo(ns, tag, false, false, null, svgNsUri);
 
           if (viewBox) {
-            svg.setAttr('viewBox', viewBox);
+            const m = viewBox.match(/\d+ \d+ (\d+) (\d+)/);
+
+            if (m) {
+              Object.entries({
+                width: m[1],
+                height: m[2],
+                viewBox: m[0]
+              }).forEach(a => svg.setAttr(a[0], a[1]));
+            }
           }
-          if (type == 'symbol') {
+
+          if (tag == 'use') {
             node.setAttr('href', `#${hash}`);
           } else {
             node.setAttr('d', path);
           }
-          svg.append(node);
 
+          svg.append(node);
           icon.append(svg);
         } else if (type == 'svg' && this.origin()) {
           const img = this.compo(ns, 'img', false, {
@@ -974,7 +971,7 @@
           doc.execCommand('copy');
           node.remove();
         } else {
-          console.error('webShare', err.message);
+          console.error('copyLink', err.message);
         }
       }
 

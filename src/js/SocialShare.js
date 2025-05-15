@@ -20,7 +20,7 @@ import base from "@loltgt/ensemble";
 /**
  * SocialShare action enumeration
  *
- * @object
+ * @constant {object}
  * @enum {int}
  */
 const SocialShareActionEnum = Object.freeze({
@@ -558,7 +558,7 @@ class SocialShare extends base {
         doc.execCommand('copy'); // deprecated
         node.remove();
       } else {
-        console.error('webShare', err.message);
+        console.error('copyLink', err.message);
       }
     }
 
