@@ -7,18 +7,18 @@
  */
 
 .share-intent {
-  transform: scale3d(1);
+  transform: scale3d(1, 1, 1);
   transform: scale(1);
   backface-visibility: hidden;
   transition: transform 50ms linear;
 }
 .share-intent:active, .share-intent:focus {
-  transform: scale3d(1.1);
+  transform: scale3d(1.1, 1.1, 1.1);
   transform: scale(1.1);
 }
 @media (hover: hover) {
   .share-intent:hover {
-    transform: scale3d(1.1);
+    transform: scale3d(1.1, 1.1, 1.1);
     transform: scale(1.1);
   }
 }

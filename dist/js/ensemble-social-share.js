@@ -12,30 +12,22 @@
 
 
   
-  class locale {
-
+  const l10n = new Proxy({}, {
     
-    constructor(lang) {
-      if (typeof locale[lang] == 'object') {
-        return locale[lang];
-      } else {
-        return locale[0];
-      }
+    get(self, marker) {
+      return self.lang && self[self.lang][marker] || marker;
     }
-
-    
-    static defaults() {
-      return Object.fromEntries(['ETAGN', 'EPROP', 'EMTAG', 'EOPTS', 'EELEM', 'EMETH', 'DOM'].map(a => [a, a]));
-    }
-  }
-  
-  const l10n = locale.defaults();
+  });
 
   
 
 
 
-  const REJECTED_TAGS$1 = 'html|head|body|meta|link|style|script';
+  
+  const REJECTED_TAGS = 'html|head|body|meta|link|style|script';
+
+  
+  const DENIED_PROPS = 'attributes|classList|innerHTML|outerHTML|nodeName|nodeType';
 
 
   
@@ -88,7 +80,7 @@
 
     
     fill(node) {
-      if (! node instanceof Element || RegExp(REJECTED_TAGS$1, 'i').test(node.tagName) || RegExp(`(<(${REJECTED_TAGS$1})*>)`, 'i').test(node.innerHTML)) {
+      if (! node instanceof Element || RegExp(REJECTED_TAGS, 'i').test(node.tagName) || RegExp(`(<(${REJECTED_TAGS})*>)`, 'i').test(node.innerHTML)) {
         throw new Error(l10n.EMTAG);
       }
 
@@ -125,11 +117,6 @@
 
   
 
-
-
- 
-  const REJECTED_TAGS = 'html|head|body|meta|link|style|script';
-  const DENIED_PROPS ='attributes|classList|innerHTML|outerHTML|nodeName|nodeType';
 
 
   
@@ -517,22 +504,32 @@
       if (type != 'font') {
         if (type == 'symbol' || type == 'shape') {
           const svgNsUri = 'http://www.w3.org/2000/svg';
-          const svg = new Compo(ns, 'svg', false, false, false, svgNsUri);
-          const node = new Compo(ns, type == 'symbol' ? 'use' : 'path', false, false, false, svgNsUri);
+          const svg = new Compo(ns, 'svg', false, false, null, svgNsUri);
+          const tag = type == 'symbol' ? 'use' : 'path';
+          const node = new Compo(ns, tag, false, false, null, svgNsUri);
 
           if (viewBox) {
-            svg.setAttr('viewBox', viewBox);
+            const m = viewBox.match(/\d+ \d+ (\d+) (\d+)/);
+
+            if (m) {
+              Object.entries({
+                width: m[1],
+                height: m[2],
+                viewBox: m[0]
+              }).forEach(a => svg.setAttr(a[0], a[1]));
+            }
           }
-          if (type == 'symbol') {
+
+          if (tag == 'use') {
             node.setAttr('href', `#${hash}`);
           } else {
             node.setAttr('d', path);
           }
-          svg.append(node);
 
+          svg.append(node);
           icon.append(svg);
         } else if (type == 'svg' && this.origin()) {
-          const img = new compo(ns, 'img', false, {
+          const img = this.compo(ns, 'img', false, {
             'src': `${path}#${hash}`
           });
           icon.append(img);
@@ -693,8 +690,8 @@
           'linkedin': 'LinkedIn',
           'web-share': 'Share'
         },
-        onInit: () => {},
-        onIntent: () => {}
+        onIntent: () => {},
+        onInit: () => {}
       };
     }
 
@@ -707,12 +704,49 @@
     constructor() {
       super(...arguments);
 
+      
       this.encoder = encodeURIComponent;
       this.init();
     }
 
     
-    generator() {
+    init() {
+      if (this.built)
+        return;
+
+      const opts = this.options;
+      this.root = this.selector(opts.root);
+
+      let intents = [];
+
+      if (! opts.intents && this.ska === opts.scaffold) {
+        const a = Object.keys(this.ska);
+        for (const i of [0, 1, 8, 9, 10, 2, 15, 16, 17]) {
+          intents.push(a[i]);
+        }
+      } else if (opts.intents instanceof Array) {
+        intents = opts.intents;
+      } else if (opts.intents) {
+        intents = Object.keys(opts.scaffold);
+      }
+      this.intents = intents;
+
+      this.layout();
+
+      if (this.element) {
+        this.$.place(this.element, (function(node) {
+          this.element = node;
+        }).bind(this));
+      }
+
+      this.drawer();
+
+      
+      opts.onInit.call(this, this);
+    }
+
+    
+    layout() {
       const opts = this.options;
       const locale = opts.locale;
 
@@ -745,44 +779,7 @@
     }
 
     
-    init() {
-      if (this.built)
-        return;
-
-      const opts = this.options;
-
-      this.root = this.selector(opts.root);
-
-      let intents = [];
-
-      if (! opts.intents && this.ska === opts.scaffold) {
-        const a = Object.keys(this.ska);
-        for (const i of [0, 1, 8, 9, 10, 2, 15, 16, 17]) {
-          intents.push(a[i]);
-        }
-      } else if (opts.intents instanceof Array) {
-        intents = opts.intents;
-      } else if (opts.intents) {
-        intents = Object.keys(opts.scaffold);
-      }
-      this.intents = intents;
-
-      this.generator();
-
-      if (this.element) {
-        this.$.place(this.element, (function(node) {
-          this.element = node;
-        }).bind(this));
-      }
-
-      this.populate();
-
-      opts.onInit.call(this, this);
-      console.log('init', opts);
-    }
-
-    
-    populate() {
+    drawer() {
       const act = SocialShareActionEnum;
       const opts = this.options;
       const locale = opts.locale;
@@ -887,6 +884,7 @@
 
       const data = {url, title, text, summary};
 
+      
       opts.onIntent.call(this, this, evt, intent, data);
 
       data.text = locale.text.toString().replace('%s', data.text);
@@ -901,8 +899,6 @@
       }
 
       this.event().blur(evt);
-
-      console.log('intent', this, target, evt, intent, data);
     }
 
     
@@ -938,8 +934,6 @@
         url = url.replace('%app_id%', encoder(app_id));
       }
 
-      console.log('share', url, null, features);
-
       window.open(url, null, features);
     }
 
@@ -951,8 +945,6 @@
       const url = opts.uriform['send-email']
         .replace('%subject%', encoder(locale.subject))
         .replace('%text%', this.text(data));
-
-      console.log('sendEmail', url, '_self');
 
       window.open(url, '_self');
     }
@@ -969,16 +961,17 @@
       } catch (err) {
         if (err instanceof TypeError) {
          
-          const node = document.createElement('textarea');
+          const doc = document;
+          const node = doc.createElement('textarea');
           node.style = 'position:absolute;width:0;height:0;opacity:0;z-index:-1;overflow:hidden';
           node.value = data.url;
-          document.append(node);
+          doc.append(node);
           node.focus();
           node.select();
-          document.execCommand('copy');
+          doc.execCommand('copy');
           node.remove();
         } else {
-          console.error('webShare', err.message);
+          console.error('copyLink', err.message);
         }
       }
 
