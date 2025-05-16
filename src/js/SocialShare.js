@@ -14,7 +14,7 @@
  * @exports SocialShare
  */
 
-import base from "@loltgt/ensemble";
+import base from 'ensemble';
 
 
 /**
@@ -39,7 +39,7 @@ const SocialShareActionEnum = Object.freeze({
  * @extends base
  * @inheritdoc
  * @param {Element} [element] A valid Element node placeholder to replace with the component
- * @param {object} options Options object
+ * @param {object} [options] Options object
  * @param {string} [options.ns=share] The namespace for social share
  * @param {string} [options.root=body] A root Element node
  * @param {string[]} [options.className=social-share] The component CSS class name
@@ -202,8 +202,8 @@ class SocialShare extends base {
     super(...arguments);
 
     /**
+     * Alias for encodeURIComponent
      * @see encodeURIComponent
-     *
      * @name encoder
      * @function
      */
@@ -248,9 +248,10 @@ class SocialShare extends base {
     this.drawer();
 
     /**
+     * options.onInit callback
      * @event #options.onInit
      * @type {function}
-     * @param {object} this
+     * @param {object} this This component object
      */
     opts.onInit.call(this, this);
   }
@@ -417,12 +418,13 @@ class SocialShare extends base {
     const data = {url, title, text, summary};
 
     /**
+     * options.onIntent callback
      * @event #options.onIntent
      * @type {function}
-     * @param {object} this
-     * @param {Event} evt
-     * @param {string} intent
-     * @param {object} data
+     * @param {object} this This component object
+     * @param {Event} evt Event object
+     * @param {string} intent Current intent
+     * @param {object} data Sharing data object
      */
     opts.onIntent.call(this, this, evt, intent, data);
 
@@ -451,9 +453,7 @@ class SocialShare extends base {
    * @return {string} URL encoded text string
    */
   text(data) {
-    const encoder = this.encoder;
-
-    return encoder(
+    return this.encoder(
       data.text
         .replace('%url%', data.url)
         .replace('%title%', data.title)
@@ -512,11 +512,11 @@ class SocialShare extends base {
    * @param {string} data.summary Share summary text
    */
   sendEmail(evt, data) {
-    const {options: opts, encoder} = this;
+    const opts = this.options;
     const locale = opts.locale;
 
     const url = opts.uriform['send-email']
-      .replace('%subject%', encoder(locale.subject))
+      .replace('%subject%', this.encoder(locale.subject))
       .replace('%text%', this.text(data));
 
     window.open(url, '_self');

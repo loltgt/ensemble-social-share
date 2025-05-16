@@ -54,13 +54,13 @@ function bundle_banner() {
     license: 'MIT License'
   };
 
-  return '/*!\n\
- * ' + pkg.name + '\n\
- * @version ' + pkg.version + '\n\
- * @link ' + pkg.link + '\n\
- * @copyright ' + pkg.copyright + '\n\
- * @license ' + pkg.license + '\n\
- */\n';
+  return `/*!\n\
+ * ${pkg.name}\n\
+ * @version ${pkg.version}\n\
+ * @link ${pkg.link}\n\
+ * @copyright ${pkg.copyright}\n\
+ * @license ${pkg.license}\n\
+ */\n`;
 }
 
 function js() {
@@ -183,7 +183,7 @@ function _css(options) {
     }))
     .pipe(sass({
       loadPaths: [
-        './node_modules/@loltgt/ensemble-modal/src/scss'
+        './node_modules/ensemble-modal/src/scss'
       ],
       silenceDeprecations: ['import'],
       style: options.minify ? 'compressed' : 'expanded',
