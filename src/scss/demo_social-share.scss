@@ -23,8 +23,11 @@
 // 
 html .sr-only {
   --note: "demo purpose";
+  position: absolute;
   display: block;
+  width: 1px;
   height: 1px;
   margin: -1px;
+  overflow: hidden;
 }
 

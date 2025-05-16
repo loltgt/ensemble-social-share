@@ -903,9 +903,7 @@
 
     
     text(data) {
-      const encoder = this.encoder;
-
-      return encoder(
+      return this.encoder(
         data.text
           .replace('%url%', data.url)
           .replace('%title%', data.title)
@@ -939,11 +937,11 @@
 
     
     sendEmail(evt, data) {
-      const {options: opts, encoder} = this;
+      const opts = this.options;
       const locale = opts.locale;
 
       const url = opts.uriform['send-email']
-        .replace('%subject%', encoder(locale.subject))
+        .replace('%subject%', this.encoder(locale.subject))
         .replace('%text%', this.text(data));
 
       window.open(url, '_self');
