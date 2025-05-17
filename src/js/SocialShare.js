@@ -1,7 +1,7 @@
 /*!
  * ensemble SocialShare
  *
- * @version 0.4.0
+ * @version 0.5.0
  * @link https://github.com/loltgt/ensemble-social-share
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
@@ -14,7 +14,7 @@
  * @exports SocialShare
  */
 
-import base from 'ensemble';
+import { base } from 'ensemble';
 
 
 /**
@@ -603,4 +603,4 @@ class SocialShare extends base {
 }
 
 
-export { SocialShare };
+export default SocialShare;

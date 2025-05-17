@@ -1,6 +1,6 @@
 /*!
  * ensemble Social Share
- * @version 0.4.0
+ * @version 0.5.0
  * @link https://github.com/loltgt/ensemble-social-share
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
@@ -11,13 +11,18 @@
   
 
 
+
   
-  const l10n = new Proxy({}, {
+  const $locale = (l10n) => new Proxy(l10n, {
     
     get(self, marker) {
       return self.lang && self[self.lang][marker] || marker;
     }
   });
+
+
+  
+  const l10n = $locale({});
 
   
 
